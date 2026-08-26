@@ -5,6 +5,21 @@ Statuses: [x] fixed, [>] deferred to a named phase, [ ] open.
 
 ## Phase 6 doublecheck + phase 7 prep (2026-08-26)
 
+Phase 7 prerequisite audit (run after prep, certifying its foundations):
+
+- [x] Gates green on the committed tree (36 py, 69/69 parse, 56 browser + 2 pending).
+- [x] License registry integrity: 40 SKU ids; every shipped `record.license` resolves;
+      every seed row's min/alsoIn resolves; no dangling `includes[]` bundle ids.
+- [x] Source material present: doc 11 §2 priority list, doc 02 Intune plan table,
+      doc 03 Defender plan table, doc 07 E3-vs-E5 pointers, doc 09 W365/AVD; error
+      code sources in doc 01 §7, doc 02 §6.7, doc 06 backlog.
+- [x] coveredByProfile (direct + bundle + none) selftest-verified: matrix highlighting
+      can build on it.
+- [ ] Execution will need 1-2 new registry SKUs (Windows 10/11 Enterprise E3/E5 for
+      AVD/Windows rows); Teams Rooms Pro stays no-claim until docs/17 C6 verifies.
+- [>] Licensing rows are not yet in the search index and there is no #/licensing view:
+      deliberate, that IS phase 7 execution (roadmap).
+
 Phase 6 audit result: content sweep clean (26 runbooks: no em-dashes, no BOM, no
 VERIFY, no TODO, no stray URLs), all gates green, one real inconsistency found:
 
