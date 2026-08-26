@@ -109,3 +109,26 @@ fod,files on demand,one,onedrive states (doc 16)
 aadj,azure ad joined entra joined,endevices,dsregcmd states
 haadj,hybrid azure ad joined hybrid entra joined,endevices,dsregcmd states
 dspm,data security posture management for ai,pu,purview AI hub (doc 07)
+sso,single sign-on,enapps,
+saml,security assertion markup language,enapps,sso protocol
+oidc,openid connect,enappreg,
+oauth,open authorization,enconsent;decaoauth,consent flows
+spn,service principal,enapps,workload identity
+fido,fido2 security key,enauth,passkeys
+passkey,fido2 passkey,enauth;enauthstrength,
+pta,pass-through authentication,ensynclog,hybrid auth
+phs,password hash sync,ensynclog,hybrid auth
+adcs,active directory certificate services,deusers,MDI sensor coverage
+adfs,active directory federation services,enadfslog,
+gmsa,group managed service account,deusers,MDI action accounts
+rdp,remote desktop protocol,azavd,
+vdi,virtual desktop infrastructure,azavd;win365,
+fslogix,fslogix profiles,azavd,AVD profiles
+kql,kusto query language,dehunting;xdrthreathunt,
+arm,azure resource manager,azrm,also = email ARC cousin; distinct term
+cspm,cloud security posture management,azdefender,
+cwpp,cloud workload protection platform,azdefender,
+jml,joiner mover leaver,enlifecycle,lifecycle workflows
+b2b,business to business collaboration,enguests;enctas,
+b2c,business to consumer identity,enguests,external id CIAM
+ir,incident response,deincidents;scenario-incident,curated 2-letter

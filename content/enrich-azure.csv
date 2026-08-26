@@ -1,0 +1,18 @@
+# enrichment: azure.
+id,kind,aliases,name,group,url,path,desc,keywords,roles,license,docs,ps,related,verified
+az,,,,Portal,,https://portal.azure.com,Azure portal root; everything ARM.,,az-reader,free,,,azsubs|azmonitor,2026-08
+azmonitor,,,,Monitor,,Azure portal > Monitor,"Metrics, alerts + action groups, activity log.",alerts|metrics,az-reader,free,https://learn.microsoft.com/azure/azure-monitor/,,azloganalytics|azdiag,2026-08
+azloganalytics,,,,Monitor,,Monitor > Log Analytics workspaces,"Workspaces: tables, retention, agents; Sentinel sits on top of one.",workspace|kql,az-la-contrib,free,https://learn.microsoft.com/azure/azure-monitor/logs/log-analytics-workspace-overview,,senretention|azdcr,2026-08
+azdcr,,,,Monitor,,Monitor > Data Collection Rules,"AMA routing + transformations; wrong DCR = missing or doubled data.",ama|dcr,az-la-contrib,free,,,sendcr,2026-08
+azkv,,,,Security,,Key Vault,"Secrets, keys, certs; prefer RBAC mode; alert on expiry.",secrets|certificates,az-kv-secretsuser,free,https://learn.microsoft.com/azure/key-vault/,,azpolicy,2026-08
+azpolicy,,,,Governance,,Azure Policy,"Definitions, initiatives, assignments, exemptions; compliance + remediation tasks.",governance|compliance,az-contrib,free,https://learn.microsoft.com/azure/governance/policy/,,azmg,2026-08
+azdefender,,,,Security,,Microsoft Defender for Cloud,"CSPM secure score + attack paths; per-resource CWPP plans; continuous export to Sentinel.",cspm|cwpp,secadmin,free,https://learn.microsoft.com/azure/defender-for-cloud/,,senconnectors,2026-08
+azhybridcompute,,,,Hybrid,,Azure Arc > Servers,"Arc-enabled servers: extensions (AMA!), ESU enrollment, policy at the edge.",arc|hybrid,az-arc-admin,free,https://learn.microsoft.com/azure/azure-arc/servers/,,azarc-onboard|azdcr,2026-08
+azhealth,,,,Monitor,,Azure Service Health,Azure-side incidents and planned maintenance; set alerts per subscription.,outage,az-reader,free,,,mshealth,2026-08
+azsubs,,,,Governance,,Subscriptions,Subscription list; IAM at this scope decides most access questions.,rbac scope,az-reader,free,,,azmg|azpim,2026-08
+azmg,,,,Governance,,Management groups,Hierarchy above subscriptions for policy + RBAC inheritance.,hierarchy,az-reader,free,,,azsubs,2026-08
+azpim,,,,Governance,,PIM > Azure resources,JIT activation for Azure RBAC roles.,jit,privroleadmin,entra-p2,,,enpimz,2026-08
+arg,,,,Tools,,Resource Graph Explorer,Kusto over your whole estate; the inventory answer machine.,inventory|kusto,az-reader,free,https://learn.microsoft.com/azure/governance/resource-graph/,Search-AzGraph,azshell,2026-08
+azshell,,,,Tools,,Cloud Shell,Browser PowerShell/bash with Az preinstalled.,cli,az-reader,free,,,arg,2026-08
+azdiag,setting,,Diagnostic settings pattern,Monitor,,Any resource > Monitoring > Diagnostic settings,The single most reused click-path: route any resource's logs to Log Analytics (and thus Sentinel) or Event Hub.,diagnostics|route logs,az-contrib,free,https://learn.microsoft.com/azure/azure-monitor/essentials/diagnostic-settings,,azloganalytics|senconnectors,2026-08
+azarc-onboard,concept,azcmagent,Arc onboarding paths,Hybrid,,Single script vs at-scale service principal vs azcmagent,"Generate the script in the portal for one server; use a service principal + automation at scale; azcmagent connect/config on the box.",arc onboarding,az-arc-onboard,free,https://learn.microsoft.com/azure/azure-arc/servers/deployment-options,azcmagent connect,azhybridcompute,2026-08

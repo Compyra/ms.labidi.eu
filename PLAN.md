@@ -1,6 +1,6 @@
 # ms.labidi.eu : Master Plan
 
-Status: phase 2 complete (hubs, record cards, cloud switcher, themes, PWA offline).
+Status: phase 3 complete (enrichment pass 1: 373 records, registry, license profile).
 Last updated: 2026-08-26.
 
 The working name for the product is **MS Portal Hub**: one fast, keyboard-first reference site

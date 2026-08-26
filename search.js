@@ -6,6 +6,20 @@
   var byAlias = Object.create(null);
   var synByTerm = Object.create(null);
   var docs = [];
+  var licProfile = [];
+
+  HUB.setLicenseProfile = function (arr) { licProfile = arr || []; };
+
+  HUB.coveredByProfile = function (lic) {
+    if (!lic || !licProfile.length) { return false; }
+    if (licProfile.indexOf(lic) >= 0) { return true; }
+    var reg = (HUB.registry && HUB.registry.licenses) || {};
+    for (var i = 0; i < licProfile.length; i++) {
+      var e = reg[licProfile[i]];
+      if (e && e.inc && e.inc.indexOf(lic) >= 0) { return true; }
+    }
+    return false;
+  };
 
   HUB.buildIndex = function () {
     docs = [];
@@ -101,6 +115,7 @@
         }) ? 850 : 400;
       }
       if (rec.deprecated && score > 10) { score -= 5; }
+      if (score && HUB.coveredByProfile(rec.license)) { score += 5; }
       if (!score && !tokens.length && (filters.cat || filters.kind)) { score = 10; }
       if (score) { out.push({ rec: rec, score: score }); }
     });

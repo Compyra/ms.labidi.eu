@@ -169,6 +169,7 @@ main { max-width: 1100px; margin: 0 auto; padding: 16px; }
   border: 1px solid var(--border);
 }
 .badge.dep { color: var(--bad); border-color: var(--bad); }
+.badge.inc { color: var(--ok); border-color: var(--ok); }
 .badge.src { color: var(--accent-2); }
 .chip { cursor: pointer; font: 12px ui-monospace, Consolas, monospace; text-decoration: none; }
 .chip.open { color: var(--accent); }
@@ -273,6 +274,12 @@ footer a { color: var(--text-dim); }
 .related { color: var(--text-dim); margin: 10px 0 0; }
 
 .about h2 { font-size: 16px; margin: 18px 0 6px; }
+.licgrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 4px 16px;
+}
+.licbox { display: flex; gap: 8px; align-items: baseline; font-size: 14px; }
 .kbdtab td { padding: 3px 14px 3px 0; vertical-align: top; }
 kbd {
   font: 12px ui-monospace, Consolas, monospace;

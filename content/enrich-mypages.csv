@@ -1,0 +1,11 @@
+# enrichment: mypages (end-user surfaces; shareText = paste-ready line for users).
+id,kind,aliases,name,group,url,path,desc,keywords,roles,license,docs,ps,related,verified,shareText
+mymfa,,,,Self-service,,My security info,Where users manage their own MFA methods.,security info|mfa setup,,free,https://learn.microsoft.com/entra/identity/authentication/howto-registration-mfa-sspr-combined,,enauth|mypw,2026-08,Go to https://mysignins.microsoft.com/security-info to add or change your sign-in methods.
+mypw,,,,Self-service,,Password reset portal,Self-service password reset entry point.,sspr|forgot password,,free,,,ensspr|mymfa,2026-08,Reset your password at https://passwordreset.microsoftonline.com (verify with your registered methods).
+myaccess,,,,Self-service,,My Access,Request and approve access packages; do access reviews.,access packages|reviews,,entra-p2,,,enelm,2026-08,Request access or approve requests at https://myaccess.microsoft.com.
+myapps,,,,Self-service,,My Apps,Launcher for every app assigned to the user.,app launcher,,free,,,enapps,2026-08,Find all your work apps at https://myapps.microsoft.com.
+myaccount,,,,Self-service,,My Account,"Profile, devices, sign-out everywhere, subscriptions.",profile|sign out,,free,,,mymfa,2026-08,Manage your work account at https://myaccount.microsoft.com.
+mygroups,,,,Self-service,,My Groups,Self-service group join and membership management.,groups,,free,,,engroups,2026-08,Manage your group memberships at https://myaccount.microsoft.com/groups.
+mystaff,,,,Delegated,,My Staff,Delegated password reset and phone management for frontline managers.,frontline|delegated reset,,entra-p1,https://learn.microsoft.com/entra/identity/role-based-access-control/my-staff-team-manager,,usermgmt,2026-08,Managers: reset your team's passwords at https://mystaff.microsoft.com.
+mysubscriptions,,,,Self-service,,My Office subscriptions,Which Office licenses and installs the user has.,office installs,,free,,,adlicense,2026-08,Check your Office licenses at https://portal.office.com/account.
+myvs,,,,Self-service,,My Visual Studio,Visual Studio subscription benefits.,msdn,,free,,,adlicense,2026-08,Your Visual Studio benefits live at https://my.visualstudio.com.

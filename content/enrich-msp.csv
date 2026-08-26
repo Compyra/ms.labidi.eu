@@ -1,0 +1,12 @@
+# enrichment: msp.
+id,kind,aliases,name,group,url,path,desc,keywords,roles,license,docs,ps,related,verified
+lh,,,,Lighthouse,,M365 Lighthouse,Multi-tenant ops for CSP partners: tenant list; baselines; alerts.,msp|multi-tenant,,free,https://learn.microsoft.com/microsoft-365/lighthouse/,,lhbsl|gdap,2026-08
+lhbsl,,,,Lighthouse,,Lighthouse > Baselines,Deploy standard configurations across customer tenants.,baseline deploy,,free,,,mspbaseline,2026-08
+lhdi,,,,Lighthouse,,Lighthouse > Deployment insights,Baseline deployment progress per tenant.,,,free,,,lhbsl,2026-08
+lhtnt,,,,Lighthouse,,Lighthouse > Tenants,Customer tenant onboarding states.,,,free,,,lh,2026-08
+partner,,,,Partner Center,,Partner Center dashboard,"CSP lifecycle: customers, GDAP relationships, subscriptions; enforce MFA on all partner users.",csp,,free,https://learn.microsoft.com/partner-center/,,gdap|sam-model,2026-08
+cdx,,,,Demo,,CDX portal,Demo/trial tenants for partner engineers; never test on customers.,demo tenant,,free,,,partner,2026-08
+gdap,concept,,GDAP: granular delegated admin,Access,,Partner Center > customer > admin relationships,"Time-boxed, role-scoped access into customer tenants via security groups; max duration + auto-extend rules; audit both sides. DAP is dead.",delegated admin|relationships,,free,https://learn.microsoft.com/partner-center/gdap-introduction,,partner|demto|mspbaseline,2026-08
+mspbaseline,concept,,Customer hardening baseline,Hardening,,The per-tenant checklist,"Identity (break-glass, CA starter set, admin hygiene), email (SPF/DKIM/DMARC, forwarding off, presets), endpoint (compliance + BitLocker + LAPS + ASR), data (sharing tiers, audit on), monitoring (alerts routed).",hardening|baseline|onboarding,,free,,,gdap|enbreakglass|exforwarding|spexternal|incompsettings,2026-08
+sam-model,concept,sam,Secure Application Model,Access,,CSP API automation auth,Refresh-token based automation into customer tenants; store secrets in Key Vault; rotation runbook; breaks when the consenting account changes MFA.,csp automation|refresh token,,free,https://learn.microsoft.com/partner-center/developer/enable-secure-app-model,,partner|azkv,2026-08
+tenantoffboard,concept,,Customer offboarding checklist,Access,,Leaving a customer cleanly,"Remove GDAP + Lighthouse delegations + guest accounts + SAM consents; hand over break-glass; export documentation; end partner relationship last.",offboarding|handover,,free,,,gdap|mspbaseline,2026-08

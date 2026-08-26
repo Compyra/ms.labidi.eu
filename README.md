@@ -5,9 +5,9 @@ helpdesk, cloud and security engineers in Microsoft environments. Every portal s
 from [cmd.ms](https://cmd.ms/) (MIT, by Merill Fernando & contributors), plus deep
 settings paths, roles, licenses, KQL, PowerShell and runbooks on top.
 
-**Status: phase 2 done (hubs, record cards, PWA).** 307 records searchable and
-browsable offline, `?go=` redirects cloud-aware, installable app. Next: phase 3
-enrichment (paths, roles, licenses on top records).
+**Status: phase 3 done (enrichment pass 1).** 373 records (235 with paths, roles,
+licenses, docs); license profile with included-badges; 128 acronym synonyms; offline
+PWA. Next: phase 4 settings encyclopedias (Sentinel + Defender deep).
 
 Local dev: `python tools/build_data.py` then `python -m http.server 8905 --bind
 127.0.0.1` and open http://127.0.0.1:8905/. Project map:

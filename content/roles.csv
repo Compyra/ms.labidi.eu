@@ -50,3 +50,9 @@ az-arc-admin,Azure Connected Machine Resource Administrator,azure,manage Arc ser
 ppadmin,Power Platform Administrator,entra,PPAC + environments + DLP
 fabricadmin,Fabric Administrator,entra,Power BI/Fabric tenant settings
 w365admin,Windows 365 Administrator,entra,Cloud PC provisioning + policies
+authpolicyadmin,Authentication Policy Administrator,entra,auth methods policy + tenant auth settings
+msgcenterreader,Message Center Reader,entra,read MC posts only
+svcsupportadmin,Service Support Administrator,entra,service health + support cases
+billingadmin,Billing Administrator,entra,subscriptions + purchases
+clouddeviceadmin,Cloud Device Administrator,entra,enable/disable/delete devices + read BitLocker keys
+domainnameadmin,Domain Name Administrator,entra,manage custom domains

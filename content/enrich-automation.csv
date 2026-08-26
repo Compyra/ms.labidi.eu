@@ -1,0 +1,10 @@
+# enrichment: automation.
+id,kind,aliases,name,group,url,path,desc,keywords,roles,license,docs,ps,related,verified
+ge,,,,Graph,,Graph Explorer,Run Graph calls with delegated consent; copy code snippets per language.,graph api,,free,https://learn.microsoft.com/graph/graph-explorer/graph-explorer-overview,,graphps,2026-08
+dev,,,,Tools,,Azure DevOps,"Repos, pipelines, boards; Sentinel repositories can deploy from here.",devops|pipelines,,free,,,senrepos,2026-08
+aka,,,,Tools,,AkaSearch (3rd party),Community index of Microsoft aka.ms short links.,aka.ms,,free,,,ge,
+graphps,concept,mggraph,Microsoft Graph PowerShell,Modules,,Install-Module Microsoft.Graph (select submodules),"Connect-MgGraph -Scopes least-priv; prefer submodules over the 38-module meta install; app-only via certificate for automation.",graph module|scopes,,free,https://learn.microsoft.com/powershell/microsoftgraph/,Connect-MgGraph -Scopes User.Read.All,migratemsol|ge,2026-08
+exops,concept,exo-ps,ExchangeOnlineManagement v3,Modules,,Install-Module ExchangeOnlineManagement,REST-based; Connect-ExchangeOnline for EXO and Connect-IPPSSession for Purview compliance cmdlets.,exo module,,free,https://learn.microsoft.com/powershell/exchange/exchange-online-powershell,Connect-ExchangeOnline,exmt|puaudit,2026-08
+teamsps,concept,,MicrosoftTeams module,Modules,,Install-Module MicrosoftTeams,Policy assignment and voice config at scale.,teams module,,free,,Connect-MicrosoftTeams,teams,2026-08
+maester,tool,,Maester tenant tests,Tools,https://maester.dev,Invoke-Maester,Community Pester-based security test framework for Entra/M365 baselines; great for MSP drift checks.,tests|baseline drift,,free,https://maester.dev/docs/,Invoke-Maester,mspbaseline,2026-08
+migratemsol,concept,,MSOnline/AzureAD to Graph migration,Modules,,Old cmdlet > Graph cmdlet + scopes map,MSOnline and AzureAD modules are retired; map Get-MsolUser to Get-MgUser and friends before scripts die in prod.,msol|azuread retired,,free,https://learn.microsoft.com/powershell/microsoftgraph/migration-steps,,graphps,2026-08

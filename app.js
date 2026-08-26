@@ -49,6 +49,26 @@
     pref("mshub-recents", JSON.stringify(r.slice(0, 8)));
   }
 
+  function getLic() {
+    try { return JSON.parse(pref("mshub-lic") || "[]"); }
+    catch (e) { return []; }
+  }
+
+  function setLic(arr) {
+    pref("mshub-lic", JSON.stringify(arr));
+    HUB.setLicenseProfile(arr);
+  }
+
+  function roleName(id) {
+    var reg = (HUB.registry && HUB.registry.roles) || {};
+    return reg[id] || id;
+  }
+
+  function licName(id) {
+    var reg = (HUB.registry && HUB.registry.licenses) || {};
+    return (reg[id] && reg[id].n) || id;
+  }
+
   function esc(s) {
     return String(s).replace(/[&<>"']/g, function (c) {
       return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
@@ -118,6 +138,9 @@
       out += "<span class=\"badge kind\">" + esc(rec.kind) + "</span>";
     }
     if (rec.deprecated) { out += "<span class=\"badge dep\">deprecated</span>"; }
+    if (HUB.coveredByProfile && HUB.coveredByProfile(rec.license)) {
+      out += "<span class=\"badge inc\" title=\"Included in your license profile\">included</span>";
+    }
     if (rec.source === "cmdms") { out += "<span class=\"badge src\">cmd.ms</span>"; }
     return out;
   }
@@ -252,8 +275,17 @@
     }
     if (rec.path) { h += "<dt>Path</dt><dd>" + esc(rec.path) + "</dd>"; }
     if (rec.desc) { h += "<dt>About</dt><dd>" + esc(rec.desc) + "</dd>"; }
-    if (rec.roles) { h += "<dt>Role</dt><dd>" + rec.roles.map(esc).join(", ") + "</dd>"; }
-    if (rec.license) { h += "<dt>License</dt><dd>" + esc(rec.license) + "</dd>"; }
+    if (rec.roles) {
+      h += "<dt>Role</dt><dd>" + rec.roles.map(function (r) {
+        return esc(roleName(r));
+      }).join(", ") + "</dd>";
+    }
+    if (rec.license) {
+      h += "<dt>License</dt><dd>" + esc(licName(rec.license)) +
+        (HUB.coveredByProfile(rec.license) ? " <span class=\"badge inc\">in your profile</span>" : "") +
+        "</dd>";
+    }
+    if (rec.shareText) { h += "<dt>Share</dt><dd>" + esc(rec.shareText) + "</dd>"; }
     if (rec.ps) { h += "<dt>PowerShell</dt><dd><code>" + esc(rec.ps) + "</code></dd>"; }
     if (rec.docs) {
       h += "<dt>Docs</dt><dd><a href=\"" + esc(rec.docs) +
@@ -347,7 +379,28 @@
       "<p>Shortcut data includes <a href=\"https://cmd.ms/\" target=\"_blank\" " +
       "rel=\"noopener noreferrer\">cmd.ms</a> by Merill Fernando &amp; contributors " +
       "(MIT). This site is not affiliated with Microsoft.</p>" +
+      "<h2>My licenses</h2>" +
+      "<p>Tick what your tenant owns; records covered by those SKUs (directly or via " +
+      "bundles) get an <span class=\"badge inc\">included</span> badge and a small " +
+      "ranking nudge. Stored locally only.</p>" +
+      "<div class=\"licgrid\" id=\"licgrid\"></div>" +
       "</article>";
+    var reg = (HUB.registry && HUB.registry.licenses) || {};
+    var prof = getLic();
+    var grid = document.getElementById("licgrid");
+    grid.innerHTML = Object.keys(reg).map(function (id) {
+      return "<label class=\"licbox\"><input type=\"checkbox\" data-lic=\"" + esc(id) +
+        "\"" + (prof.indexOf(id) >= 0 ? " checked" : "") + "> " +
+        esc(reg[id].n) + "</label>";
+    }).join("");
+    grid.addEventListener("change", function (ev) {
+      var cb = ev.target;
+      if (!cb.getAttribute || !cb.getAttribute("data-lic")) { return; }
+      var id = cb.getAttribute("data-lic");
+      var p = getLic().filter(function (x) { return x !== id; });
+      if (cb.checked) { p.push(id); }
+      setLic(p);
+    });
   }
 
   function setActive(i) {
@@ -467,6 +520,7 @@
     countEl = document.getElementById("count");
     statusEl = document.getElementById("status");
     HUB.buildIndex();
+    HUB.setLicenseProfile(getLic());
     var meta = HUB.meta || {};
     countEl.textContent = (meta.records || 0) + " commands";
     var src = document.getElementById("src-note");

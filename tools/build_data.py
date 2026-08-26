@@ -69,7 +69,7 @@ def load_enrich(records):
                 "related": [], "source": "own",
             })
             for field in ("kind", "name", "url", "path", "desc", "license",
-                          "docs", "ps", "verified"):
+                          "docs", "ps", "verified", "shareText"):
                 if row.get(field, "").strip():
                     rec[field] = row[field].strip()
             if row.get("group", "").strip():
@@ -133,6 +133,21 @@ def apply_overrides(records):
 
 def load_registry(name):
     return {r["id"].strip().lower() for r in read_csv(ROOT / "content" / f"{name}.csv")}
+
+
+def load_full_registries():
+    roles = {}
+    for r in read_csv(ROOT / "content" / "roles.csv"):
+        roles[r["id"].strip().lower()] = r["name"].strip()
+    lics = {}
+    for r in read_csv(ROOT / "content" / "licenses.csv"):
+        inc = [x.strip().lower() for x in (r.get("includes") or "").split("|") if x.strip()]
+        lics[r["id"].strip().lower()] = {"n": r["name"].strip(), "inc": inc}
+    for lid, entry in lics.items():
+        for i in entry["inc"]:
+            if i not in lics:
+                errors.append(f"licenses.csv {lid}: unknown include {i}")
+    return {"roles": roles, "licenses": lics}
 
 
 def load_synonyms(known_ids):
@@ -214,7 +229,8 @@ def main():
     upstream_count = len(records)
     load_enrich(records)
     apply_overrides(records)
-    validate(records, load_registry("roles"), load_registry("licenses"))
+    registries = load_full_registries()
+    validate(records, set(registries["roles"]), set(registries["licenses"]))
     synonyms = load_synonyms(set(records))
 
     for w in warnings:
@@ -238,6 +254,9 @@ def main():
     write_js(DATA / "data-synonyms.js", banner,
              "(window.MSHUB=window.MSHUB||{}).synonyms="
              + json.dumps(synonyms, ensure_ascii=False, separators=(",", ":")) + ";")
+    write_js(DATA / "data-registry.js", banner,
+             "(window.MSHUB=window.MSHUB||{}).registry="
+             + json.dumps(registries, ensure_ascii=False, separators=(",", ":")) + ";")
     meta_out = {"built": date.today().isoformat(), "records": len(records),
                 "upstreamCommands": upstream_count, "counts": counts,
                 "upstream": {"commit": meta["commit"], "committedAt": meta["committedAt"],

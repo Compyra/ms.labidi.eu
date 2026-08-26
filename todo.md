@@ -3,6 +3,21 @@
 Working file per the "check previous phases before starting the next" rule.
 Statuses: [x] fixed, [>] deferred to a named phase, [ ] open.
 
+## Pre-phase-3 audit (2026-08-26)
+
+- [x] Bug hunt on phases 0-2 output: clean except two structural gaps closed during
+      phase 3: cards showed raw role/license ids (registry now ships to the client)
+      and licenses.csv lacked `includes[]` bundle data (added; validated).
+- [x] Local git commit of phases 0-2 done (`1b623ab`, 61 files); phase 3 committed
+      separately. Push remains a user decision.
+- [x] Phase 3 executed and gate passed (see roadmap): 373 records, 235 enriched,
+      128 synonyms, license profile live with the AIR/mdo-p2 acceptance green.
+- Test-harness note (not an app bug): reloading while `context.setOffline(true)`
+      wedges the embedded tab's protocol queue AND can break the SW install race
+      (precache fails offline; `serviceWorker.ready` then never resolves). Verify
+      offline only on a fresh page after the SW is active, never via reload-while-
+      offline mid-script.
+
 ## Phase 0 audit (docs + seeds), 2026-08-26
 
 - [x] All 17 docs present; every PLAN link resolves; no real TODO/TBD markers.
@@ -63,7 +78,7 @@ bumped to `?v=3` + cache `mshub-v3` (changed files were precached).
       enriched license fields).
 - [>] SW precache list maintained by hand in sw.js; generate from build_data.py in
       phase 8 to prevent drift (repeat of phase 1 note, still true).
-- [ ] DEV RULE while sw.js is registered: before re-testing any edit, unregister
+- [x] DEV RULE while sw.js is registered: before re-testing any edit, unregister
       the SW + delete `mshub-*` caches (or bump `?v=` + CACHE), else stale assets
       serve and edits look ignored.
-- [ ] Local git commit of phases 0-2 output pending (user decision; push separate).
+- [x] Local git commit of phases 0-2 output done (`1b623ab`); push separate.

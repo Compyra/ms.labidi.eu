@@ -69,20 +69,28 @@ passes. Phases 1-2 make the site; 3-7 make it valuable; 8 launches; 9 keeps it a
       navigations no longer overwrite `./`); assets `?v=3`, cache `mshub-v3`;
       OpenSearch verified over HTTP.
 
-## Phase 3 : Enrichment pass 1
+## Phase 3 : Enrichment pass 1 (DONE 2026-08-26)
 
-- [ ] `content/enrich-*.csv`: top 150 records by expected traffic get path, roles,
-      license, docs, ps, desc, verified stamp (priority: all Entra Protection, all
-      Defender settings pages, all Intune endpoint security, M365 L1 surfaces).
-- [x] Roles + licenses registries seeded (`content/roles.csv`, `content/licenses.csv`);
-      expand during enrichment as records reference new ids.
-- [ ] License profile ("my licenses" in localStorage) + "included in your licensing"
-      badge; acceptance: profile has `mdo-p2`, searching `air` badges the AIR records.
-- [ ] Synonym registry expansion pass alongside enrichment (target 120+ terms).
-- [ ] `related[]` wiring inside each subject.
-- [ ] Own-record additions per subject tables (docs 01-11, 15, 16 "own additions"),
-      ~200 new rows.
-- Gate: spot-check 20 random cards: an L2 engineer calls them "complete".
+- [x] `content/enrich-*.csv`: 235 records now carry path + desc (target was 150),
+      priority order honored: all Entra Protection, all Defender Settings > Endpoints
+      pages, all Intune endpoint security, M365 L1 surfaces, Sentinel settings seed.
+- [x] Roles + licenses registries expanded (55 roles, 40 licenses incl. `includes[]`
+      bundle links) and shipped to the client as `data-registry.js`; cards render
+      role/license NAMES, not ids.
+- [x] License profile: "My licenses" checkboxes on the help page (localStorage),
+      `included` badge on rows and cards, +5 rank nudge, bundle-aware via
+      `includes[]`. Acceptance PASSED: profile `mdo-p2` badges the AIR records on
+      an `air` search; `m365-e5` covers via bundle; nothing is hidden.
+- [x] Synonym registry at 128 terms (target 120+).
+- [x] `related[]` wiring: zero dangling references across 373 records (validated in
+      build and re-checked in the browser).
+- [x] Own-record additions: 67 shipped this pass (air + scenario maps, Sentinel
+      settings seed, toolbox 12, MSP 5, quick-action/restore concepts, mypages
+      shareText). Remaining ~130 land with the phase 4 settings encyclopedias as
+      planned.
+- Gate PASSED: 20-random-card sample all complete (path + desc + role/license/docs);
+      spot-checked enca/mymfa/senplaybookperms cards render names, shareText and
+      attribution correctly.
 
 ## Phase 4 : Settings encyclopedia (Sentinel first)
 
