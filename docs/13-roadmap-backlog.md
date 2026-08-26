@@ -94,6 +94,12 @@ passes. Phases 1-2 make the site; 3-7 make it valuable; 8 launches; 9 keeps it a
 
 ## Phase 4 : Settings encyclopedia (Sentinel first)
 
+Prep DONE 2026-08-26: pipeline + UI support `blastRadius` (low/med/high badge with
+"Friday test" tooltip on high) and `standards` tags (cis/scuba/securescore/essential8/
+ce, validated); `content/settings-sentinel.csv` (4 seeds) and
+`content/settings-defender.csv` (5 toggle-wall seeds) load through the same pipeline;
+`role:` search filter live.
+
 - [ ] `content/settings-sentinel.csv` covering doc 04 §12 table + §3-§11 setting bullets.
 - [ ] `content/settings-defender.csv` covering doc 03 §2.5 (incl. advanced-features wall).
 - [ ] Niche record passes: doc 02 §2.5 compliance-enforcement chain + §2.6 corners,

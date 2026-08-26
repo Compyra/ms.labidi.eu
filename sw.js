@@ -1,31 +1,31 @@
 /* Network-first shell, cache-fallback offline. Version pairs with ?v= in index.html. */
 "use strict";
-var CACHE = "mshub-v4";
+var CACHE = "mshub-v5";
 var ASSETS = [
   "./",
   "404.html",
-  "style.css?v=4",
-  "search.js?v=4",
-  "app.js?v=4",
+  "style.css?v=5",
+  "search.js?v=5",
+  "app.js?v=5",
   "manifest.webmanifest",
   "icons/icon.svg",
-  "data/data-commands-entra.js?v=4",
-  "data/data-commands-intune.js?v=4",
-  "data/data-commands-defender.js?v=4",
-  "data/data-commands-sentinel.js?v=4",
-  "data/data-commands-azure.js?v=4",
-  "data/data-commands-m365.js?v=4",
-  "data/data-commands-purview.js?v=4",
-  "data/data-commands-power.js?v=4",
-  "data/data-commands-windows.js?v=4",
-  "data/data-commands-automation.js?v=4",
-  "data/data-commands-licensing.js?v=4",
-  "data/data-commands-msp.js?v=4",
-  "data/data-commands-toolbox.js?v=4",
-  "data/data-commands-mypages.js?v=4",
-  "data/data-synonyms.js?v=4",
-  "data/data-registry.js?v=4",
-  "data/data-meta.js?v=4"
+  "data/data-commands-entra.js?v=5",
+  "data/data-commands-intune.js?v=5",
+  "data/data-commands-defender.js?v=5",
+  "data/data-commands-sentinel.js?v=5",
+  "data/data-commands-azure.js?v=5",
+  "data/data-commands-m365.js?v=5",
+  "data/data-commands-purview.js?v=5",
+  "data/data-commands-power.js?v=5",
+  "data/data-commands-windows.js?v=5",
+  "data/data-commands-automation.js?v=5",
+  "data/data-commands-licensing.js?v=5",
+  "data/data-commands-msp.js?v=5",
+  "data/data-commands-toolbox.js?v=5",
+  "data/data-commands-mypages.js?v=5",
+  "data/data-synonyms.js?v=5",
+  "data/data-registry.js?v=5",
+  "data/data-meta.js?v=5"
 ];
 
 self.addEventListener("install", function (ev) {

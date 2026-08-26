@@ -3,6 +3,26 @@
 Working file per the "check previous phases before starting the next" rule.
 Statuses: [x] fixed, [>] deferred to a named phase, [ ] open.
 
+## Phase 3 code review (2026-08-26, post-phase pass)
+
+- [x] BUG: `decodeURIComponent(location.hash)` throws on malformed hashes
+      (e.g. an external link ending in a bare `%`), crashing the router.
+      Fixed with a safe-decode helper.
+- [x] BUG: `?go=<id>` for URL-less records (concepts like `air`) fell back to a
+      search instead of the record card, so copied go-links dead-ended.
+      Fixed: go-miss now routes to `#/c/<id>` when the id exists.
+- [x] Doc-parity gap: doc 12 §5 promises a `role:` filter next to `cat:`/`kind:`;
+      it was never implemented. Added (`role:caadmin` filters on rec.roles).
+- [x] Content wart: five root-portal enrich rows carried the URL in the `path`
+      column (defender/admin/az/in/scp), rendering "Path: https://...". Replaced
+      with proper breadcrumb text.
+- [x] Phase 4 prep: pipeline + UI now understand optional `blastRadius`
+      (low|med|high) and `standards` (cis|scuba|securescore|essential8|ce) columns
+      on any content CSV; cards render a colored blast-radius row, high-blast rows
+      get a "Friday test" badge; `content/settings-sentinel.csv` and
+      `content/settings-defender.csv` exist with seed rows proving the pipeline.
+      The bulk encyclopedia authoring remains phase 4 proper.
+
 ## Pre-phase-3 audit (2026-08-26)
 
 - [x] Bug hunt on phases 0-2 output: clean except two structural gaps closed during

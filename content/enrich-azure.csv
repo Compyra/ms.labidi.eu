@@ -1,6 +1,6 @@
 # enrichment: azure.
 id,kind,aliases,name,group,url,path,desc,keywords,roles,license,docs,ps,related,verified
-az,,,,Portal,,https://portal.azure.com,Azure portal root; everything ARM.,,az-reader,free,,,azsubs|azmonitor,2026-08
+az,,,,Portal,,Azure portal (root),Azure portal root; everything ARM.,,az-reader,free,,,azsubs|azmonitor,2026-08
 azmonitor,,,,Monitor,,Azure portal > Monitor,"Metrics, alerts + action groups, activity log.",alerts|metrics,az-reader,free,https://learn.microsoft.com/azure/azure-monitor/,,azloganalytics|azdiag,2026-08
 azloganalytics,,,,Monitor,,Monitor > Log Analytics workspaces,"Workspaces: tables, retention, agents; Sentinel sits on top of one.",workspace|kql,az-la-contrib,free,https://learn.microsoft.com/azure/azure-monitor/logs/log-analytics-workspace-overview,,senretention|azdcr,2026-08
 azdcr,,,,Monitor,,Monitor > Data Collection Rules,"AMA routing + transformations; wrong DCR = missing or doubled data.",ama|dcr,az-la-contrib,free,,,sendcr,2026-08

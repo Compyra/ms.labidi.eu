@@ -75,6 +75,10 @@
     });
   }
 
+  function safeDecode(s) {
+    try { return decodeURIComponent(s); } catch (e) { return s; }
+  }
+
   function openUrl(url) {
     window.open(url, "_blank", "noopener,noreferrer");
   }
@@ -138,6 +142,9 @@
       out += "<span class=\"badge kind\">" + esc(rec.kind) + "</span>";
     }
     if (rec.deprecated) { out += "<span class=\"badge dep\">deprecated</span>"; }
+    if (rec.blastRadius === "high") {
+      out += "<span class=\"badge blast-high\" title=\"High blast radius: not on a Friday\">high blast</span>";
+    }
     if (HUB.coveredByProfile && HUB.coveredByProfile(rec.license)) {
       out += "<span class=\"badge inc\" title=\"Included in your license profile\">included</span>";
     }
@@ -275,6 +282,15 @@
     }
     if (rec.path) { h += "<dt>Path</dt><dd>" + esc(rec.path) + "</dd>"; }
     if (rec.desc) { h += "<dt>About</dt><dd>" + esc(rec.desc) + "</dd>"; }
+    if (rec.blastRadius) {
+      h += "<dt>Blast radius</dt><dd><span class=\"badge blast-" + esc(rec.blastRadius) +
+        "\">" + esc(rec.blastRadius) + "</span>" +
+        (rec.blastRadius === "high" ? " change windows only; test tenant first" : "") +
+        "</dd>";
+    }
+    if (rec.standards) {
+      h += "<dt>Standards</dt><dd>" + rec.standards.map(esc).join(", ") + "</dd>";
+    }
     if (rec.roles) {
       h += "<dt>Role</dt><dd>" + rec.roles.map(function (r) {
         return esc(roleName(r));
@@ -476,12 +492,17 @@
         return;
       }
       history.replaceState(null, "", location.pathname);
+      var known = HUB.getById(go.trim().toLowerCase());
+      if (known) {
+        location.hash = "#/c/" + known.id;
+        return;
+      }
       input.value = go;
       onInput();
       return;
     }
     var q = params.get("q");
-    var hash = decodeURIComponent(location.hash || "");
+    var hash = safeDecode(location.hash || "");
     if (!q && hash.indexOf("#q=") === 0) { q = hash.slice(3); }
     if (q) {
       input.value = q;

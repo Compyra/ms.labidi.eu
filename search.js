@@ -78,7 +78,7 @@
     var filters = {};
     var tokens = [];
     query.split(/\s+/).forEach(function (t) {
-      var m = /^(cat|kind):([a-z0-9-]+)$/.exec(t);
+      var m = /^(cat|kind|role):([a-z0-9-]+)$/.exec(t);
       if (m) { filters[m[1]] = m[2]; } else if (t) { tokens.push(t); }
     });
     var joined = tokens.join(" ");
@@ -94,6 +94,7 @@
       var rec = d.rec;
       if (filters.cat && rec.category !== filters.cat) { return; }
       if (filters.kind && rec.kind !== filters.kind) { return; }
+      if (filters.role && (!rec.roles || rec.roles.indexOf(filters.role) < 0)) { return; }
       var score = 0;
       if (joined && rec.id === joined) {
         score = 1000;
@@ -116,13 +117,15 @@
       }
       if (rec.deprecated && score > 10) { score -= 5; }
       if (score && HUB.coveredByProfile(rec.license)) { score += 5; }
-      if (!score && !tokens.length && (filters.cat || filters.kind)) { score = 10; }
+      if (!score && !tokens.length &&
+          (filters.cat || filters.kind || filters.role)) { score = 10; }
       if (score) { out.push({ rec: rec, score: score }); }
     });
     if (!out.length && tokens.length === 1 && tokens[0].length >= 3) {
       docs.forEach(function (d) {
         if (filters.cat && d.rec.category !== filters.cat) { return; }
         if (filters.kind && d.rec.kind !== filters.kind) { return; }
+        if (filters.role && (!d.rec.roles || d.rec.roles.indexOf(filters.role) < 0)) { return; }
         if (isSubsequence(tokens[0], d.rec.id) ||
             isSubsequence(tokens[0], d.name)) {
           out.push({ rec: d.rec, score: 100 });

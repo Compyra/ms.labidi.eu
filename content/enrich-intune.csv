@@ -1,6 +1,6 @@
 # enrichment: intune. Endpoint security + compliance chain priority.
 id,kind,aliases,name,group,url,path,desc,keywords,roles,license,docs,ps,related,verified
-in,,,,Portal,,https://intune.microsoft.com,Intune admin center root.,mem|endpoint manager,intuneadmin,intune-p1,https://learn.microsoft.com/mem/intune/,,indevices|insecurity|intenant,2026-08
+in,,,,Portal,,Intune admin center (root),Intune admin center root.,mem|endpoint manager,intuneadmin,intune-p1,https://learn.microsoft.com/mem/intune/,,indevices|insecurity|intenant,2026-08
 insecurity,,,,Endpoint security,,Intune > Endpoint security,Security policy hub: baselines; AV; disk encryption; firewall; EDR; ASR.,,in-policyprofile,intune-p1,https://learn.microsoft.com/mem/intune/protect/endpoint-security,,inantivirus|inedr|inasr,2026-08
 inantivirus,,,,Endpoint security,,Endpoint security > Antivirus,Defender AV policies: cloud protection; exclusions; tamper protection.,av|exclusions|tamper,in-policyprofile,intune-p1,https://learn.microsoft.com/mem/intune/protect/endpoint-security-antivirus-policy,,demdeadvfeats,2026-08
 infirewall,,,,Endpoint security,,Endpoint security > Firewall,Windows Firewall profiles and rules at scale.,firewall rules,in-policyprofile,intune-p1,,,insecurity,2026-08

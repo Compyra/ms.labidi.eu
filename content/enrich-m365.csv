@@ -1,6 +1,6 @@
 # enrichment: m365. L1 surfaces + concept cards.
 id,kind,aliases,name,group,url,path,desc,keywords,roles,license,docs,ps,related,verified
-admin,,,,Admin center,,https://admin.microsoft.com,Microsoft 365 admin center: users; licenses; health; org settings.,m365 admin,gr,free,https://learn.microsoft.com/microsoft-365/admin/,,musers|mshealth|mc,2026-08
+admin,,,,Admin center,,Microsoft 365 admin center (root),Microsoft 365 admin center: users; licenses; health; org settings.,m365 admin,gr,free,https://learn.microsoft.com/microsoft-365/admin/,,musers|mshealth|mc,2026-08
 musers,,,,Admin center,,M365 admin > Users > Active users,"The L1 user panel: reset password, block sign-in, licenses, mail settings, OneDrive access.",reset|block|panel,useradmin,free,,Get-MgUser,usermgmt|enusers|adlicense,2026-08
 adlicense,,,,Admin center,,M365 admin > Billing > Licenses,Assign and reclaim seats; check service-plan toggles per user.,seats|assign,licadmin,free,,Get-MgSubscribedSku,musers|enlicense,2026-08
 mshealth,,,,Admin center,,M365 admin > Health > Service health,Current incidents and advisories per workload; check before troubleshooting.,outage|incident,svcsupportadmin,free,https://learn.microsoft.com/microsoft-365/enterprise/view-service-health,,mc|azhealth,2026-08

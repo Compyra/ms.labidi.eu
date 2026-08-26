@@ -170,6 +170,9 @@ main { max-width: 1100px; margin: 0 auto; padding: 16px; }
 }
 .badge.dep { color: var(--bad); border-color: var(--bad); }
 .badge.inc { color: var(--ok); border-color: var(--ok); }
+.badge.blast-low { color: var(--ok); border-color: var(--ok); }
+.badge.blast-med { color: var(--warn); border-color: var(--warn); }
+.badge.blast-high { color: var(--bad); border-color: var(--bad); }
 .badge.src { color: var(--accent-2); }
 .chip { cursor: pointer; font: 12px ui-monospace, Consolas, monospace; text-decoration: none; }
 .chip.open { color: var(--accent); }

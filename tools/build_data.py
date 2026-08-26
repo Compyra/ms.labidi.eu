@@ -16,6 +16,8 @@ SUBJECTS = ["entra", "intune", "defender", "sentinel", "azure", "m365", "purview
             "power", "windows", "automation", "licensing", "msp", "toolbox", "mypages"]
 KINDS = ["portal", "setting", "tool", "docs", "enduser", "concept"]
 CLOUDS = ["gcc", "gcch", "dod", "cn"]
+STANDARDS = {"cis", "scuba", "securescore", "essential8", "ce"}
+BLAST = {"low", "med", "high"}
 CATMAP = {"Entra": "entra", "Intune": "intune", "Defender": "defender", "Azure": "azure",
           "Microsoft 365": "m365", "Purview": "purview", "My Pages": "mypages",
           "General": "licensing", "XDR Sentinel": "sentinel", "Power Platform": "power"}
@@ -59,17 +61,21 @@ def load_upstream():
 
 
 def load_enrich(records):
-    for path in sorted(ROOT.glob("content/enrich-*.csv")):
+    files = sorted(ROOT.glob("content/enrich-*.csv")) + \
+        sorted(ROOT.glob("content/settings-*.csv"))
+    for path in files:
+        is_settings = path.name.startswith("settings-")
         for row in read_csv(path):
             rid = row["id"].strip().lower()
             new = rid not in records
             rec = records.setdefault(rid, {
-                "id": rid, "kind": "portal", "aliases": [], "name": "", "category": "",
+                "id": rid, "kind": "setting" if is_settings else "portal",
+                "aliases": [], "name": "", "category": "",
                 "url": "", "clouds": {}, "aliasClouds": {}, "keywords": [],
                 "related": [], "source": "own",
             })
             for field in ("kind", "name", "url", "path", "desc", "license",
-                          "docs", "ps", "verified", "shareText"):
+                          "docs", "ps", "verified", "shareText", "blastRadius"):
                 if row.get(field, "").strip():
                     rec[field] = row[field].strip()
             if row.get("group", "").strip():
@@ -77,14 +83,15 @@ def load_enrich(records):
             if new:
                 rec["category"] = row.get("category", "").strip() or infer_category(path)
             for field, sep in (("aliases", "|"), ("keywords", "|"),
-                               ("roles", "|"), ("related", "|")):
+                               ("roles", "|"), ("related", "|"),
+                               ("standards", "|")):
                 vals = split_multi(row.get(field, ""))
                 if vals:
                     rec[field] = sorted(set(rec.get(field, []) + [v.lower() for v in vals]))
 
 
 def infer_category(path):
-    return path.stem.replace("enrich-", "")
+    return path.stem.split("-", 1)[1]
 
 
 def apply_overrides(records):
@@ -195,6 +202,12 @@ def validate(records, roles, licenses):
         lic = rec.get("license")
         if lic and lic not in licenses:
             errors.append(f"{rid}: unknown license {lic}")
+        br = rec.get("blastRadius")
+        if br and br not in BLAST:
+            errors.append(f"{rid}: bad blastRadius {br!r}")
+        for s in rec.get("standards", []):
+            if s not in STANDARDS:
+                errors.append(f"{rid}: unknown standard {s}")
 
 
 def compact(rec):
@@ -209,7 +222,7 @@ def compact(rec):
         if rec.get(key):
             out[key] = dict(sorted(rec[key].items()))
     for key in ("group", "path", "desc", "roles", "license", "docs", "ps",
-                "verified", "shareText"):
+                "verified", "shareText", "blastRadius", "standards"):
         if rec.get(key):
             out[key] = rec[key]
     if rec.get("deprecated"):
