@@ -5,10 +5,9 @@ helpdesk, cloud and security engineers in Microsoft environments. Every portal s
 from [cmd.ms](https://cmd.ms/) (MIT, by Merill Fernando & contributors), plus deep
 settings paths, roles, licenses, KQL, PowerShell and runbooks on top.
 
-**Status: phase 4 done (settings encyclopedias).** 439 records: 30 Sentinel settings
-down to daily caps and playbook permissions, the 15-toggle Defender advanced-features
-wall with blast-radius badges, Intune niche settings, and the phase 3 enrichment.
-Next: phase 5 (KQL + PowerShell libraries).
+**Status: phase 4 done + phase 5 prepped.** 439 records incl. 30 Sentinel settings and
+the 15-toggle Defender wall; accuracy audit shipped (13 corrections); KQL/PS library
+pipeline live with 8+8 verified seeds. Next: phase 5 bulk authoring + library views.
 
 Local dev: `python tools/build_data.py` then `python -m http.server 8905 --bind
 127.0.0.1` and open http://127.0.0.1:8905/.

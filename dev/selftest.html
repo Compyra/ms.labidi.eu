@@ -135,10 +135,14 @@
   });
 
   h2("[P5-P7] future data (auto-activate)");
-  t("phase 5 kql library", function () { return HUB.kql ? HUB.kql.length >= 60 : "pend"; });
-  t("phase 5 ps library", function () { return HUB.ps ? HUB.ps.length >= 60 : "pend"; });
-  t("phase 6 runbooks", function () { return HUB.runbooks ? HUB.runbooks.length >= 25 : "pend"; });
-  t("phase 7 licensing matrix", function () { return HUB.licensing ? HUB.licensing.length >= 80 : "pend"; });
+  function libStub(rows, min) {
+    if (!rows) { return "pend"; }
+    return rows.length >= min ? true : "pend";
+  }
+  t("phase 5 kql library", function () { return libStub(HUB.kql, 60); });
+  t("phase 5 ps library", function () { return libStub(HUB.ps, 60); });
+  t("phase 6 runbooks", function () { return libStub(HUB.runbooks, 25); });
+  t("phase 7 licensing matrix", function () { return libStub(HUB.licensing, 80); });
 
   h2("[P2/P3] app e2e (iframe)");
   var frame = document.getElementById("app");

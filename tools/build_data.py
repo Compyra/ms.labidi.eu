@@ -171,6 +171,44 @@ def load_synonyms(known_ids):
     return sorted(out, key=lambda s: s["term"])
 
 
+def load_library(name, extra_fields, records, table_names=None):
+    """content/<name>.csv -> list of dicts, or None when the phase has not started.
+
+    Single-line code only: read_csv is line-based, so multiline quoted CSV
+    fields are unsupported by design.
+    """
+    path = ROOT / "content" / f"{name}.csv"
+    if not path.exists():
+        return None
+    rows, seen = [], set()
+    prefix = name + "-"
+    for row in read_csv(path):
+        rid = (row.get("id") or "").strip().lower()
+        if not rid.startswith(prefix):
+            errors.append(f"{name} {rid}: id must start with '{prefix}'")
+        if rid in seen or rid in records:
+            errors.append(f"{name} {rid}: duplicate or collides with a command id")
+        seen.add(rid)
+        entry = {"id": rid}
+        for field in ("title", "subject", "code", "docs", "verified") + extra_fields:
+            val = (row.get(field) or "").strip()
+            if val:
+                entry[field] = val
+        tags = split_multi(row.get("tags") or "")
+        if tags:
+            entry["tags"] = [t.lower() for t in tags]
+        if not entry.get("title") or not entry.get("code"):
+            errors.append(f"{name} {rid}: missing title or code")
+        subject = entry.get("subject")
+        if subject and subject not in SUBJECTS:
+            errors.append(f"{name} {rid}: bad subject {subject!r}")
+        if table_names is not None:
+            if entry.get("table") and entry["table"] not in table_names:
+                errors.append(f"{name} {rid}: table {entry['table']!r} not in tables.csv")
+        rows.append(entry)
+    return sorted(rows, key=lambda r: r["id"])
+
+
 def validate(records, roles, licenses):
     seen_alias = {}
     for rec in records.values():
@@ -246,6 +284,9 @@ def main():
     registries = load_full_registries()
     validate(records, set(registries["roles"]), set(registries["licenses"]))
     synonyms = load_synonyms(set(records))
+    table_names = {r["name"].strip() for r in read_csv(ROOT / "content" / "tables.csv")}
+    kql = load_library("kql", ("table",), records, table_names)
+    ps = load_library("ps", ("module", "scopes"), records)
 
     for w in warnings:
         print(f"warn: {w}")
@@ -271,8 +312,16 @@ def main():
     write_js(DATA / "data-registry.js", banner,
              "(window.MSHUB=window.MSHUB||{}).registry="
              + json.dumps(registries, ensure_ascii=False, separators=(",", ":")) + ";")
+    libraries = {}
+    for lib_name, rows in (("kql", kql), ("ps", ps)):
+        if rows is not None:
+            libraries[lib_name] = len(rows)
+            write_js(DATA / f"data-{lib_name}.js", banner,
+                     f"(window.MSHUB=window.MSHUB||{{}}).{lib_name}="
+                     + json.dumps(rows, ensure_ascii=False, separators=(",", ":")) + ";")
     meta_out = {"built": date.today().isoformat(), "records": len(records),
                 "upstreamCommands": upstream_count, "counts": counts,
+                "libraries": libraries,
                 "upstream": {"commit": meta["commit"], "committedAt": meta["committedAt"],
                              "rows": meta["rows"], "license": meta["license"],
                              "source": meta["source"]}}
@@ -280,7 +329,7 @@ def main():
              "(window.MSHUB=window.MSHUB||{}).meta="
              + json.dumps(meta_out, ensure_ascii=False, separators=(",", ":")) + ";")
     print(f"ok: {len(records)} records from {upstream_count} upstream rows; "
-          f"{len(synonyms)} synonyms; per subject: "
+          f"{len(synonyms)} synonyms; libraries: {libraries or 'none'}; per subject: "
           + ", ".join(f"{s}={n}" for s, n in counts.items() if n))
     return 0
 

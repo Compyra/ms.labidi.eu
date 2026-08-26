@@ -3,6 +3,47 @@
 Working file per the "check previous phases before starting the next" rule.
 Statuses: [x] fixed, [>] deferred to a named phase, [ ] open.
 
+## Full-check + accuracy audit before phase 5 (2026-08-26)
+
+Drove a fact-by-fact review of every shipped role/license/path/cmdlet claim
+("no false or wrong info to users"). 13 corrections shipped:
+
+- [x] Quarantine, Tenant Allow/Block List, Restricted entities, Submissions and
+      custom detections claimed Security Operator; management needs Security
+      Administrator (quarantine desc now names Quarantine Administrator as the
+      least-priv option). Explorer downgraded to Security Reader with a note that
+      purging needs the Search and Purge role.
+- [x] MFA block/unblock page: Authentication Administrator -> Authentication
+      Policy Administrator.
+- [x] teamsrooms wrongly claimed Teams Premium; Teams Rooms Pro is a separate SKU
+      (license cleared, desc explains).
+- [x] exmt message-trace window updated for the V2 era (90 days), old "10 days
+      interactive" claim removed.
+- [x] SSPR desc now states cloud-user SSPR ships with M365 subs; P1 = writeback.
+- [x] inprorem renamed to current product name "Remediations".
+- [x] set-sen-commitment role az-sentinelcontrib -> az-la-contrib (workspace op);
+      senworkbooks reader -> contributor (saving edits).
+- [x] ps-stale-devices seed had a semicolon where PowerShell needs a comma
+      (would have shipped broken code); fixed with proper CSV quoting.
+- [ ] OPEN (tenant needed): MDE P1-vs-P2 boundary for custom indicators is cited
+      from memory; verify against the live P1/P2 comparison during phase 9 sweep.
+
+## Phase 5 preparation (2026-08-26)
+
+- [x] Pipeline loads content/kql.csv + ps.csv when present: id prefix enforced
+      (kql-/ps-), collision check against command ids, subject validated, KQL
+      table names validated against tables.csv, single-line code rule documented
+      (loader is line-based by design).
+- [x] Emits data-kql.js/data-ps.js (window.MSHUB.kql/ps) + library counts in meta;
+      index.html + SW precache wired at v=7 (cache mshub-v7).
+- [x] 8 + 8 accuracy-checked seed rows (KQL uses single-quote literals to stay
+      CSV-safe and valid; every cmdlet/scope vouched for).
+- [x] Gates adjusted: partial libraries validate every row then report PENDING
+      with counts (python + selftest); full enforcement at 60/60.
+- Remaining for phase 5 proper: 52 more KQL + 52 more PS rows, #/kql + #/ps
+      views with copy buttons, snippets cross-linked from records via ps field,
+      tables.csv rendered as a lookup, search integration for library entries.
+
 ## Phase 4 close (2026-08-26)
 
 - [x] Phase 4 complete and gate-passed (see roadmap): 439 records, 30 sentinel
