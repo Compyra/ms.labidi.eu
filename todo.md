@@ -3,6 +3,28 @@
 Working file per the "check previous phases before starting the next" rule.
 Statuses: [x] fixed, [>] deferred to a named phase, [ ] open.
 
+## Purview coverage audit (2026-08-26, user question "are all purview portals and settings added?")
+
+Honest answer was NO: all 19 upstream cmd.ms portals were imported (sovereign twins
+folded) but Purview never got a phase-4 settings pass and doc 07 §2 was unbuilt.
+
+- [x] enrich-purview.csv: groups (7), least-priv Purview role groups (incl. two new
+      registry roles: Audit Reader, Records Management), license gates and descs for
+      all 19 portals; three missing own portals added: puib (Information barriers),
+      pudspmai (DSPM for AI), pualerts (Alert policies).
+- [x] settings-purview.csv: 20 settings/concept records covering doc 07 §2: audit
+      enable/retention, the which-log flagship, mandatory labeling, auto-label
+      client-vs-service, one-way co-authoring toggle (blast high), custom SITs, EDM,
+      trainable classifiers, DLP mode ladder (blast high), Endpoint DLP, DLP-alerts-
+      moved concept, the four retention-precedence principles, adaptive scopes, PST
+      import, hold-vs-retention, search syntax, IRM templates, role-groups model,
+      Copilot readiness bundle. Purview 19 -> 42 records; total 503. v=15.
+- [x] Caught before shipping: two "?" hedge markers had leaked into path text; a new
+      python gate asserts >=15 set-pu- records, groups on the hub, and NO hedge
+      markers in paths. 38 py tests + 65 browser green; hub verified live (7 groups).
+- [>] Breadcrumb walk of every Purview path: docs/17 B6 (tenant).
+- [ ] Doc 07 backlog unchanged: SIT catalog (100+), audit activities encyclopedia.
+
 ## Phase 7 execution (2026-08-26)
 
 Pre-phase audit: the prerequisite audit below (commit 8b0d5cf) certified gates,

@@ -273,6 +273,19 @@ class TestPhase7Licensing(unittest.TestCase):
         if len(rows) < 80:
             self.skipTest(f"PENDING phase 7: matrix at {len(rows)}/80")
 
+    def test_purview_settings_pass(self):
+        rows = extract_json(ROOT / "data" / "data-commands-purview.js")
+        settings = [r for r in rows if r["id"].startswith("set-pu-")]
+        self.assertGreaterEqual(len(settings), 15, "purview settings encyclopedia")
+        for row in settings:
+            self.assertTrue(row.get("desc"), f"{row['id']}: missing desc")
+            self.assertTrue(row.get("verified"), f"{row['id']}: missing verified")
+            self.assertNotIn("?", row.get("path", ""),
+                             f"{row['id']}: hedge marker in path")
+        groups = {r.get("group") for r in rows}
+        self.assertGreaterEqual(len(groups - {None}), 5,
+                                "purview hub should be grouped")
+
     def test_error_code_records(self):
         codes = []
         for path in sorted((ROOT / "data").glob("data-commands-*.js")):

@@ -35,6 +35,11 @@ Rules while verifying:
   directly rather than the portal home (Azure deep links rot quietly).
 - B5. GCC High / GCC / DoD variants: confirm the `clouds` URLs actually resolve in a
   sovereign tenant if you have one; otherwise mark them unverified rather than claim.
+- B6. Purview breadcrumbs: every `path` in `enrich-purview.csv` and
+  `settings-purview.csv` was written from documentation of the redesigned portal;
+  walk each one, especially Roles and scopes, Data classification, and whether
+  Information barriers / DSPM for AI appear with those exact names in this tenant's
+  solution list.
 
 ## C. Licensing claims (highest risk of shipping something wrong)
 

@@ -29,6 +29,11 @@ Azure Purview, `puudg`). cmd.ms ships ~40 commands here, most with GCC-High twin
 
 ## 2. Settings & concepts to document (the smaller parts)
 
+Shipped 2026-08-26 as `content/settings-purview.csv` (20 records) + `enrich-purview.csv`
+(groups/roles/licenses for all 19 upstream portals, plus own portals `puib`,
+`pudspmai`, `pualerts`); breadcrumb paths pending tenant verification (docs/17 B6).
+The list below remains the source frame; unshipped depth stays backlog.
+
 - **Audit**: enable auditing (new tenants on by default), search UX (new async jobs),
   `Search-UnifiedAuditLog` PS + Graph AuditLog API `VERIFY` availability, activities cheat
   table (FileAccessed, Send, New-InboxRule, UserLoggedIn...), audit retention policies per
