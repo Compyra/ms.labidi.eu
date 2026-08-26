@@ -3,6 +3,34 @@
 Working file per the "check previous phases before starting the next" rule.
 Statuses: [x] fixed, [>] deferred to a named phase, [ ] open.
 
+## Self-service completeness + quarterly maintenance tooling (2026-08-26)
+
+Phases 0-8 re-verified complete (clean tree, prod live). User asks: all end-user
+self-service links present (MFA reset, password, FIDO)? And freshness tests.
+
+- [x] My Pages audit: all 11 existing rows carry real URLs. Gaps filled (13 now):
+      `myfido` (passkey/security-key registration on the security-info page, with
+      passkey/fido2/yubikey search terms) and `mypwchange` (authenticated change
+      vs SSPR reset, explicitly cross-explained both ways). Aliases added:
+      mfasetup on mymfa, passwordreset on mypw, changepw on mypwchange; keywords
+      for reset mfa, authenticator setup, leave organization.
+- [x] Quarterly maintenance tooling shipped and smoke-tested for real:
+      check_freshness.py (offline: stale stamps >184d + pin age; clean today),
+      sync_upstream.py (fetched live upstream: pin current, 355=355),
+      check_links.py (702 URLs walked: 616 OK; 429s on learn = rate-limit noise).
+- [x] First link-check harvest: 12 broken docs links fixed with stable slugs
+      (MDE plan compare, mem/analytics pair, lighthouse, vlsc, sara, odreset,
+      maester /docs, power error-handling, mystaff, sspr-deployment, two NDR fix
+      pages -> family page); akaSearch.net rebrand to akams.fyi adopted;
+      forms/loop .cloud.microsoft redirects deliberately left to upstream (still
+      functional; sync_upstream will surface when the pin adopts them).
+- [x] Checker made auth-wall aware (sovereign portals behind login.* now classify
+      OK instead of MOVED). Two permanent offline gates added: URL well-formedness
+      across all shipped urls/docs/clouds (catches garbled links at build time)
+      and quarterly-tool import health. 41 py tests + 66 browser green, v=19.
+- [>] Formal quarterly cadence: phase 9 roadmap section (run order documented in
+      README); next run due around 2026-11.
+
 ## Phase 8 execution, local half (2026-08-26)
 
 Completed same day, deploy half below:

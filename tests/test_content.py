@@ -322,6 +322,37 @@ class TestPhase7Licensing(unittest.TestCase):
         self.assertGreaterEqual(families["ndr"], 8)
 
 
+class TestMaintenanceHygiene(unittest.TestCase):
+    def test_all_external_urls_are_well_formed(self):
+        from urllib.parse import urlsplit
+        bad = []
+        for path in sorted((ROOT / "data").glob("*.js")):
+            for row in extract_json(path):
+                if not isinstance(row, dict):
+                    continue
+                candidates = [row.get("url"), row.get("docs")]
+                candidates += list((row.get("clouds") or {}).values())
+                for url in candidates:
+                    if not url:
+                        continue
+                    parts = urlsplit(url)
+                    if (parts.scheme != "https" or "." not in parts.netloc
+                            or " " in url or url[-1] in ",;"):
+                        bad.append(f"{row.get('id')}: {url!r}")
+        self.assertEqual(bad, [])
+
+    def test_quarterly_tools_import_cleanly(self):
+        import importlib.util
+        for name in ("check_links", "sync_upstream", "check_freshness"):
+            spec = importlib.util.spec_from_file_location(
+                name, ROOT / "tools" / f"{name}.py")
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+            self.assertTrue(callable(getattr(module, "main")),
+                            f"{name}.main missing")
+        self.assertTrue((ROOT / "tools" / "audit_consistency.py").exists())
+
+
 class TestPhase8Launch(unittest.TestCase):
     def test_png_icons_and_og_image(self):
         icons = list((ROOT / "icons").glob("*.png"))

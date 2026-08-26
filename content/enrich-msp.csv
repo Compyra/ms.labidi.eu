@@ -1,6 +1,6 @@
 # enrichment: msp.
 id,kind,aliases,name,group,url,path,desc,keywords,roles,license,docs,ps,related,verified
-lh,,,,Lighthouse,,M365 Lighthouse,Multi-tenant ops for CSP partners: tenant list; baselines; alerts.,msp|multi-tenant,,free,https://learn.microsoft.com/microsoft-365/lighthouse/,,lhbsl|gdap,2026-08
+lh,,,,Lighthouse,,M365 Lighthouse,Multi-tenant ops for CSP partners: tenant list; baselines; alerts.,msp|multi-tenant,,free,https://learn.microsoft.com/microsoft-365/lighthouse/m365-lighthouse-overview,,lhbsl|gdap,2026-08
 lhbsl,,,,Lighthouse,,Lighthouse > Baselines,Deploy standard configurations across customer tenants.,baseline deploy,,free,,,mspbaseline,2026-08
 lhdi,,,,Lighthouse,,Lighthouse > Deployment insights,Baseline deployment progress per tenant.,,,free,,,lhbsl,2026-08
 lhtnt,,,,Lighthouse,,Lighthouse > Tenants,Customer tenant onboarding states.,,,free,,,lh,2026-08

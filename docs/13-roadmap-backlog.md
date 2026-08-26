@@ -254,10 +254,18 @@ is single-sourced: `content/version.txt` drives `?v=` rewriting of index/404 and
 
 ## Phase 9 : Maintenance loop (recurring)
 
-- [ ] Quarterly: `sync_upstream.py` diff review; `check_links.py` run;
-      `audit_consistency.py` run (matrix vs records vs registry); VERIFY-tag sweep
-      of volatile facts (portal hosts, retirements, license names); verified stamps
-      refreshed on touched records.
+Tooling shipped 2026-08-26: `check_freshness.py` (stale verified stamps + pin age,
+offline), `sync_upstream.py` (fetch + diff the cmd.ms CSV, never auto-merge),
+`check_links.py` (threaded link checker classifying OK / MOVED cross-host /
+BROKEN / BLOCKED / UNREACHABLE, auth-wall aware), `audit_consistency.py`.
+First run results: pin current (355=355), no stale stamps, 12 broken docs links
+fixed, akaSearch.net -> akams.fyi adopted, forms/loop `.cloud.microsoft`
+redirects left to upstream (still functional; tracked by the checker).
+
+- [ ] Quarterly: `check_freshness.py` then `sync_upstream.py` then
+      `check_links.py` then `audit_consistency.py`; VERIFY-tag sweep of volatile
+      facts (portal hosts, retirements, license names); verified stamps refreshed
+      on touched records.
 - [ ] Per Microsoft wave (Ignite/Build): new-product triage into subject docs.
 - [ ] Issue template for "broken link / wrong role / wrong license" reports.
 
