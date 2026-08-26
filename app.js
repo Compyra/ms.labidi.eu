@@ -322,7 +322,12 @@
         "</dd>";
     }
     if (rec.shareText) { h += "<dt>Share</dt><dd>" + esc(rec.shareText) + "</dd>"; }
-    if (rec.ps) { h += "<dt>PowerShell</dt><dd><code>" + esc(rec.ps) + "</code></dd>"; }
+    if (rec.ps) {
+      var psVal = /^(ps|kql)-[a-z0-9-]+$/.test(rec.ps)
+        ? "<a href=\"#/c/" + esc(rec.ps) + "\"><code>" + esc(rec.ps) + "</code></a>"
+        : "<code>" + esc(rec.ps) + "</code>";
+      h += "<dt>PowerShell</dt><dd>" + psVal + "</dd>";
+    }
     if (rec.docs) {
       h += "<dt>Docs</dt><dd><a href=\"" + esc(rec.docs) +
         "\" target=\"_blank\" rel=\"noopener noreferrer\">" + esc(rec.docs) + "</a></dd>";

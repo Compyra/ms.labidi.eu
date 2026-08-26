@@ -178,6 +178,71 @@ def load_synonyms(known_ids):
     return sorted(out, key=lambda s: s["term"])
 
 
+def load_runbooks(records):
+    """content/runbooks/*.md -> list of dicts, or None before phase 6 starts."""
+    folder = ROOT / "content" / "runbooks"
+    if not folder.exists():
+        return None
+    section_map = {"preconditions": "pre", "steps": "steps", "verify": "verify",
+                   "rollback": "rollback", "escalate when": "escalate"}
+    out, seen = [], set()
+    for path in sorted(folder.glob("*.md")):
+        text = path.read_bytes().decode("utf-8")
+        m = re.match(r"^---\s*\n(.*?)\n---\s*\n(.*)$", text, re.S)
+        if not m:
+            errors.append(f"runbook {path.name}: missing frontmatter")
+            continue
+        fm = {}
+        for line in m.group(1).splitlines():
+            if ":" in line:
+                key, val = line.split(":", 1)
+                fm[key.strip()] = val.strip()
+        rid = fm.get("id", "").lower()
+        if not rid.startswith("rb-"):
+            errors.append(f"runbook {path.name}: id must start with 'rb-'")
+        if rid in seen or rid in records:
+            errors.append(f"runbook {rid}: duplicate or collides with a command id")
+        seen.add(rid)
+        if fm.get("level") not in ("L1", "L2", "L3"):
+            errors.append(f"runbook {rid}: bad level {fm.get('level')!r}")
+        if fm.get("subject") not in SUBJECTS:
+            errors.append(f"runbook {rid}: bad subject {fm.get('subject')!r}")
+        entry = {"id": rid, "kind": "runbook", "title": fm.get("title", ""),
+                 "level": fm.get("level"), "subject": fm.get("subject")}
+        if fm.get("verified"):
+            entry["verified"] = fm["verified"]
+        tags = split_multi(fm.get("tags", ""))
+        if tags:
+            entry["tags"] = [t.lower() for t in tags]
+        rel = split_multi(fm.get("related", ""))
+        if rel:
+            unknown = [r for r in rel if r.lower() not in records]
+            if unknown:
+                errors.append(f"runbook {rid}: related {unknown} not a record")
+            entry["related"] = [r.lower() for r in rel]
+        for chunk in re.split(r"^## +", m.group(2), flags=re.M):
+            if not chunk.strip():
+                continue
+            header, _, body = chunk.partition("\n")
+            key = section_map.get(header.strip().lower())
+            if key is None:
+                errors.append(f"runbook {rid}: unknown section {header.strip()!r}")
+                continue
+            lines = [re.sub(r"^\s*(?:[-*]|\d+\.)\s*", "", ln).strip()
+                     for ln in body.splitlines() if ln.strip()]
+            if lines:
+                entry[key] = lines
+        for required in ("steps", "verify", "escalate"):
+            if not entry.get(required):
+                errors.append(f"runbook {rid}: missing section {required}")
+        if not entry["title"]:
+            errors.append(f"runbook {rid}: missing title")
+        if "VERIFY" in text.replace(fm.get("verified", ""), ""):
+            errors.append(f"runbook {rid}: contains a VERIFY marker")
+        out.append(entry)
+    return sorted(out, key=lambda r: r["id"])
+
+
 def load_library(name, extra_fields, records, table_names=None):
     """content/<name>.csv -> list of dicts, or None when the phase has not started.
 
@@ -300,6 +365,7 @@ def main():
     table_names = {r["name"].strip() for r in read_csv(ROOT / "content" / "tables.csv")}
     kql = load_library("kql", ("table",), records, table_names)
     ps = load_library("ps", ("module", "scopes"), records)
+    runbooks = load_runbooks(records)
 
     for w in warnings:
         print(f"warn: {w}")
@@ -326,7 +392,7 @@ def main():
              "(window.MSHUB=window.MSHUB||{}).registry="
              + json.dumps(registries, ensure_ascii=False, separators=(",", ":")) + ";")
     libraries = {}
-    for lib_name, rows in (("kql", kql), ("ps", ps)):
+    for lib_name, rows in (("kql", kql), ("ps", ps), ("runbooks", runbooks)):
         if rows is not None:
             libraries[lib_name] = len(rows)
             write_js(DATA / f"data-{lib_name}.js", banner,
