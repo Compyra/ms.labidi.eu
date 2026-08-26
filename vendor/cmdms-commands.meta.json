@@ -1,0 +1,10 @@
+{
+  "source": "https://github.com/merill/cmd",
+  "file": "website/config/commands.csv",
+  "commit": "4cf2aa6f95748a8c76f32b6ac579e4687418e809",
+  "committedAt": "2026-04-17T23:23:06Z",
+  "fetchedAt": "2026-08-26",
+  "bytes": 41964,
+  "rows": 355,
+  "license": "MIT (c) Merill Fernando & contributors"
+}

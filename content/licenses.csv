@@ -1,0 +1,42 @@
+# License/SKU registry seed (referenced by command.license + licensing matrix rows).
+# family: base|addon|entra|intune|defender|purview|power|windows. VERIFY names quarterly.
+id,name,family,notes
+free,Included / no extra license,base,
+o365-e1,Office 365 E1,base,web apps + EXO/SPO/Teams core
+o365-e3,Office 365 E3,base,
+o365-e5,Office 365 E5,base,incl. MDO P2 + audit premium + PBI Pro
+m365-e3,Microsoft 365 E3,base,O365 E3 + EMS E3 + Windows E3
+m365-e5,Microsoft 365 E5,base,everything below unless noted
+m365-f1,Microsoft 365 F1,base,frontline minimal
+m365-f3,Microsoft 365 F3,base,frontline
+bus-basic,M365 Business Basic,base,<=300 seats
+bus-std,M365 Business Standard,base,<=300 seats
+bus-prem,M365 Business Premium,base,<=300 seats; incl. Intune P1 + Entra P1 + MDB + MDO P1
+ems-e3,Enterprise Mobility + Security E3,addon,Entra P1 + Intune P1 + AIP P1
+ems-e5,Enterprise Mobility + Security E5,addon,Entra P2 + MDCA + MDI + AIP P2
+e5-sec,Microsoft 365 E5 Security,addon,MDE P2 + MDO P2 + MDI + MDCA + Entra P2
+e5-comp,Microsoft 365 E5 Compliance,addon,Purview premium set
+entra-p1,Microsoft Entra ID P1,entra,CA + group licensing + SSPR writeback
+entra-p2,Microsoft Entra ID P2,entra,P1 + PIM + Identity Protection + access reviews
+entra-gov,Microsoft Entra ID Governance,entra,lifecycle workflows + advanced ELM (step-up from P1/P2)
+entra-suite,Microsoft Entra Suite,entra,P2 + Governance + Internet/Private Access + Verified ID VERIFY composition
+intune-p1,Intune Plan 1,intune,in M365 E3/E5/F/BP
+intune-p2,Intune Plan 2,intune,tunnel for MAM + specialty devices
+intune-suite,Intune Suite,intune,Remote Help + EPM + Advanced Analytics + EAM + Cloud PKI
+mde-p1,Defender for Endpoint P1,defender,in M365 E3
+mde-p2,Defender for Endpoint P2,defender,in M365 E5 / E5 Security
+mdb,Defender for Business,defender,in Business Premium; SMB caps
+mdo-p1,Defender for Office 365 P1,defender,in Business Premium
+mdo-p2,Defender for Office 365 P2,defender,in O365/M365 E5; Threat Explorer + AIR + AST
+mdi,Defender for Identity,defender,in EMS E5 / E5 Security
+mdca,Defender for Cloud Apps,defender,in EMS E5 / E5 Security
+mdvm-full,Defender Vulnerability Management (full/add-on),defender,core capabilities ship inside MDE P2
+sentinel-usage,Sentinel (consumption),defender,per-GB or commitment tier; E5 grant 5MB/user/day VERIFY
+copilot-m365,Microsoft 365 Copilot,addon,per-user add-on
+copilot-sec,Security Copilot (SCU),addon,provisioned compute units
+teams-prem,Teams Premium,addon,meeting protection + advanced webinars
+pbi-pro,Power BI Pro,power,in E5
+pbi-ppu,Power BI Premium Per User,power,
+pp-premium,Power Platform premium (per user/app),power,premium connectors + Dataverse
+w365,Windows 365 (per Cloud PC size),windows,Business/Enterprise/Frontline editions
+avd-ext,AVD entitlement,windows,via W10/11 E3+/M365; compute billed in Azure

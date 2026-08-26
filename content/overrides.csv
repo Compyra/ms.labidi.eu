@@ -1,0 +1,114 @@
+# overrides for the cmd.ms import (doc 12 §2). Lines starting with # are skipped.
+# ops: category(arg1=slug) | fold(arg1=target id, arg2=cloud gcc|gcch|dod) |
+#      keep(no args, defeats the fold heuristic) | kind(arg1) | deprecated(arg1=successor id)
+# Rules applied by the pipeline, not listed row-by-row here:
+#   - category "My Pages" -> slug mypages, kind enduser
+#   - category "XDR Sentinel" -> slug sentinel; "Power Platform" -> power
+#   - fold target must exist after enrichment or the build fails
+#     (ppage is added in content/enrich-power.csv: upstream has no commercial Power Pages row)
+id,op,arg1,arg2,note
+# --- category remaps (case-by-case rows; bulk maps live in the pipeline) ---
+azsentinel,category,sentinel,,Sentinel entry lives in the sentinel hub
+win365,category,windows,,
+azavd,category,windows,,
+avdweb,category,windows,,
+print,category,windows,,Universal Print
+powerapps,category,power,,
+pa,category,power,,
+pp,category,power,,
+pbi,category,power,,
+fabric,category,power,,
+lcs,category,power,,Dynamics LCS pointer
+lh,category,msp,,M365 Lighthouse = MSP tooling (doc 15)
+lhbsl,category,msp,,
+lhdi,category,msp,,
+lhtnt,category,msp,,
+partner,category,msp,,
+vlsc,category,licensing,,
+macvlsc,category,licensing,,
+cdx,category,msp,,demo tenants for partner engineers (doc 15)
+training,category,licensing,,enablement
+adlicense,category,licensing,,
+enlicense,category,licensing,,
+ge,category,automation,,Graph Explorer
+arg,category,automation,,Resource Graph Explorer
+azshell,category,automation,,Cloud Shell
+dev,category,automation,,Azure DevOps
+aka,category,automation,,3rd-party AkaSearch
+# --- kind assignments (default is portal) ---
+l,kind,tool,,
+dl,kind,tool,,
+enerror,kind,tool,,
+ge,kind,tool,,
+arg,kind,tool,,
+azshell,kind,tool,,
+aka,kind,tool,,
+azprice,kind,tool,,
+cosmos,kind,tool,,
+cdx,kind,tool,,
+training,kind,docs,,
+mail,kind,enduser,,
+teamsweb,kind,enduser,,
+cp,kind,enduser,,
+avdweb,kind,enduser,,
+win365,kind,enduser,,end-user Cloud PC portal; admin lives in Intune
+# --- deprecations (badge + successor) ---
+azad,deprecated,en,,Azure-portal AAD blade; use Entra admin center
+deca,deprecated,defender,,classic MDCA portal folded into Defender portal
+one,deprecated,sp,,legacy OneDrive admin; SPO admin center covers it
+# --- heuristic exceptions: NOT sovereign twins, never fold ---
+enpimg,keep,,,PIM for Groups (commercial)
+azpg,keep,,,DB for PostgreSQL servers (azp = preview portal)
+azpgh,keep,,,DB for PostgreSQL Hyperscale
+# --- sovereign folds: GCC High ---
+eng,fold,en,gcch,
+azadg,fold,azad,gcch,
+azg,fold,az,gcch,
+ing,fold,in,gcch,
+defenderg,fold,defender,gcch,
+azsentinelg,fold,azsentinel,gcch,
+teamsg,fold,teams,gcch,
+oneg,fold,one,gcch,
+pbigh,fold,pbi,gcch,
+pagh,fold,pa,gcch,
+argg,fold,arg,gcch,
+mailg,fold,mail,gcch,
+ppgh,fold,pp,gcch,
+ppagegh,fold,ppage,gcch,target added in enrich-power.csv
+pappg,fold,powerapps,gcch,
+puudgg,fold,puudg,gcch,
+pupermsg,fold,puperms,gcch,
+pucmgrg,fold,pucmgr,gcch,
+puauditg,fold,puaudit,gcch,upstream URL is .com not .us; report upstream VERIFY
+pucommsg,fold,pucomms,gcch,
+pudlpg,fold,pudlp,gcch,
+puediscg,fold,puedisc,gcch,
+pudlmg,fold,pudlm,gcch,
+purecmong,fold,purecmon,gcch,
+puinfoprotg,fold,puinfoprot,gcch,
+puirmg,fold,puirm,gcch,
+puprivaprmg,fold,puprivaprm,gcch,
+puprivasrrg,fold,puprivasrr,gcch,
+puactexpg,fold,puactexp,gcch,
+pucontentseg,fold,pucontentse,gcch,
+pucontentexg,fold,pucontentex,gcch,
+pusitg,fold,pusit,gcch,
+puclassifiersg,fold,puclassifiers,gcch,
+deincidentsg,fold,deincidents,gcch,
+dehuntingg,fold,dehunting,gcch,
+deactionsg,fold,deactions,gcch,
+deexplorerg,fold,deexplorer,gcch,
+dereg,fold,dere,gcch,
+deinvestigationsg,fold,deinvestigations,gcch,
+# --- sovereign folds: GCC ---
+pbig,fold,pbi,gcc,
+ppg,fold,pp,gcc,
+pag,fold,pa,gcc,
+pappsg,fold,powerapps,gcc,
+ppageg,fold,ppage,gcc,target added in enrich-power.csv
+cpsg,fold,cps,gcc,
+# --- sovereign folds: DoD ---
+pbidod,fold,pbi,dod,
+ppdod,fold,pp,dod,
+pappsdod,fold,powerapps,dod,
+pflowdod,fold,pa,dod,

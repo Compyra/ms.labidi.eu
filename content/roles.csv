@@ -1,0 +1,52 @@
+# RBAC role registry seed (referenced by command.roles[]). plane: entra|azure|xdr|workload|intune|purview|power
+# least-priv notes matter more than completeness; expand in phase 3.
+id,name,plane,notes
+ga,Global Administrator,entra,break-glass + last resort; never the documented answer
+gr,Global Reader,entra,read-everything; the audit answer
+secadmin,Security Administrator,entra,manages security features across Defender/Entra
+secreader,Security Reader,entra,read security configs + reports
+secop,Security Operator,entra,manage alerts/investigations
+caadmin,Conditional Access Administrator,entra,CA policies + named locations
+authadmin,Authentication Administrator,entra,reset MFA/passwords for non-admins
+privauthadmin,Privileged Authentication Administrator,entra,auth methods for all users incl. admins
+useradmin,User Administrator,entra,create/manage users + groups + some resets
+helpdesk,Helpdesk Administrator,entra,password reset for non-admins + basic support
+groupsadmin,Groups Administrator,entra,group settings + membership
+appadmin,Application Administrator,entra,app regs + enterprise apps incl. creds
+cloudappadmin,Cloud Application Administrator,entra,appadmin minus app proxy
+privroleadmin,Privileged Role Administrator,entra,role assignments + PIM settings
+hybididadmin,Hybrid Identity Administrator,entra,Connect/Cloud Sync + federation
+licadmin,License Administrator,entra,assign/remove licenses only
+idgovadmin,Identity Governance Administrator,entra,entitlement mgmt + access reviews
+reportsreader,Reports Reader,entra,sign-in/usage reports
+intuneadmin,Intune Administrator,entra,full Intune; prefer Intune RBAC below
+exadmin,Exchange Administrator,workload,full EXO
+exrecipadmin,Exchange Recipient Administrator,workload,recipients only
+spadmin,SharePoint Administrator,workload,SPO + ODB tenant admin
+teamsadmin,Teams Administrator,workload,full TAC
+teamscomms,Teams Communications Support Specialist,workload,call analytics for assigned users
+complianceadmin,Compliance Administrator,workload,Purview solutions admin
+ediscmgr,eDiscovery Manager,purview,own cases only; Administrator sees all
+compliancedata,Compliance Data Administrator,workload,data connectors + protection
+in-helpdesk,Help Desk Operator (Intune RBAC),intune,remote tasks + read; scope-taggable
+in-policyprofile,Policy and Profile Manager (Intune RBAC),intune,config + compliance authoring
+in-readonly,Read Only Operator (Intune RBAC),intune,read all Intune
+xdr-secdata,Security data basics (XDR unified RBAC),xdr,read alerts/hunting data
+xdr-response,Alerts + response (XDR unified RBAC),xdr,manage incidents + response actions
+xdr-authset,Authorization and settings (XDR unified RBAC),xdr,roles + system settings
+az-owner,Owner,azure,full + grant
+az-contrib,Contributor,azure,full minus grant
+az-reader,Reader,azure,read
+az-uaa,User Access Administrator,azure,grant only
+az-sentinelreader,Microsoft Sentinel Reader,azure,view incidents/data/workbooks
+az-sentinelresponder,Microsoft Sentinel Responder,azure,+ manage incidents; playbook MI role
+az-sentinelcontrib,Microsoft Sentinel Contributor,azure,+ author rules/workbooks
+az-sentinelauto,Microsoft Sentinel Automation Contributor,azure,lets Sentinel run playbooks (grant to Sentinel via Playbook permissions)
+az-sentinelplaybook,Microsoft Sentinel Playbook Operator,azure,run playbooks manually
+az-la-contrib,Log Analytics Contributor,azure,workspace mgmt
+az-kv-secretsuser,Key Vault Secrets User,azure,data-plane read secrets (RBAC mode)
+az-arc-onboard,Azure Connected Machine Onboarding,azure,connect Arc servers only
+az-arc-admin,Azure Connected Machine Resource Administrator,azure,manage Arc servers + extensions
+ppadmin,Power Platform Administrator,entra,PPAC + environments + DLP
+fabricadmin,Fabric Administrator,entra,Power BI/Fabric tenant settings
+w365admin,Windows 365 Administrator,entra,Cloud PC provisioning + policies

@@ -1,0 +1,4 @@
+# own additions + enrichment for subject: power (schema: doc 12 §3.1 fields by column)
+# minimal seed; full enrichment is phase 3
+id,kind,aliases,name,group,url,path,desc,keywords,roles,license,docs,ps,related,verified
+ppage,portal,powerpages,Power Pages,Makers,https://make.powerpages.microsoft.com/,Power Pages maker portal,Build external-facing sites on Dataverse.,pages|portals,ppadmin,,https://learn.microsoft.com/power-pages/,,pp,2026-08

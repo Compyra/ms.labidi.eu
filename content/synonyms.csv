@@ -1,0 +1,111 @@
+# Acronym/synonym registry seed (doc 12 §3.5). Lines starting with # are skipped.
+# term matches at alias weight; boostIds (;-separated) get ranked up; expandsTo tokens
+# join the searchable text. Terms may overlap real aliases (alias wins, synonym adds).
+# boostIds pointing at planned own records are validated as warnings until those exist.
+# Two-letter terms are curated exceptions to the min-length guard.
+term,expandsTo,boostIds,note
+air,automated investigation and response,deinvestigations;deactions,email AIR = MDO P2; device AIR = MDE P2 automation levels
+zap,zero-hour auto purge,,planned concept card (docs 03/06)
+asr,attack surface reduction,inasr;deasrreport,
+tap,temporary access pass,enauth,auth method
+ca,conditional access,enca,curated 2-letter
+pim,privileged identity management,enpim;enpimr;enpimg;enpimz;azpim,extends upstream alias
+sspr,self-service password reset,ensspr;mypw,
+mfa,multi-factor authentication,enauth;mymfa;enmfaunblock;enpumfa,
+whfb,windows hello for business,,planned (doc 02 account protection)
+laps,local administrator password solution,enlaps,
+ueba,user and entity behavior analytics,,planned (doc 04 §10 settings)
+gdap,granular delegated admin privileges,partner,doc 15
+nce,new commerce experience,,licensing concept (doc 11)
+sam,secure application model sharepoint advanced management,,two meanings: CSP automation (doc 15) + SPO governance (doc 06)
+esp,enrollment status page,inenroll,
+ime,intune management extension,,planned troubleshooting card (doc 02)
+ade,automated device enrollment,inenroll,Apple
+abm,apple business manager,inenroll,
+vpp,volume purchase program,inapps,Apple app licensing
+apns,apple push notification service,intenant,cert renewal runbook
+epm,endpoint privilege management,,Intune Suite (doc 02)
+mam,mobile application management,inappconfig,
+mdm,mobile device management,in,
+tabl,tenant allow block list,detallow,
+soar,security orchestration automation and response,,sentinel automation (doc 04 §8)
+siem,security information and event management,azsentinel,
+dcr,data collection rule,azdcr,
+dce,data collection endpoint,,planned (doc 04 §3.2)
+ama,azure monitor agent,,planned (doc 04 §3.2)
+mma,microsoft monitoring agent,,retired agent tombstone card
+asim,advanced security information model,,planned (doc 04 §15)
+cmk,customer managed keys,,planned (doc 04 §15)
+ampls,azure monitor private link scope,,planned (doc 04 §15)
+mto,multi-tenant organization,,doc 11
+xdr,extended detection and response,defender,
+mdo,defender for office 365,detp,
+mdi,defender for identity,deusers,
+mdca,defender for cloud apps,deca;decacat,
+mdvm,defender vulnerability management,devulnreport,
+mdti,defender threat intelligence,deti,
+eop,exchange online protection,detp;deasp;deamp,
+ndr,non-delivery report,exmt,bounce code family (doc 06)
+spf,sender policy framework,dedkim,email auth family
+dkim,domainkeys identified mail,dedkim,
+dmarc,domain-based message authentication reporting and conformance,dedkim,
+arc,authenticated received chain azure arc,dedkim;azhybridcompute,two meanings: email auth + hybrid servers
+esu,extended security updates,azhybridcompute,delivered via Azure Arc (doc 05 §2.1)
+bec,business email compromise,deexplorer;deast,scenario term
+itdr,identity threat detection and response,deusers;enidp,
+sse,security service edge,,entra GSA (doc 01 §2.8)
+ztna,zero trust network access,,entra private access
+gsa,global secure access,,doc 01 §2.8
+avd,azure virtual desktop,azavd;avdweb,extends upstream alias
+w365,windows 365,win365,
+hwid,hardware id,inap,autopilot hash
+jit,just-in-time,enpim;azdefender,PIM + JIT VM access
+rbac,role-based access control,enroles,
+scim,system for cross-domain identity management,enapps,provisioning
+scep,simple certificate enrollment protocol,,cert connector (doc 02)
+pkcs,public key cryptography standards,,cert profiles (doc 02)
+ndes,network device enrollment service,,SCEP connector (doc 02)
+dfci,device firmware configuration interface,,UEFI mgmt (doc 02 §2.6)
+oemconfig,android oem configuration,,doc 02 §2.6
+kfm,known folder move,one;sp,OneDrive
+odb,onedrive for business,one,
+tac,teams admin center,teams,
+ppac,power platform admin center,pp,
+mem,microsoft endpoint manager,in,legacy name
+mecm,microsoft endpoint configuration manager,,co-management (doc 02)
+sccm,system center configuration manager,,co-management (doc 02)
+wufb,windows update for business,inwur;inwfu,
+cfa,controlled folder access,inasr,ransomware protection
+edr,endpoint detection and response,inedr;demdesettings,
+ah,advanced hunting,dehunting,curated 2-letter
+ti,threat intelligence,deti,curated 2-letter
+ioc,indicator of compromise,demdetifiles;demdetiip;demdetiurls,
+nrt,near real time,xdranalytics,sentinel rule type
+soc,security operations center,defender,
+mssp,managed security service provider,,doc 15
+msp,managed service provider,lh;partner,doc 15
+csp,cloud solution provider,partner,
+cipp,cyberdrain improved partner portal,,3rd-party MSP tool (doc 15)
+orca,office 365 recommended configuration analyzer,,community module (doc 15)
+scubagear,cisa secure cloud business applications assessment,,gov baseline tool (doc 15)
+cis,center for internet security benchmark,,doc 15 standards
+caac,conditional access app control,deca,MDCA session control
+irm,insider risk management,puirm,
+mip,microsoft information protection,puinfoprot,legacy name
+aip,azure information protection,puinfoprot,legacy name
+mcas,microsoft cloud app security,deca,legacy name
+atp,advanced threat protection,defender;detp,legacy umbrella name
+aatp,azure advanced threat protection,deusers,legacy MDI name
+wdatp,windows defender atp,defender,legacy MDE name
+ual,unified audit log,puaudit,
+cae,continuous access evaluation,enca,concept card (doc 01)
+byod,bring your own device,incompliance;inappconfig,MAM vs MDM decision
+dep,device enrollment program,inenroll,old ADE name
+prt,primary refresh token,,dsregcmd field guide (doc 16)
+wam,web account manager,,token broker (doc 16)
+sara,support and recovery assistant,,client repair tool (doc 16)
+c2r,click to run,,office servicing (doc 16)
+fod,files on demand,one,onedrive states (doc 16)
+aadj,azure ad joined entra joined,endevices,dsregcmd states
+haadj,hybrid azure ad joined hybrid entra joined,endevices,dsregcmd states
+dspm,data security posture management for ai,pu,purview AI hub (doc 07)

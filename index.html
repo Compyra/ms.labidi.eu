@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'none'; connect-src 'none'">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#0b0e14" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f7f8fa" media="(prefers-color-scheme: light)">
+<title>ms.labidi.eu - the Microsoft admin command line</title>
+<meta name="description" content="Keyboard-first launcher for Microsoft admin portals: every cmd.ms shortcut plus settings paths, roles and licenses for Entra, Intune, Defender, Sentinel, Azure and Microsoft 365.">
+<meta property="og:title" content="ms.labidi.eu - the Microsoft admin command line">
+<meta property="og:description" content="Keyboard-first launcher for Microsoft admin portals, with acronym search, cloud variants and go-links.">
+<meta property="og:url" content="https://ms.labidi.eu/">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://ms.labidi.eu/">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="search" type="application/opensearchdescription+xml" title="ms.labidi.eu" href="opensearch.xml">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%230b0e14'/%3E%3Ctext x='32' y='42' font-family='Consolas,monospace' font-size='26' font-weight='700' fill='%234cc2ff' text-anchor='middle'%3E%5B::%5D%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css?v=3">
+</head>
+<body>
+<a class="skip" href="#results">Skip to results</a>
+<header class="topbar">
+  <a class="brand" href="./">[::] ms<span>.labidi.eu</span></a>
+  <input id="q" type="search" placeholder="Search portals, settings, acronyms... ( / )"
+         autocomplete="off" spellcheck="false" role="combobox"
+         aria-expanded="false" aria-autocomplete="list"
+         aria-label="Search commands">
+  <span id="count">loading</span>
+  <select id="cloud" aria-label="Cloud environment">
+    <option value="com">com</option>
+    <option value="gcc">gcc</option>
+    <option value="gcch">gcch</option>
+    <option value="dod">dod</option>
+  </select>
+  <button id="theme-btn" class="iconbtn" aria-label="Toggle theme">&#9680;</button>
+  <a id="help-btn" class="iconbtn" href="#/about" aria-label="Help">?</a>
+</header>
+<main>
+  <p id="status" aria-live="polite">Loading data...</p>
+  <div id="results"></div>
+  <noscript>
+    <p>This site needs JavaScript to search. Subject hubs:
+      <a href="#/s/entra">Entra</a>, <a href="#/s/intune">Intune</a>,
+      <a href="#/s/defender">Defender</a>, <a href="#/s/sentinel">Sentinel</a>,
+      <a href="#/s/azure">Azure</a>, <a href="#/s/m365">Microsoft 365</a>,
+      <a href="#/s/purview">Purview</a>, <a href="#/s/power">Power Platform</a>,
+      <a href="#/s/windows">Windows Cloud</a>, <a href="#/s/automation">Automation</a>,
+      <a href="#/s/licensing">Licensing</a>, <a href="#/s/msp">MSP</a>,
+      <a href="#/s/toolbox">Toolbox</a>, <a href="#/s/mypages">My Pages</a>.
+      Meanwhile, <a href="https://cmd.ms/" rel="noopener noreferrer">cmd.ms</a> works
+      without JavaScript.</p>
+  </noscript>
+</main>
+<footer>
+  <span id="src-note">includes cmd.ms data (MIT)</span> ·
+  <a href="https://cmd.ms/" target="_blank" rel="noopener noreferrer">cmd.ms</a> ·
+  <a href="https://github.com/merill/cmd" target="_blank" rel="noopener noreferrer">upstream</a>
+  · <a href="#/about">help</a>
+  · tip: use <code>?go=enca</code> or <code>cat:sentinel</code>
+</footer>
+<script src="data/data-commands-entra.js?v=3" defer></script>
+<script src="data/data-commands-intune.js?v=3" defer></script>
+<script src="data/data-commands-defender.js?v=3" defer></script>
+<script src="data/data-commands-sentinel.js?v=3" defer></script>
+<script src="data/data-commands-azure.js?v=3" defer></script>
+<script src="data/data-commands-m365.js?v=3" defer></script>
+<script src="data/data-commands-purview.js?v=3" defer></script>
+<script src="data/data-commands-power.js?v=3" defer></script>
+<script src="data/data-commands-windows.js?v=3" defer></script>
+<script src="data/data-commands-automation.js?v=3" defer></script>
+<script src="data/data-commands-licensing.js?v=3" defer></script>
+<script src="data/data-commands-msp.js?v=3" defer></script>
+<script src="data/data-commands-toolbox.js?v=3" defer></script>
+<script src="data/data-commands-mypages.js?v=3" defer></script>
+<script src="data/data-synonyms.js?v=3" defer></script>
+<script src="data/data-meta.js?v=3" defer></script>
+<script src="search.js?v=3" defer></script>
+<script src="app.js?v=3" defer></script>
+</body>
+</html>

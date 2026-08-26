@@ -1,0 +1,51 @@
+# KQL table registry seed (doc 04 §13 / doc 03 §5). costTier: analytics|basic-eligible|free|xdr-default
+# retention: workspace default unless noted. VERIFY tier eligibility quarterly.
+name,product,costTier,retention,notes
+SecurityIncident,Sentinel,free,90d rolling via table,incident snapshots; MTTR queries
+SecurityAlert,Sentinel/XDR,free,,alerts from all connected products
+SigninLogs,Entra,analytics,,interactive user sign-ins
+AADNonInteractiveUserSignInLogs,Entra,analytics,,token refreshes; huge volume
+AADServicePrincipalSignInLogs,Entra,analytics,,SP auth
+AADManagedIdentitySignInLogs,Entra,analytics,,MI auth
+AuditLogs,Entra,analytics,,directory changes
+AADProvisioningLogs,Entra,analytics,,SCIM provisioning
+AADRiskyUsers,Entra ID Protection,analytics,,current risk state
+AADUserRiskEvents,Entra ID Protection,analytics,,risk detections
+IdentityInfo,Sentinel UEBA,free,,entity enrichment; refreshed
+BehaviorAnalytics,Sentinel UEBA,free,,anomaly scores
+OfficeActivity,M365 via Purview audit,analytics,,Exchange/SharePoint/Teams ops
+AzureActivity,Azure,free,,ARM control plane
+SecurityEvent,Windows via AMA,analytics,,event sets: all/common/minimal/custom
+Syslog,Linux via AMA,analytics,,facility-based
+CommonSecurityLog,CEF via AMA,analytics,,firewalls/proxies; dedupe vs Syslog
+DnsEvents,Windows DNS,analytics,,via AMA connector
+Heartbeat,agents,free,,agent liveness
+Usage,Log Analytics,free,,billing analysis; the cost query table
+Watchlist,Sentinel,free,,_GetWatchlist()
+ThreatIntelligenceIndicator,Sentinel TI,analytics,,legacy; migrating to ThreatIntelIndicators VERIFY
+ThreatIntelIndicators,Sentinel TI,analytics,,new STIX-shaped table VERIFY
+SentinelHealth,Sentinel,free,,connector/rule/automation health
+SentinelAudit,Sentinel,free,,who changed what in Sentinel
+IntuneAuditLogs,Intune,analytics,,via diagnostics export
+IntuneOperationalLogs,Intune,analytics,,enrollment ops
+WVDConnections,AVD,analytics,,session connect chain
+WVDErrors,AVD,analytics,,connection errors
+DeviceInfo,XDR advanced hunting,xdr-default,30d in XDR,longer via Sentinel ingest
+DeviceEvents,XDR advanced hunting,xdr-default,30d,misc sensor events incl. ASR
+DeviceProcessEvents,XDR advanced hunting,xdr-default,30d,process creation
+DeviceNetworkEvents,XDR advanced hunting,xdr-default,30d,connections
+DeviceFileEvents,XDR advanced hunting,xdr-default,30d,file writes
+DeviceRegistryEvents,XDR advanced hunting,xdr-default,30d,
+DeviceLogonEvents,XDR advanced hunting,xdr-default,30d,
+DeviceImageLoadEvents,XDR advanced hunting,xdr-default,30d,
+EmailEvents,XDR (MDO),xdr-default,30d,delivery metadata
+EmailAttachmentInfo,XDR (MDO),xdr-default,30d,
+EmailUrlInfo,XDR (MDO),xdr-default,30d,
+EmailPostDeliveryEvents,XDR (MDO),xdr-default,30d,ZAP actions
+UrlClickEvents,XDR (MDO),xdr-default,30d,Safe Links clicks
+IdentityLogonEvents,XDR (MDI),xdr-default,30d,on-prem auth
+IdentityQueryEvents,XDR (MDI),xdr-default,30d,LDAP/SAMR queries
+IdentityDirectoryEvents,XDR (MDI),xdr-default,30d,AD changes
+CloudAppEvents,XDR (MDCA),xdr-default,30d,SaaS activities
+AlertInfo,XDR,xdr-default,30d,
+AlertEvidence,XDR,xdr-default,30d,
