@@ -12,6 +12,10 @@ $pyExit = $LASTEXITCODE
 $ErrorActionPreference = "Stop"
 if ($pyExit -ne 0) { Write-Host "PYTHON TESTS FAILED" -ForegroundColor Red; exit 1 }
 
+Write-Host "== powershell snippet parse gate ==" -ForegroundColor Cyan
+& powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $root "tools\check_snippets.ps1")
+if ($LASTEXITCODE -ne 0) { Write-Host "SNIPPET PARSE GATE FAILED" -ForegroundColor Red; exit 1 }
+
 Write-Host "== browser selftest (headless Edge) ==" -ForegroundColor Cyan
 $port = 8907
 $server = Start-Process python -ArgumentList "-m", "http.server", "$port", "--bind", "127.0.0.1" `

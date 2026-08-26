@@ -178,7 +178,7 @@ def load_synonyms(known_ids):
     return sorted(out, key=lambda s: s["term"])
 
 
-def load_runbooks(records):
+def load_runbooks(records, extra_ids=frozenset()):
     """content/runbooks/*.md -> list of dicts, or None before phase 6 starts."""
     folder = ROOT / "content" / "runbooks"
     if not folder.exists():
@@ -216,7 +216,8 @@ def load_runbooks(records):
             entry["tags"] = [t.lower() for t in tags]
         rel = split_multi(fm.get("related", ""))
         if rel:
-            unknown = [r for r in rel if r.lower() not in records]
+            unknown = [r for r in rel
+                       if r.lower() not in records and r.lower() not in extra_ids]
             if unknown:
                 errors.append(f"runbook {rid}: related {unknown} not a record")
             entry["related"] = [r.lower() for r in rel]
@@ -365,7 +366,12 @@ def main():
     table_names = {r["name"].strip() for r in read_csv(ROOT / "content" / "tables.csv")}
     kql = load_library("kql", ("table",), records, table_names)
     ps = load_library("ps", ("module", "scopes"), records)
-    runbooks = load_runbooks(records)
+    library_ids = {r["id"] for r in (kql or [])} | {r["id"] for r in (ps or [])}
+    for rec in records.values():
+        hint = rec.get("ps", "")
+        if hint.startswith(("ps-", "kql-")) and hint not in library_ids:
+            errors.append(f"{rec['id']}: ps hint {hint!r} is not a library entry")
+    runbooks = load_runbooks(records, library_ids)
 
     for w in warnings:
         print(f"warn: {w}")

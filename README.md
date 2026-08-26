@@ -5,10 +5,14 @@ helpdesk, cloud and security engineers in Microsoft environments. Every portal s
 from [cmd.ms](https://cmd.ms/) (MIT, by Merill Fernando & contributors), plus deep
 settings paths, roles, licenses, KQL, PowerShell and runbooks on top.
 
-**Status: phases 0-5 complete.** 439 records (30 Sentinel settings, the 15-toggle
-Defender wall, blast-radius ratings) plus a 60-query KQL library, 69 PowerShell
-snippets and a 49-table registry, all searchable together with copy-ready cards.
-Next: phase 6 (runbooks).
+**Status: phases 0-5 complete, phase 6 prepared.** 439 records (30 Sentinel settings,
+the 15-toggle Defender wall, blast-radius ratings) plus a 60-query KQL library, 69
+PowerShell snippets and a 49-table registry, all searchable together with copy-ready
+cards. Runbook pipeline live with 3 seeds. Tenant-dependent facts are collected in
+[docs/17-tenant-verification.md](docs/17-tenant-verification.md).
+
+Quality gates: `tests\run-tests.ps1` runs 36 Python tests, a PowerShell parse gate over
+every shipped snippet, and a 44-assertion browser selftest.
 
 Local dev: `python tools/build_data.py` then `python -m http.server 8905 --bind
 127.0.0.1` and open http://127.0.0.1:8905/.

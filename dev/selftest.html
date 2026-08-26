@@ -204,6 +204,14 @@
   t("table registry shipped", function () {
     return (HUB.registry.tables || []).length >= 45;
   });
+  t("ps hints on records resolve to snippets", function () {
+    var hinted = HUB.commands.filter(function (r) {
+      return r.ps && /^(ps|kql)-/.test(r.ps);
+    });
+    return hinted.length >= 4 && hinted.every(function (r) {
+      return !!HUB.getById(r.ps);
+    });
+  });
 
   h2("[P2/P3] app e2e (iframe)");
   var frame = document.getElementById("app");
@@ -275,6 +283,14 @@
         });
         t("card title pattern", function () {
           return w.document.title.indexOf("enca - Conditional Access") === 0;
+        });
+        w.location.hash = "#/c/exmt";
+        return titled(w, "exmt -");
+      },
+      function () {
+        t("ps hint renders as a link to the snippet card", function () {
+          var link = w.document.querySelector('.meta a[href="#/c/ps-message-trace"]');
+          return !!link && link.textContent === "ps-message-trace";
         });
         w.location.hash = "#/s/sentinel";
         return titled(w, "Sentinel |");

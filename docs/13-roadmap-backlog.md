@@ -151,14 +151,29 @@ checks against command ids, subject validation, KQL table names checked against
 - [x] Gates enforce in both layers: python suite (schema, kinds, namespacing,
       cross-link resolution, table registration, no VERIFY) and the browser selftest
       (search, filters, all three views, card rendering, cross-links, overflow guard).
-- [ ] Open (needs a tenant): execute 10 snippets unedited.
+- [x] Offline syntax gates: `tools/check_snippets.ps1` parses every PowerShell snippet
+      with the PowerShell language parser (69/69 pass), and a pure-Python KQL lint in
+      the test suite checks balance, quoting, source tables and pipe operators (60/60).
+- [x] `ps` hints that name a snippet id render as links on record cards, validated at
+      build time so a typo cannot ship a dead link.
+- [x] noscript block lists the library and table routes alongside the subject hubs.
+- [>] Open, needs a tenant: execute 10 snippets unedited (tracked as gate A1 in
+      [17-tenant-verification.md](17-tenant-verification.md)).
 
 ## Phase 6 : Runbooks
 
-- [ ] 25 seeds picked from docs 01-11 + 15 runbook lists (flagships first: doc 06
-      §7.1/§7.5, doc 04 §14.1, doc 11 §6.2, doc 15 §7.1/§7.3).
-- [ ] Frontmatter pipeline + sanitized HTML embedding (build-time).
-- [ ] Level badges (L1/L2/L3), escalate-when sections mandatory.
+Prep DONE 2026-08-26: `load_runbooks()` reads `content/runbooks/*.md` (YAML-ish
+frontmatter + `## Preconditions/Steps/Verify/Rollback/Escalate when`), validating id
+prefix `rb-`, uniqueness against commands, level in L1/L2/L3, known subject, mandatory
+steps/verify/escalate sections, resolvable `related` ids (records *and* library
+entries) and absence of VERIFY markers. Emits `data-runbooks.js`
+(`window.MSHUB.runbooks`), wired into index.html + SW at v=10. Three seed runbooks
+prove the pipeline: `rb-mail-not-arriving` (L1), `rb-account-compromise` (L2),
+`rb-bitlocker-key` (L1).
+
+- [ ] 22 more runbooks from the seed lists in docs 01-11, 15, 16 (25 total).
+- [ ] `#/runbooks` view + runbook cards with numbered steps and level badges.
+- [ ] Runbooks in search (`kind:runbook`) and cross-linked from record cards.
 - Gate: one real service desk shift uses two runbooks unaided.
 
 ## Phase 7 : Licensing matrix + error codes

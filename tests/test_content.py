@@ -168,11 +168,58 @@ class TestPhase5Libraries(unittest.TestCase):
                     linked += 1
         self.assertGreaterEqual(linked, 60, "library entries barely cross-link records")
 
+    def test_ps_hints_resolve_to_library_entries(self):
+        records, _ = pipeline()
+        path = ROOT / "data" / "data-ps.js"
+        if not path.exists():
+            self.skipTest("PENDING phase 5: data-ps.js not built")
+        library = {r["id"] for r in extract_json(path)}
+        linked = 0
+        for rec in records.values():
+            hint = rec.get("ps", "")
+            if hint.startswith(("ps-", "kql-")):
+                self.assertIn(hint, library, f"{rec['id']} points at a missing snippet")
+                linked += 1
+        self.assertGreaterEqual(linked, 4, "no records use snippet-id ps hints")
+
     def test_table_registry_shipped(self):
         registry = extract_json(ROOT / "data" / "data-registry.js")
         self.assertGreaterEqual(len(registry.get("tables", [])), 45)
         for table in registry["tables"]:
             self.assertTrue(table["name"] and table["product"])
+
+    def test_kql_snippets_are_structurally_valid(self):
+        """Offline lint: no tenant needed, catches the typos that break a paste."""
+        operators = {
+            "where", "summarize", "project", "project-away", "project-rename",
+            "project-reorder", "project-keep", "extend", "order", "sort", "top",
+            "top-nested", "take", "limit", "count", "distinct", "join", "union",
+            "mv-expand", "mv-apply", "parse", "parse-where", "render", "evaluate",
+            "make-series", "search", "lookup", "invoke", "as", "serialize",
+            "sample", "sample-distinct", "partition", "scan", "fork", "facet",
+            "find", "getschema", "reduce", "consume",
+        }
+        path = ROOT / "data" / "data-kql.js"
+        if not path.exists():
+            self.skipTest("PENDING phase 5: data-kql.js not built")
+        registry = extract_json(ROOT / "data" / "data-registry.js")
+        known_tables = {t["name"] for t in registry["tables"]}
+        for row in extract_json(path):
+            code, rid = row["code"], row["id"]
+            for opener, closer in (("(", ")"), ("[", "]"), ("{", "}")):
+                self.assertEqual(code.count(opener), code.count(closer),
+                                 f"{rid}: unbalanced {opener}{closer}")
+            self.assertEqual(code.count("'") % 2, 0, f"{rid}: unbalanced quote")
+            self.assertNotIn('"', code, f"{rid}: use single quotes in KQL")
+            self.assertFalse(code.rstrip().endswith("|"), f"{rid}: trailing pipe")
+            segments = [s.strip() for s in code.split("|")]
+            head = segments[0].split()[0].split("(")[0]
+            self.assertTrue(head in known_tables or head.startswith("_"),
+                            f"{rid}: starts with unknown source {head!r}")
+            for segment in segments[1:]:
+                self.assertTrue(segment, f"{rid}: empty pipe segment")
+                op = segment.split()[0].split("(")[0]
+                self.assertIn(op, operators, f"{rid}: unknown operator {op!r}")
 
 
 class TestPhase6Runbooks(unittest.TestCase):

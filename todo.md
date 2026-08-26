@@ -3,6 +3,31 @@
 Working file per the "check previous phases before starting the next" rule.
 Statuses: [x] fixed, [>] deferred to a named phase, [ ] open.
 
+## Phase 5 completion sweep + phase 6 prep (2026-08-26)
+
+Checked phase 5 for anything specified but not enabled; three gaps found and closed:
+
+- [x] `ps` hints naming a snippet id now render as links on record cards (doc 12
+      promised it; nothing used it). Four records wired (`exmt`, `deqre`, `enlaps`,
+      `ensign`) and the build now fails on a `ps` hint that names a missing snippet.
+- [x] noscript block omitted the library and table routes; added.
+- [x] Offline syntax verification was never built: `tools/check_snippets.ps1` parses
+      all 69 PowerShell snippets with the real PowerShell parser, and a Python KQL
+      lint checks all 60 queries (balance, quoting, source table known, pipe operators
+      known, no trailing pipe). Both wired into `tests/run-tests.ps1`.
+- [x] Test-count assertion hard-coded 17 docs and broke when doc 17 landed; replaced
+      with a sequential-numbering check that catches gaps and duplicates instead.
+- [x] Phase 6 prepared: runbook loader, schema, three seed runbooks, `data-runbooks.js`
+      wired at v=10, gates already armed.
+
+## Tenant-dependent work (collected)
+
+All of it now lives in [docs/17-tenant-verification.md](docs/17-tenant-verification.md):
+blocking gates (A), deep links and paths (B), licensing claims (C), naming and
+lifecycle (D), behaviour we describe but have not observed (E), data worth importing
+(F), and the handful of records that deliberately ship no claim until verified (G).
+Bring the tenant and we work down that list.
+
 ## Phase 5 close + selftest overhaul (2026-08-26)
 
 - [x] Phase 5 finished: library views `#/kql` / `#/ps`, table registry at `#/tables`,

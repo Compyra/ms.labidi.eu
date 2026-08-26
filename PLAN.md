@@ -1,7 +1,9 @@
 # ms.labidi.eu : Master Plan
 
-Status: phases 0-5 complete (libraries live: 60 KQL, 69 PowerShell, 49-table registry,
-searchable and cross-linked). Last updated: 2026-08-26.
+Status: phases 0-5 complete; phase 6 (runbooks) pipeline prepared with 3 seeds.
+Tenant-dependent verification is collected in
+[docs/17-tenant-verification.md](docs/17-tenant-verification.md).
+Last updated: 2026-08-26.
 
 The working name for the product is **MS Portal Hub**: one fast, keyboard-first reference site
 for people who run Microsoft environments all day.
@@ -203,6 +205,7 @@ Detailed checklist lives in [docs/13-roadmap-backlog.md](docs/13-roadmap-backlog
 | [docs/14-ui-design.md](docs/14-ui-design.md) | UI/interaction spec: wireframes, tokens, components, keyboard model |
 | [docs/15-msp-hardening.md](docs/15-msp-hardening.md) | MSP multi-tenant ops, GDAP bundles, customer hardening baseline |
 | [docs/16-client-troubleshooting-toolbox.md](docs/16-client-troubleshooting-toolbox.md) | On-device diagnostics: dsregcmd, IME logs, Outlook/Teams/OneDrive repair ladders, field network tests |
+| [docs/17-tenant-verification.md](docs/17-tenant-verification.md) | Everything that needs a real tenant: gates, deep links, licensing claims, naming, behaviour |
 
 Prepared artifacts (beyond docs): `vendor/cmdms-commands.csv` + `.meta.json` (pinned
 upstream, commit `4cf2aa6`), `tools/analyze_upstream.py` (invariants verified),

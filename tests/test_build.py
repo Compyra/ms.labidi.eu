@@ -57,7 +57,10 @@ class TestPhase0Sources(unittest.TestCase):
     def test_docs_and_license_files_exist(self):
         for name in ["PLAN.md", "LICENSE", "todo.md", "README.md"]:
             self.assertTrue((ROOT / name).is_file(), name)
-        self.assertEqual(len(list((ROOT / "docs").glob("*.md"))), 17)
+        numbered = sorted(p.name[:2] for p in (ROOT / "docs").glob("[0-9][0-9]-*.md"))
+        self.assertGreaterEqual(len(numbered), 17)
+        self.assertEqual(numbered, [f"{i:02d}" for i in range(len(numbered))],
+                         "docs must be numbered sequentially with no gaps or duplicates")
 
 
 class TestPhase1Pipeline(unittest.TestCase):

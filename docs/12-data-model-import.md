@@ -105,10 +105,14 @@ quoted fields are not supported. KQL string literals use single quotes so no CSV
 escaping is needed. Emitted as `window.MSHUB.kql` / `window.MSHUB.ps`, with counts in
 `data-meta.js` under `libraries`.
 
-### 3.4 runbook
-Markdown files in `content/runbooks/` with frontmatter `{id, title, level: L1|L2|L3,
-subject, tags, verified}`; body sections: Preconditions, Steps, Verify, Rollback,
-Escalate-when. Build converts to JS-embedded HTML (sanitized at build time, not runtime).
+### 3.4 runbook (implemented phase 6 prep)
+Markdown files in `content/runbooks/` with frontmatter `{id (rb-*), title, level: L1|L2|L3,
+subject, tags, related, verified}` and `## Preconditions / Steps / Verify / Rollback /
+Escalate when` sections. `load_runbooks()` parses them into
+`{id, kind:"runbook", title, level, subject, tags[], related[], pre[], steps[], verify[],
+rollback[], escalate[]}`, converting list items to plain strings at build time (no HTML
+is embedded, so nothing needs runtime sanitising). Steps, Verify and Escalate when are
+mandatory; `related` may point at records **or** library entries.
 
 ### 3.5 registries
 `roles.csv` (id, name, plane: entra|azure|xdr|workload, notes),
