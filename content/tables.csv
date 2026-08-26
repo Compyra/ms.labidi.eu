@@ -28,6 +28,7 @@ SentinelHealth,Sentinel,free,,connector/rule/automation health
 SentinelAudit,Sentinel,free,,who changed what in Sentinel
 IntuneAuditLogs,Intune,analytics,,via diagnostics export
 IntuneOperationalLogs,Intune,analytics,,enrollment ops
+IntuneDeviceComplianceOrg,Intune,analytics,,compliance state snapshots via diagnostics export
 WVDConnections,AVD,analytics,,session connect chain
 WVDErrors,AVD,analytics,,connection errors
 DeviceInfo,XDR advanced hunting,xdr-default,30d in XDR,longer via Sentinel ingest

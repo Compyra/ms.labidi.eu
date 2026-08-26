@@ -33,6 +33,8 @@
 <script src="../data/data-commands-mypages.js"></script>
 <script src="../data/data-synonyms.js"></script>
 <script src="../data/data-registry.js"></script>
+<script src="../data/data-kql.js"></script>
+<script src="../data/data-ps.js"></script>
 <script src="../data/data-meta.js"></script>
 <script src="../search.js"></script>
 <script>
@@ -141,6 +143,19 @@
   }
   t("phase 5 kql library", function () { return libStub(HUB.kql, 60); });
   t("phase 5 ps library", function () { return libStub(HUB.ps, 60); });
+  t("phase 5 library rows complete", function () {
+    if (!HUB.kql || !HUB.ps) { return "pend"; }
+    var ids = {};
+    HUB.commands.forEach(function (r) { ids[r.id] = 1; });
+    var seen = {};
+    return HUB.kql.concat(HUB.ps).every(function (r) {
+      if (seen[r.id]) { return false; }
+      seen[r.id] = 1;
+      var keyed = r.table || r.module;
+      return r.id && r.title && r.code && keyed &&
+        (r.related || []).every(function (x) { return ids[x]; });
+    });
+  });
   t("phase 6 runbooks", function () { return libStub(HUB.runbooks, 25); });
   t("phase 7 licensing matrix", function () { return libStub(HUB.licensing, 80); });
 

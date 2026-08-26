@@ -60,24 +60,37 @@ field. Also a standalone library: task-first snippets an engineer can paste.
 Migration table (own mini-encyclopedia): `MSOnline/AzureAD cmdlet -> Graph cmdlet + scopes`
 for the ~30 cmdlets helpdesks still google (Get-MsolUser -> Get-MgUser etc.).
 
-## 4. Snippet library spec (phase 5)
+## 4. Snippet library (built 2026-08-26)
 
-Schema: `{id, title, lang: ps|kql|graph|cli, code, scopes/role, module, subject, tags,
-verified}`; one-click copy; grouped by task not by module. Seed list (60): sixteen identity
-(revoke sessions, TAP create, CA report-only analyzer, stale guests...), ten Exchange
-(trace, forwarding audit, shared mailbox grant, inbox rules dump...), ten Intune (device
-compliance export, BitLocker keys via Graph, stale devices...), ten Sentinel/Defender
-(incident bulk close, hunting via API, indicator push...), eight SPO/Teams, six Azure
-(RBAC audit, resource graph sweeps).
+Schema and validation live in doc 12 §3.3. `content/ps.csv` ships **69 snippets**, one
+line of code each, every one carrying its module and the required role/scope: identity
+response (revoke sessions, block sign-in, TAP, MFA methods, dismiss risk), licensing
+(SKUs, assignment errors, per-user detail), CA export and report-only audit, app-secret
+expiry, guests, role membership audits, BitLocker and LAPS retrieval, Intune device
+actions and exports, Exchange (trace, forwarding, inbox rules, permissions, shared
+conversion, auto-reply, transport rules), Purview (audit search, litigation hold),
+Defender (DKIM, anti-phish, Safe Links, TABL block, hunting API, incidents),
+SharePoint/Teams reporting, Azure (role audit, diagnostic settings), Sentinel
+(incidents, rule export, LA query), Maester and Power Platform.
 
-## 5. KQL library spec (phase 5)
+Remaining: the `#/ps` view with copy buttons and cross-links from record cards.
 
-Schema mirrors snippets with `table` field. Seeds (60) spread over: identity sign-in
-analysis (risky sign-ins by CA gap, legacy auth hunt, impossible travel confirm), audit
-(new inbox rules, mass download, role changes), endpoint (ASR hits, LOLBins, USB writes),
-email (delivery action stats, ZAP events, top phished users), Sentinel ops (ingestion by
-table/GB, EPS by connector, rule failure health, incident MTTR), Azure (NSG denies,
-Key Vault access, break-glass usage watch).
+## 5. KQL library (built 2026-08-26)
+
+Same schema with a `table` field validated against `content/tables.csv`.
+`content/kql.csv` ships **60 queries**: identity (failed sign-ins by code, legacy auth,
+risky sign-ins, CA failures, single-factor successes, multi-country users, guest
+activity, break-glass usage, role changes, consent grants, user lifecycle, risky users,
+SP failures), audit (inbox rules, forwarding changes, mass downloads, anonymous links,
+mailbox permission grants, Exchange admin ops), endpoint (LOLBins, encoded PowerShell,
+USB mounts, tamper events, inbound RDP, local admin additions, AV detections, silent
+sensors, firewall blocks, bulk renames), email (phish delivered, top targeted, URL
+clicks, spoof, attachment types, ZAP), cloud apps and MDI, Sentinel ops (ingestion cost
+and trend, table freshness, rule and automation failures, MTTR, severity queue, alert
+sources, watchlist join), Azure (deletes, NSG changes, Key Vault writes, RBAC
+assignments, heartbeat gaps, agent versions), AVD, Intune and Purview.
+
+Remaining: the `#/kql` view and the table registry rendered as a lookup.
 
 ## 6. Runbook seeds
 

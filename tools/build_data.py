@@ -197,6 +197,12 @@ def load_library(name, extra_fields, records, table_names=None):
         tags = split_multi(row.get("tags") or "")
         if tags:
             entry["tags"] = [t.lower() for t in tags]
+        rel = split_multi(row.get("related") or "")
+        if rel:
+            unknown = [r for r in rel if r.lower() not in records]
+            if unknown:
+                errors.append(f"{name} {rid}: related {unknown} not a record")
+            entry["related"] = [r.lower() for r in rel]
         if not entry.get("title") or not entry.get("code"):
             errors.append(f"{name} {rid}: missing title or code")
         subject = entry.get("subject")

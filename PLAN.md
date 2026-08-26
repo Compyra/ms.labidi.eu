@@ -1,7 +1,7 @@
 # ms.labidi.eu : Master Plan
 
-Status: phase 4 complete (settings encyclopedias: 439 records, blast-radius rated).
-Last updated: 2026-08-26.
+Status: phases 0-4 complete; phase 5 content built (60 KQL + 69 PowerShell entries,
+views pending). Last updated: 2026-08-26.
 
 The working name for the product is **MS Portal Hub**: one fast, keyboard-first reference site
 for people who run Microsoft environments all day.

@@ -129,15 +129,22 @@ data exists; a phase is not "done" while its gate still skips.
 
 ## Phase 5 : KQL + PowerShell libraries
 
-Prep DONE 2026-08-26: pipeline loads/validates content/kql.csv + ps.csv (id prefixes,
-command-id collision check, table names against tables.csv, single-line code rule),
-emits data-kql.js/data-ps.js + meta counts, wired into index.html/SW at v=7; 8+8
-accuracy-checked seeds live; gates validate rows and pend until 60/60.
+Content DONE 2026-08-26. Pipeline loads/validates `content/kql.csv` + `content/ps.csv`
+(id prefixes, collision checks against command ids, subject validation, KQL table names
+checked against `tables.csv`, `related` ids resolved, single-line code rule), emits
+`data-kql.js` / `data-ps.js` + counts in meta, wired into index.html and the SW at v=7.
 
-- [ ] `content/kql.csv` (60 seeds, doc 10 §5), `content/ps.csv` (60 seeds, doc 10 §4).
-- [ ] Library views `#/kql`, `#/ps` with language chips + copy; snippets cross-linked
-      from records via `ps` field.
-- [ ] Table registry (`content/tables.csv`, seed exists) rendered as lookup.
+- [x] `content/kql.csv`: 60 queries across entra/defender/sentinel/m365/intune/azure/
+      windows/purview, each with table, tags, docs where useful and `related` links
+      back into the record set.
+- [x] `content/ps.csv`: 69 snippets across Graph, Exchange Online, SharePoint, Teams,
+      Az, Power Platform, LAPS and Maester, each with module + required role/scope.
+- [x] Gates enforce: python suite (row schema, no VERIFY, counts) and selftest
+      ("library rows complete": unique ids, required fields, resolvable related).
+- [ ] Library views `#/kql`, `#/ps` with language chips + copy buttons.
+- [ ] Snippets cross-linked from records via the `ps` field.
+- [ ] Table registry (`content/tables.csv`, 49 rows) rendered as a lookup.
+- [ ] Search integration so library entries surface in the palette.
 - Gate: 10 snippets executed against a test tenant without edits.
 
 ## Phase 6 : Runbooks

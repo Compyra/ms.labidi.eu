@@ -3,6 +3,32 @@
 Working file per the "check previous phases before starting the next" rule.
 Statuses: [x] fixed, [>] deferred to a named phase, [ ] open.
 
+## Phases 0-4 confirmation (2026-08-26)
+
+- [x] Gate suite re-run before touching phase 5: 30 python tests OK, browser
+      selftest ALL PASS. Roadmap phases 0-4 all carry DONE + gate-passed notes.
+      Confirmed finished, so phase 5 content work started.
+
+## Phase 5 content build (2026-08-26)
+
+- [x] `content/kql.csv` expanded to 60 validated queries with `related` links back
+      into records; `content/ps.csv` to 69 snippets with module + role/scope.
+- [x] Loader learned the `related` column for libraries and now resolves every id
+      against the record set (build fails on a dangling link).
+- [x] Validator caught a real gap: `IntuneDeviceComplianceOrg` was used by a query
+      but missing from `content/tables.csv`; table registered (49 rows now).
+- [x] Two accuracy bugs caught in my own drafts before shipping: the app-secret
+      expiry snippet referenced an undefined `$app` variable, and the service
+      principal sign-in query needs `Microsoft.Graph.Beta`, not `Microsoft.Graph`.
+- [x] Test-harness gap fixed: `dev/selftest.html` never loaded the library data, so
+      its phase 5 stubs reported a false PENDING. Now loads both files and adds a
+      "library rows complete" assertion (unique ids, required fields, resolvable
+      related). Selftest: ALL PASS (27 pass, 3 pending).
+- [ ] Remaining for phase 5 proper: `#/kql` and `#/ps` views with copy buttons,
+      record cross-links via the `ps` field, `tables.csv` rendered as a lookup,
+      and search integration for library entries.
+- [ ] Gate still open (needs a tenant): execute 10 snippets unedited.
+
 ## Full-check + accuracy audit before phase 5 (2026-08-26)
 
 Drove a fact-by-fact review of every shipped role/license/path/cmdlet claim
@@ -21,7 +47,7 @@ Drove a fact-by-fact review of every shipped role/license/path/cmdlet claim
       interactive" claim removed.
 - [x] SSPR desc now states cloud-user SSPR ships with M365 subs; P1 = writeback.
 - [x] inprorem renamed to current product name "Remediations".
-- [x] set-sen-commitment role az-sentinelcontrib -> az-la-contrib (workspace op);
+- [x] set-sen-commitment role az-sentinelcontrib -> az-la-contrib (workspace op); 
       senworkbooks reader -> contributor (saving edits).
 - [x] ps-stale-devices seed had a semicolon where PowerShell needs a comma
       (would have shipped broken code); fixed with proper CSV quoting.

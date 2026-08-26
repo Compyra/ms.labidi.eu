@@ -94,8 +94,16 @@ license, api?, docs, related[], standards[]?, verified}`: `what` and `blastRadiu
 these more than links; they answer "can I flip this at 16:55 on a Friday". `standards`
 tags hardening rows against CIS/SCuBA/Secure Score (doc 15 §6) for `standard:` filters.
 
-### 3.3 kql / ps snippets
-`{id, title, lang, code, subject, table?/module?, scopes?, tags[], docs?, verified}`.
+### 3.3 kql / ps snippets (implemented phase 5)
+`{id, title, subject, code, tags[], docs?, verified, related[]}` plus `table` for KQL
+and `module` + `scopes` for PowerShell. Loaded from `content/kql.csv` and
+`content/ps.csv` by `load_library()`, which enforces: `kql-`/`ps-` id prefixes, no
+collision with command ids, unique ids, valid subject slug, KQL `table` present in
+`tables.csv`, `related` ids resolving to real records, and title+code non-empty.
+**Code must be single-line**: the CSV reader is line-based by design, so multi-line
+quoted fields are not supported. KQL string literals use single quotes so no CSV
+escaping is needed. Emitted as `window.MSHUB.kql` / `window.MSHUB.ps`, with counts in
+`data-meta.js` under `libraries`.
 
 ### 3.4 runbook
 Markdown files in `content/runbooks/` with frontmatter `{id, title, level: L1|L2|L3,

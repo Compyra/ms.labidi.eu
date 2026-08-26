@@ -5,9 +5,10 @@ helpdesk, cloud and security engineers in Microsoft environments. Every portal s
 from [cmd.ms](https://cmd.ms/) (MIT, by Merill Fernando & contributors), plus deep
 settings paths, roles, licenses, KQL, PowerShell and runbooks on top.
 
-**Status: phase 4 done + phase 5 prepped.** 439 records incl. 30 Sentinel settings and
-the 15-toggle Defender wall; accuracy audit shipped (13 corrections); KQL/PS library
-pipeline live with 8+8 verified seeds. Next: phase 5 bulk authoring + library views.
+**Status: phases 0-4 complete, phase 5 content prepared.** 439 records (30 Sentinel
+settings, the 15-toggle Defender wall, blast-radius ratings) plus 60 KQL queries and
+69 PowerShell snippets built and validated. Remaining for phase 5: the `#/kql` and
+`#/ps` views, record cross-links and search integration.
 
 Local dev: `python tools/build_data.py` then `python -m http.server 8905 --bind
 127.0.0.1` and open http://127.0.0.1:8905/.
