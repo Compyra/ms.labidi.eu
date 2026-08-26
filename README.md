@@ -39,6 +39,7 @@ Future-phase gates report PENDING and enforce automatically once their phase lan
 Project map:
 
 - [PLAN.md](PLAN.md): mission, architecture, phases, risks
+- [future.md](future.md): remaining steps, improvements, requested features
 - [docs/00-ecosystem-map.md](docs/00-ecosystem-map.md): the whole ecosystem + portal atlas
 - docs/01-11 + 15-16: per-subject deep dives (Entra, Intune incl. the compliance
   enforcement chain, Defender incl. AIR and niche surfaces, Sentinel down to the setting

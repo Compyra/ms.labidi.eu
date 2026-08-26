@@ -3,6 +3,28 @@
 Working file per the "check previous phases before starting the next" rule.
 Statuses: [x] fixed, [>] deferred to a named phase, [ ] open.
 
+## Final full doublecheck + future.md (2026-08-26)
+
+Swept ALL steps and ALL content in one pass:
+
+- [x] Repo state: clean tree, HEAD pushed (745298a), no leftover temp scripts.
+- [x] Deep content sweep across 55 content files + 21 data files + 18 docs +
+      shell files: zero BOMs, zero em/en-dashes, zero invalid UTF-8, zero stray
+      TODO/FIXME, zero VERIFY markers in shipped data, zero hedge markers in
+      paths, meta counts equal reality (records + all four libraries), version
+      lockstep at v=19 everywhere, issue template well-formed, docs sequential,
+      no stale phase-status lines anywhere.
+- [x] Definitive gate run: 41 python, 69/69 snippets, 66 browser, exit 0.
+- [x] future.md created: blocked-on-user items (tenant A-G, human gates,
+      Lighthouse), the recurring loop, the full per-subject content backlog
+      pulled from docs 01-16, ~69 remaining runbook seeds, engineering
+      improvements (CI Actions, scheduled link/upstream checks, search typo
+      tolerance, SW update toast, payload budget), often-requested features
+      (favorites, custom aliases, copy-as-markdown, JSON export, extension),
+      and the unchanged icebox.
+- No mistakes or missing steps found; two cosmetic notes fixed along the way in
+      earlier passes (sara desc spacing, SaRA exe-download docs link).
+
 ## Phase 9 first run: PROJECT COMPLETE (2026-08-26)
 
 Readiness check passed (tools shipped + smoke-tested previous turn). First full
