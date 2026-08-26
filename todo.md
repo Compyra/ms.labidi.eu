@@ -3,6 +3,29 @@
 Working file per the "check previous phases before starting the next" rule.
 Statuses: [x] fixed, [>] deferred to a named phase, [ ] open.
 
+## Phase 8 execution, local half (2026-08-26)
+
+- [x] Launch-file audit: robots.txt (allow all + sitemap), single-URL sitemap
+      (correct for an SPA), opensearch.xml, CNAME, LICENSE with cmd.ms provenance.
+      dev/selftest.html ships deliberately (noindexed): it doubles as the prod
+      smoke test for the launch gate.
+- [x] A11y/SEO sweep across all 11 views via headless-Edge harness (the embedded
+      browser tooling died again; the harness pattern from memory worked): checked
+      h1 uniqueness, img alt, unnamed buttons, noopener on _blank, table headers,
+      unlabeled inputs/selects, horizontal overflow, lang, skip link, licgrid
+      labels. One finding: the About keyboard table had no header cells; fixed
+      with thead + th scope=col and styling.
+- [x] README license & attribution section (MIT, cmd.ms provenance pointer,
+      not-affiliated note, verified-stamps policy, issue routing).
+- [x] Family registry: labidi.eu/js/projects.js gained MS Portal Hub (active,
+      90%, four languages, vocabulary-consistent tags) and todo-rami.md the launch
+      remainder + tenant pointer; catalogue render verified headless (f1c7822).
+- [x] v=18, suite green (39 py, 69/69, 66 browser, zero skips/pendings).
+- [ ] Deploy: push both repos (user decision), then on prod: Lighthouse pass,
+      Cloudflare toggles (Rocket Loader / Email Obfuscation / Analytics OFF),
+      robots.txt AI-prepend behavior check, live gate (?go=enca + PWA install +
+      dev/selftest.html ALL PASS from https://ms.labidi.eu).
+
 ## Phase 7 integration doublecheck (2026-08-26)
 
 Built tools/audit_consistency.py (now permanent, wired into the phase 9 loop): it
