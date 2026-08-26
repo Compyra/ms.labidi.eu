@@ -126,12 +126,53 @@ class TestPhase5Libraries(unittest.TestCase):
             self.assertNotIn("VERIFY", json.dumps(row))
         if len(rows) < minimum:
             self.skipTest(f"PENDING phase 5: {filename} at {len(rows)}/{minimum}")
+        return rows
 
     def test_kql_library(self):
-        self._library("data-kql.js", "table", 60)
+        rows = self._library("data-kql.js", "table", 60)
+        registry = extract_json(ROOT / "data" / "data-registry.js")
+        known = {t["name"] for t in registry["tables"]}
+        for row in rows:
+            self.assertEqual(row["kind"], "kql")
+            self.assertIn(row["table"], known, f"{row['id']} uses unregistered table")
 
     def test_ps_library(self):
-        self._library("data-ps.js", "module", 60)
+        rows = self._library("data-ps.js", "module", 60)
+        for row in rows:
+            self.assertEqual(row["kind"], "ps")
+            self.assertTrue(row.get("scopes"), f"{row['id']} missing scopes/role")
+
+    def test_library_ids_unique_and_namespaced(self):
+        records, _ = pipeline()
+        seen = set()
+        for filename, prefix in (("data-kql.js", "kql-"), ("data-ps.js", "ps-")):
+            path = ROOT / "data" / filename
+            if not path.exists():
+                self.skipTest(f"PENDING phase 5: {filename} not built")
+            for row in extract_json(path):
+                self.assertTrue(row["id"].startswith(prefix))
+                self.assertNotIn(row["id"], records, "library id collides with a command")
+                self.assertNotIn(row["id"], seen)
+                seen.add(row["id"])
+
+    def test_library_related_links_resolve(self):
+        records, _ = pipeline()
+        linked = 0
+        for filename in ("data-kql.js", "data-ps.js"):
+            path = ROOT / "data" / filename
+            if not path.exists():
+                self.skipTest(f"PENDING phase 5: {filename} not built")
+            for row in extract_json(path):
+                for rel in row.get("related", []):
+                    self.assertIn(rel, records, f"{row['id']} -> {rel}")
+                    linked += 1
+        self.assertGreaterEqual(linked, 60, "library entries barely cross-link records")
+
+    def test_table_registry_shipped(self):
+        registry = extract_json(ROOT / "data" / "data-registry.js")
+        self.assertGreaterEqual(len(registry.get("tables", [])), 45)
+        for table in registry["tables"]:
+            self.assertTrue(table["name"] and table["product"])
 
 
 class TestPhase6Runbooks(unittest.TestCase):

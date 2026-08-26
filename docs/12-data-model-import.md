@@ -119,6 +119,10 @@ search. Terms may overlap real aliases (alias wins, synonym adds boosts); boostI
 pointing at not-yet-created own records validate as warnings, not failures; two-letter
 terms are curated exceptions to the 3-char minimum.
 
+Roles, licenses **and tables** ship to the client in `data-registry.js`
+(`window.MSHUB.registry.{roles,licenses,tables}`): cards render role and license
+*names* rather than ids, and `#/tables` renders the table registry.
+
 ## 4. Build & validation (`build_data.py`)
 
 - Stdlib only (csv, json, hashlib, pathlib). No pip deps, no Node (machine has none).

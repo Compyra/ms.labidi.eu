@@ -36,7 +36,23 @@
         .join(" ").toLowerCase();
       docs.push({ rec: rec, text: text, name: (rec.name || "").toLowerCase() });
     });
+    (HUB.kql || []).concat(HUB.ps || []).forEach(function (entry) {
+      entry.name = entry.title;
+      entry.category = entry.subject;
+      byId[entry.id] = entry;
+      var text = [entry.id, entry.title || "", entry.subject || "", entry.kind || "",
+                  entry.table || "", entry.module || "", entry.code || ""]
+        .concat(entry.tags || [])
+        .join(" ").toLowerCase();
+      docs.push({ rec: entry, text: text, name: (entry.title || "").toLowerCase() });
+    });
     (HUB.synonyms || []).forEach(function (s) { synByTerm[s.term] = s; });
+  };
+
+  HUB.libraryFor = function (recordId) {
+    return (HUB.kql || []).concat(HUB.ps || []).filter(function (entry) {
+      return (entry.related || []).indexOf(recordId) >= 0;
+    });
   };
 
   HUB.resolveGo = function (token) {
@@ -139,6 +155,6 @@
       }
       return a.rec.id < b.rec.id ? -1 : 1;
     });
-    return out.slice(0, 50);
+    return out.slice(0, 100);
   };
 })();

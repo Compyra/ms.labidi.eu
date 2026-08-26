@@ -17,26 +17,38 @@
 <div id="summary">running...</div>
 <div id="out"></div>
 <iframe id="app" src="../index.html"></iframe>
-<script src="../data/data-commands-entra.js"></script>
-<script src="../data/data-commands-intune.js"></script>
-<script src="../data/data-commands-defender.js"></script>
-<script src="../data/data-commands-sentinel.js"></script>
-<script src="../data/data-commands-azure.js"></script>
-<script src="../data/data-commands-m365.js"></script>
-<script src="../data/data-commands-purview.js"></script>
-<script src="../data/data-commands-power.js"></script>
-<script src="../data/data-commands-windows.js"></script>
-<script src="../data/data-commands-automation.js"></script>
-<script src="../data/data-commands-licensing.js"></script>
-<script src="../data/data-commands-msp.js"></script>
-<script src="../data/data-commands-toolbox.js"></script>
-<script src="../data/data-commands-mypages.js"></script>
-<script src="../data/data-synonyms.js"></script>
-<script src="../data/data-registry.js"></script>
-<script src="../data/data-kql.js"></script>
-<script src="../data/data-ps.js"></script>
-<script src="../data/data-meta.js"></script>
-<script src="../search.js"></script>
+<script>
+// Dev harness: load the real files with a per-run stamp so a cached copy can never
+// produce a false failure.
+(function () {
+  var files = [
+    "../data/data-commands-entra.js",
+    "../data/data-commands-intune.js",
+    "../data/data-commands-defender.js",
+    "../data/data-commands-sentinel.js",
+    "../data/data-commands-azure.js",
+    "../data/data-commands-m365.js",
+    "../data/data-commands-purview.js",
+    "../data/data-commands-power.js",
+    "../data/data-commands-windows.js",
+    "../data/data-commands-automation.js",
+    "../data/data-commands-licensing.js",
+    "../data/data-commands-msp.js",
+    "../data/data-commands-toolbox.js",
+    "../data/data-commands-mypages.js",
+    "../data/data-synonyms.js",
+    "../data/data-registry.js",
+    "../data/data-kql.js",
+    "../data/data-ps.js",
+    "../data/data-meta.js",
+    "../search.js"
+  ];
+  var stamp = "?t=" + Date.now();
+  for (var i = 0; i < files.length; i++) {
+    document.write('<script src="' + files[i] + stamp + '"><\/script>');
+  }
+})();
+</script>
 <script>
 (function () {
   "use strict";
@@ -159,6 +171,39 @@
   t("phase 6 runbooks", function () { return libStub(HUB.runbooks, 25); });
   t("phase 7 licensing matrix", function () { return libStub(HUB.licensing, 80); });
 
+  h2("[P5] library search + registry");
+  t("library entries are searchable by title", function () {
+    return ids("billable ingestion").indexOf("kql-usage-cost") >= 0;
+  });
+  t("library entries searchable by code content", function () {
+    return ids("Revoke-MgUserSignInSession")[0] === "ps-revoke-sessions";
+  });
+  t("kind:kql and kind:ps filters work", function () {
+    return ids("kind:kql").length === HUB.kql.length &&
+      ids("kind:ps").length === HUB.ps.length;
+  });
+  t("library entries resolve as cards but not as go-links", function () {
+    return HUB.getById("kql-usage-cost").kind === "kql" &&
+      HUB.resolveGo("kql-usage-cost") === null;
+  });
+  t("libraryFor gives reverse cross-links", function () {
+    var hits = HUB.libraryFor("enca").map(function (e) { return e.id; });
+    return hits.indexOf("ps-ca-policies") >= 0;
+  });
+  t("cat: filter spans records and library", function () {
+    var sentinel = ids("cat:sentinel");
+    return sentinel.indexOf("senplaybookperms") >= 0 &&
+      sentinel.indexOf("kql-usage-cost") >= 0;
+  });
+  t("every KQL table exists in the registry", function () {
+    var known = {};
+    (HUB.registry.tables || []).forEach(function (tb) { known[tb.name] = 1; });
+    return HUB.kql.every(function (q) { return known[q.table]; });
+  });
+  t("table registry shipped", function () {
+    return (HUB.registry.tables || []).length >= 45;
+  });
+
   h2("[P2/P3] app e2e (iframe)");
   var frame = document.getElementById("app");
 
@@ -173,12 +218,22 @@
     });
   }
   function settle(w, selector) {
+    return until(w, function () { return !!w.document.querySelector(selector); });
+  }
+
+  function until(w, fn) {
     return new Promise(function (res) {
       (function poll(n) {
-        if (w.document.querySelector(selector) || n > 40) { res(); }
+        var ok = false;
+        try { ok = fn(); } catch (e) { ok = false; }
+        if (ok || n > 60) { res(); }
         else { setTimeout(function () { poll(n + 1); }, 100); }
       })(0);
     });
+  }
+
+  function titled(w, prefix) {
+    return until(w, function () { return w.document.title.indexOf(prefix) === 0; });
   }
 
   frameReady().then(function (w) {
@@ -189,8 +244,9 @@
     }
     var steps = [
       function () {
-        t("home renders 14 tiles", function () {
-          return w.document.querySelectorAll(".tile").length === 14;
+        t("home renders 14 subject tiles + 3 library tiles", function () {
+          return w.document.querySelectorAll(".tiles:not(.libtiles) .tile").length === 14 &&
+            w.document.querySelectorAll(".libtiles .tile").length === 3;
         });
         t("aria-controls absent on home", function () {
           return w.document.getElementById("q").getAttribute("aria-controls") === null;
@@ -206,7 +262,7 @@
           return !!w.document.querySelector("#listbox .badge.blast-high");
         });
         w.location.hash = "#/c/enca";
-        return settle(w, ".card");
+        return titled(w, "enca -");
       },
       function () {
         t("card renders role + license names", function () {
@@ -220,7 +276,7 @@
           return w.document.title.indexOf("enca - Conditional Access") === 0;
         });
         w.location.hash = "#/s/sentinel";
-        return settle(w, ".gname");
+        return titled(w, "Sentinel |");
       },
       function () {
         t("hub grouped without option roles", function () {
@@ -236,12 +292,72 @@
           w.MSHUB.setLicenseProfile([]);
           return badges >= 2;
         });
+        w.location.hash = "#/kql";
+        return titled(w, "KQL library");
+      },
+      function () {
+        t("kql view lists every query grouped by subject", function () {
+          return w.document.querySelectorAll("#results .row").length === w.MSHUB.kql.length &&
+            w.document.querySelectorAll(".gname").length > 3;
+        });
+        w.location.hash = "#/ps";
+        return titled(w, "PowerShell library");
+      },
+      function () {
+        t("ps view lists every snippet", function () {
+          return w.document.querySelectorAll("#results .row").length === w.MSHUB.ps.length;
+        });
+        w.location.hash = "#/tables";
+        return titled(w, "KQL tables");
+      },
+      function () {
+        t("tables view renders the registry with query counts", function () {
+          var rows = w.document.querySelectorAll(".tbl tbody tr").length;
+          return rows === w.MSHUB.registry.tables.length &&
+            w.document.querySelectorAll(".tbl tbody a").length > 5;
+        });
+        t("tables view cannot overflow the page", function () {
+          var wrap = w.document.querySelector(".tblwrap");
+          return wrap && w.getComputedStyle(wrap).overflowX === "auto";
+        });
+        w.location.hash = "#/c/kql-usage-cost";
+        return titled(w, "kql-usage-cost");
+      },
+      function () {
+        t("library card shows code, table and copy action", function () {
+          var code = w.document.querySelector("pre.code code").textContent;
+          var dts = Array.prototype.map.call(w.document.querySelectorAll(".meta dt"),
+            function (d) { return d.textContent; });
+          return code.indexOf("Usage") === 0 && dts.indexOf("Table") >= 0 &&
+            w.document.querySelector(".actions .btn").textContent.indexOf("Copy KQL") === 0;
+        });
+        w.location.hash = "#/c/enca";
+        return until(w, function () {
+          return w.document.title.indexOf("enca -") === 0 &&
+            !!w.document.querySelector(".cardlib");
+        });
+      },
+      function () {
+        t("record card cross-links its snippets", function () {
+          var rows = w.document.querySelectorAll(".cardlib .row").length;
+          return rows >= 3 &&
+            w.document.querySelector(".cardlib .gname").textContent.indexOf("Queries") === 0;
+        });
+        w.location.hash = "";
+        return until(w, function () {
+          return !!w.document.querySelector(".libtiles .tile");
+        });
+      },
+      function () {
+        t("library tiles link to both libraries and the table registry", function () {
+          var hrefs = Array.prototype.map.call(
+            w.document.querySelectorAll(".libtiles .tile"),
+            function (a) { return a.getAttribute("href"); });
+          return hrefs.join(",") === "#/kql,#/ps,#/tables";
+        });
         w.location.hash = "#q=100%";
-        return new Promise(function (res) {
-          (function poll(n) {
-            if (w.document.getElementById("q").value === "100%" || n > 40) { res(); }
-            else { setTimeout(function () { poll(n + 1); }, 100); }
-          })(0);
+        return until(w, function () {
+          return w.document.getElementById("q").value === "100%";
         });
       },
       function () {

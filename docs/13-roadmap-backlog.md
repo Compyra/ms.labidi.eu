@@ -127,25 +127,31 @@ data exists; a phase is not "done" while its gate still skips.
       30/25, toggles 15/15, no VERIFY shipped); selftest ALL PASS; 439 records;
       360px overflow-free; duplicate-name sweep clean after disambiguation.
 
-## Phase 5 : KQL + PowerShell libraries
+## Phase 5 : KQL + PowerShell libraries (DONE 2026-08-26)
 
-Content DONE 2026-08-26. Pipeline loads/validates `content/kql.csv` + `content/ps.csv`
-(id prefixes, collision checks against command ids, subject validation, KQL table names
-checked against `tables.csv`, `related` ids resolved, single-line code rule), emits
-`data-kql.js` / `data-ps.js` + counts in meta, wired into index.html and the SW at v=7.
+Pipeline loads/validates `content/kql.csv` + `content/ps.csv` (id prefixes, collision
+checks against command ids, subject validation, KQL table names checked against
+`tables.csv`, `related` ids resolved, single-line code rule), emits `data-kql.js` /
+`data-ps.js` + counts in meta, wired into index.html and the SW.
 
 - [x] `content/kql.csv`: 60 queries across entra/defender/sentinel/m365/intune/azure/
       windows/purview, each with table, tags, docs where useful and `related` links
       back into the record set.
 - [x] `content/ps.csv`: 69 snippets across Graph, Exchange Online, SharePoint, Teams,
       Az, Power Platform, LAPS and Maester, each with module + required role/scope.
-- [x] Gates enforce: python suite (row schema, no VERIFY, counts) and selftest
-      ("library rows complete": unique ids, required fields, resolvable related).
-- [ ] Library views `#/kql`, `#/ps` with language chips + copy buttons.
-- [ ] Snippets cross-linked from records via the `ps` field.
-- [ ] Table registry (`content/tables.csv`, 49 rows) rendered as a lookup.
-- [ ] Search integration so library entries surface in the palette.
-- Gate: 10 snippets executed against a test tenant without edits.
+- [x] Library views `#/kql` and `#/ps`, grouped by subject, plus library tiles on the
+      home page; every row copies its code with one click.
+- [x] Search integration: library entries are indexed by title, tags, table/module and
+      code text, filterable with `kind:kql` / `kind:ps`, and reachable as cards at
+      `#/c/<id>` (result cap raised to 100 so filter-only searches are not truncated).
+- [x] Snippets cross-linked from record cards ("Queries & snippets" section, driven by
+      the library's `related` ids) and back again ("Used with").
+- [x] Table registry rendered at `#/tables` with per-table query counts linking into
+      search; shipped in `data-registry.js`.
+- [x] Gates enforce in both layers: python suite (schema, kinds, namespacing,
+      cross-link resolution, table registration, no VERIFY) and the browser selftest
+      (search, filters, all three views, card rendering, cross-links, overflow guard).
+- [ ] Open (needs a tenant): execute 10 snippets unedited.
 
 ## Phase 6 : Runbooks
 

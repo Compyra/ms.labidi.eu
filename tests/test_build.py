@@ -130,6 +130,15 @@ class TestGeneratedOutput(unittest.TestCase):
         self.assertIn(f'CACHE = "mshub-v{v}"', sw)
         for src in re.findall(r'src="(data/[^"?]+)\?v=\d+"', index):
             self.assertIn(f"{src}?v={v}", sw, f"{src} missing from SW precache")
+        for emitted in (ROOT / "data").glob("*.js"):
+            self.assertIn(f'data/{emitted.name}?v={v}', index,
+                          f"{emitted.name} generated but not loaded by index.html")
+
+    def test_selftest_harness_loads_all_data(self):
+        harness = (ROOT / "dev" / "selftest.html").read_text(encoding="utf-8")
+        for emitted in (ROOT / "data").glob("*.js"):
+            self.assertIn(f"../data/{emitted.name}", harness,
+                          f"{emitted.name} missing from the selftest harness")
 
     def test_meta_counts_match_records(self):
         records, _ = pipeline()

@@ -155,7 +155,14 @@ def load_full_registries():
         for i in entry["inc"]:
             if i not in lics:
                 errors.append(f"licenses.csv {lid}: unknown include {i}")
-    return {"roles": roles, "licenses": lics}
+    tables = []
+    for r in read_csv(ROOT / "content" / "tables.csv"):
+        tables.append({"name": r["name"].strip(), "product": (r.get("product") or "").strip(),
+                       "costTier": (r.get("costTier") or "").strip(),
+                       "retention": (r.get("retention") or "").strip(),
+                       "notes": (r.get("notes") or "").strip()})
+    return {"roles": roles, "licenses": lics,
+            "tables": sorted(tables, key=lambda t: t["name"].lower())}
 
 
 def load_synonyms(known_ids):
@@ -189,7 +196,7 @@ def load_library(name, extra_fields, records, table_names=None):
         if rid in seen or rid in records:
             errors.append(f"{name} {rid}: duplicate or collides with a command id")
         seen.add(rid)
-        entry = {"id": rid}
+        entry = {"id": rid, "kind": name}
         for field in ("title", "subject", "code", "docs", "verified") + extra_fields:
             val = (row.get(field) or "").strip()
             if val:

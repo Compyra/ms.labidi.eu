@@ -56,6 +56,14 @@ Subject hub (`#/s/entra`): h1 + group sections in doc-declared order, rows ident
 search rows (one component). Settings records add a blast-radius badge:
 `[low]` gray, `[med]` amber, `[high]` red with "Friday test" tooltip.
 
+Library views (`#/kql`, `#/ps`): same row component grouped by subject, each row
+copying its code instead of a URL. Library cards (`#/c/kql-*`, `#/c/ps-*`) show
+subject, table or module, required scope/role, tags, docs, a wrapped `pre.code` block,
+Copy + go-link buttons and "Used with" links back to records. Record cards carry the
+reverse: a "Queries & snippets" section listing library entries that reference them.
+The table registry (`#/tables`) is a five-column table inside an `overflow-x` wrapper
+(notes column hides under 720px) with per-table query counts linking into search.
+
 ## 3. Design tokens
 
 | Token | Dark (default) | Light |

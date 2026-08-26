@@ -116,6 +116,22 @@
       grid.appendChild(a);
     });
     host.appendChild(grid);
+    var libs = [["#/kql", "KQL library", (HUB.kql || []).length],
+                ["#/ps", "PowerShell library", (HUB.ps || []).length],
+                ["#/tables", "KQL tables",
+                 ((HUB.registry && HUB.registry.tables) || []).length]];
+    var libGrid = document.createElement("div");
+    libGrid.className = "tiles libtiles";
+    libs.forEach(function (l) {
+      if (!l[2]) { return; }
+      var a = document.createElement("a");
+      a.className = "tile";
+      a.href = l[0];
+      a.innerHTML = "<span class=\"tile-name\">" + esc(l[1]) + "</span>" +
+        "<span class=\"tile-count\">" + l[2] + "</span>";
+      libGrid.appendChild(a);
+    });
+    if (libGrid.children.length) { host.appendChild(libGrid); }
     var recents = getRecents().map(HUB.getById).filter(Boolean);
     if (recents.length) {
       var head = document.createElement("div");
@@ -168,7 +184,9 @@
       li.setAttribute("role", "option");
       li.setAttribute("aria-selected", "false");
     }
-    var crumb = rec.category + (rec.group ? " > " + rec.group : "");
+    var isLib = !!rec.code;
+    var crumb = rec.category + (rec.group ? " > " + rec.group : "") +
+      (isLib ? " > " + (rec.table || rec.module || "") : "");
     li.innerHTML =
       "<span class=\"rid\">" + esc(rec.id) + "</span>" +
       "<span class=\"rname\">" + esc(rec.name) +
@@ -176,14 +194,15 @@
       "</span>" +
       "<span class=\"rcrumb\">" + esc(crumb) + "</span>" +
       "<span class=\"rbadges\">" + badgeHtml(rec) + cloudChips(rec) +
-      "<button class=\"chip copy\" title=\"Copy URL\">copy</button>" +
+      "<button class=\"chip copy\" title=\"" +
+      (isLib ? "Copy code" : "Copy URL") + "\">copy</button>" +
       (rec.url ? "<a class=\"chip open\" target=\"_blank\" rel=\"noopener noreferrer\" href=\"" +
         esc(urlFor(rec)) + "\">open</a>" : "") +
       "</span>";
     li.addEventListener("click", function (ev) {
       var t = ev.target;
       if (t.classList.contains("copy")) {
-        copyText(urlFor(rec) || rec.id, t);
+        copyText(isLib ? rec.code : (urlFor(rec) || rec.id), t);
       } else if (t.classList.contains("cloud")) {
         openUrl(rec.clouds[t.getAttribute("data-cloud")]);
       } else if (!t.classList.contains("open")) {
@@ -257,6 +276,7 @@
   function renderCard(id) {
     var rec = HUB.getById((id || "").toLowerCase());
     if (!rec) { input.value = id; onInput(); return; }
+    if (rec.code) { renderLibraryCard(rec); return; }
     results = [];
     listbox = null;
     clearAria();
@@ -351,7 +371,130 @@
       }).join(", ");
       card.appendChild(rel);
     }
+    var snippets = HUB.libraryFor ? HUB.libraryFor(rec.id) : [];
+    if (snippets.length) {
+      var lib = document.createElement("div");
+      lib.className = "cardlib";
+      lib.innerHTML = "<h2 class=\"gname\">Queries &amp; snippets</h2>";
+      var ul = document.createElement("ul");
+      ul.className = "rlist";
+      snippets.forEach(function (entry) { ul.appendChild(makeRow(entry)); });
+      lib.appendChild(ul);
+      card.appendChild(lib);
+    }
     host.appendChild(card);
+  }
+
+  function renderLibraryCard(rec) {
+    results = [];
+    listbox = null;
+    clearAria();
+    host.innerHTML = "";
+    addRecent(rec.id);
+    document.title = rec.id + " - " + rec.name + " | ms.labidi.eu";
+    statusEl.textContent = "";
+    var card = document.createElement("article");
+    card.className = "card";
+    var langLabel = rec.kind === "kql" ? "KQL" : "PowerShell";
+    var h = "<header class=\"card-head\"><span class=\"rid\">" + esc(rec.id) +
+      "</span><h1>" + esc(rec.name) + "</h1>" +
+      "<span class=\"badge kind\">" + esc(langLabel) + "</span></header>";
+    h += "<dl class=\"meta\">";
+    h += "<dt>Subject</dt><dd><a href=\"#/s/" + esc(rec.category) + "\">" +
+      esc(SUBJ_NAME[rec.category] || rec.category) + "</a></dd>";
+    if (rec.table) {
+      h += "<dt>Table</dt><dd><a href=\"#/tables\">" + esc(rec.table) + "</a></dd>";
+    }
+    if (rec.module) { h += "<dt>Module</dt><dd>" + esc(rec.module) + "</dd>"; }
+    if (rec.scopes) { h += "<dt>Needs</dt><dd>" + esc(rec.scopes) + "</dd>"; }
+    if (rec.tags) { h += "<dt>Tags</dt><dd>" + rec.tags.map(esc).join(", ") + "</dd>"; }
+    if (rec.docs) {
+      h += "<dt>Docs</dt><dd><a href=\"" + esc(rec.docs) +
+        "\" target=\"_blank\" rel=\"noopener noreferrer\">" + esc(rec.docs) + "</a></dd>";
+    }
+    if (rec.verified) { h += "<dt>Verified</dt><dd>" + esc(rec.verified) + "</dd>"; }
+    h += "</dl><pre class=\"code\"><code>" + esc(rec.code) + "</code></pre>";
+    card.innerHTML = h;
+    var actions = document.createElement("div");
+    actions.className = "actions";
+    var copyBtn = document.createElement("button");
+    copyBtn.className = "btn";
+    copyBtn.textContent = "Copy " + langLabel;
+    copyBtn.addEventListener("click", function () { copyText(rec.code, copyBtn); });
+    actions.appendChild(copyBtn);
+    var linkBtn = document.createElement("button");
+    linkBtn.className = "btn ghost";
+    linkBtn.textContent = "Copy go-link";
+    linkBtn.addEventListener("click", function () {
+      copyText("https://ms.labidi.eu/#/c/" + rec.id, linkBtn);
+    });
+    actions.appendChild(linkBtn);
+    card.appendChild(actions);
+    if (rec.related && rec.related.length) {
+      var rel = document.createElement("p");
+      rel.className = "related";
+      rel.innerHTML = "Used with: " + rec.related.map(function (r) {
+        return "<a href=\"#/c/" + esc(r) + "\">" + esc(r) + "</a>";
+      }).join(", ");
+      card.appendChild(rel);
+    }
+    host.appendChild(card);
+  }
+
+  function renderLibrary(kind) {
+    var rows = (kind === "kql" ? HUB.kql : HUB.ps) || [];
+    results = [];
+    listbox = null;
+    input.value = "";
+    clearAria();
+    host.innerHTML = "";
+    var label = kind === "kql" ? "KQL library" : "PowerShell library";
+    document.title = label + " | ms.labidi.eu";
+    statusEl.textContent = label + ": " + rows.length + " entries. " +
+      "Click a row for the full card, or copy straight from the list.";
+    var groups = {};
+    rows.forEach(function (entry) {
+      var g = SUBJ_NAME[entry.subject] || entry.subject || "Other";
+      (groups[g] = groups[g] || []).push(entry);
+    });
+    Object.keys(groups).sort().forEach(function (g) {
+      var h2 = document.createElement("h2");
+      h2.className = "gname";
+      h2.textContent = g;
+      host.appendChild(h2);
+      var ul = document.createElement("ul");
+      ul.className = "rlist";
+      groups[g].sort(function (a, b) { return a.name.localeCompare(b.name); })
+        .forEach(function (entry) { ul.appendChild(makeRow(entry)); });
+      host.appendChild(ul);
+    });
+  }
+
+  function renderTables() {
+    var tables = (HUB.registry && HUB.registry.tables) || [];
+    results = [];
+    listbox = null;
+    input.value = "";
+    clearAria();
+    host.innerHTML = "";
+    document.title = "KQL tables | ms.labidi.eu";
+    statusEl.textContent = "Table registry: " + tables.length + " tables.";
+    var counts = {};
+    (HUB.kql || []).forEach(function (q) {
+      counts[q.table] = (counts[q.table] || 0) + 1;
+    });
+    var rowsHtml = tables.map(function (t) {
+      var n = counts[t.name] || 0;
+      return "<tr><td><code>" + esc(t.name) + "</code></td><td>" + esc(t.product) +
+        "</td><td>" + esc(t.costTier) + "</td><td class=\"colnotes\">" + esc(t.notes) +
+        "</td><td>" +
+        (n ? "<a href=\"#q=" + encodeURIComponent(t.name) + "\">" + n + "</a>" : "") +
+        "</td></tr>";
+    }).join("");
+    host.innerHTML = "<div class=\"tblwrap\"><table class=\"tbl\"><thead><tr>" +
+      "<th>Table</th><th>Product</th><th>Cost tier</th>" +
+      "<th class=\"colnotes\">Notes</th><th>Queries</th></tr></thead><tbody>" +
+      rowsHtml + "</tbody></table></div>";
   }
 
   function renderAbout() {
@@ -386,8 +529,13 @@
       "keyword. This site also ships OpenSearch, so browsers can discover it.</p>" +
       "<h2>Filters</h2>" +
       "<p><code>cat:sentinel</code> limits to a subject, <code>kind:tool</code> to a " +
-      "record kind. Acronyms work: try <code>air</code>, <code>gdap</code>, " +
-      "<code>prt</code>.</p>" +
+      "record kind, <code>role:caadmin</code> to a required role. Acronyms work: try " +
+      "<code>air</code>, <code>gdap</code>, <code>prt</code>.</p>" +
+      "<h2>Libraries</h2>" +
+      "<p><a href=\"#/kql\">KQL library</a> and <a href=\"#/ps\">PowerShell library</a> " +
+      "are searchable alongside portals (<code>kind:kql</code>, <code>kind:ps</code>); " +
+      "every entry carries its table or module plus the role it needs. The " +
+      "<a href=\"#/tables\">table registry</a> lists what each KQL table holds.</p>" +
       "<h2>Cloud environments</h2>" +
       "<p>The cloud selector rewrites Open links to your environment (GCC, GCC High, " +
       "DoD) where a variant exists; commercial stays the fallback.</p>" +
@@ -511,6 +659,9 @@
     }
     if (hash.indexOf("#/s/") === 0) { renderHub(hash.slice(4)); return; }
     if (hash.indexOf("#/c/") === 0) { renderCard(hash.slice(4)); return; }
+    if (hash === "#/kql") { renderLibrary("kql"); return; }
+    if (hash === "#/ps") { renderLibrary("ps"); return; }
+    if (hash === "#/tables") { renderTables(); return; }
     if (hash === "#/about") { renderAbout(); return; }
     input.value = "";
     renderHome();

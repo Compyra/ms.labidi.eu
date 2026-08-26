@@ -3,6 +3,32 @@
 Working file per the "check previous phases before starting the next" rule.
 Statuses: [x] fixed, [>] deferred to a named phase, [ ] open.
 
+## Phase 5 close + selftest overhaul (2026-08-26)
+
+- [x] Phase 5 finished: library views `#/kql` / `#/ps`, table registry at `#/tables`,
+      home library tiles, search integration (`kind:kql`, `kind:ps`, code-text
+      matching), library cards with copy actions, and two-way cross-links between
+      records and library entries.
+- [x] Selftests updated in both layers: python 30 -> 34 tests (library kinds,
+      namespacing, cross-link resolution, table registration, plus a new guard that
+      every generated data file is actually loaded by index.html *and* the harness);
+      browser selftest 24 -> 42 assertions covering search, filters, all three new
+      views, library cards and the overflow guard.
+- [x] HARNESS BUG (false failures): `dev/selftest.html` loaded unversioned scripts, so
+      a cached `search.js` made new tests fail. It now injects every file with a
+      per-run timestamp, guaranteeing it tests the working tree.
+- [x] HARNESS BUG (false passes/failures): `settle(selector)` returned immediately
+      when the selector already existed from the previous view, so two view tests
+      asserted against stale DOM. Replaced with predicate/title-based `until()`.
+- [x] REAL BUG: search truncated at 50 results, so `kind:kql` silently showed 50 of
+      60. Cap raised to 100.
+- [x] REAL VIEW BUG: the `#/tables` view overflowed 360px viewports by 277px. Wrapped
+      in an `overflow-x` container with the notes column hidden on narrow screens;
+      verified 0 overflow and guarded by a selftest assertion.
+- [x] Asset version bumped to v=9 (cache `mshub-v9`) after post-v8 edits; lockstep
+      test enforces index/404/SW agreement.
+- [ ] Open (needs a tenant): execute 10 library snippets unedited (phase 5 gate).
+
 ## Phases 0-4 confirmation (2026-08-26)
 
 - [x] Gate suite re-run before touching phase 5: 30 python tests OK, browser
