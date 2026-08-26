@@ -3,6 +3,33 @@
 Working file per the "check previous phases before starting the next" rule.
 Statuses: [x] fixed, [>] deferred to a named phase, [ ] open.
 
+## Phase 6 execution (2026-08-26)
+
+Pre-phase audit: the post-interruption doublecheck below served as the full audit of
+phases 0-5 (all gates green at v=11, two bugs fixed, nothing carried over).
+
+- [x] 23 runbooks written (26 total across 13 subjects), every `related` id
+      build-validated against records and libraries; steps kept to documented,
+      generic behaviour so nothing tenant-specific is asserted.
+- [x] Accuracy self-review pass over the riskiest claims; three sentences softened
+      before shipping (Intune pending-action cancellation, MDE local un-isolation,
+      shared-mailbox auto-blocked sign-in): each overstated portal behaviour we have
+      not verified. Behaviour claims consistent with the settings cards we already
+      ship (daily cap stops security data; grace period vs CA in docs/17 E3/E6).
+- [x] `#/runbooks` view, runbook cards (numbered steps, level badge, Copy steps),
+      search integration (`kind:runbook`, steps indexed, no go-link), record-card
+      "Runbooks" cross-links via `runbooksFor()`, home tile, footer + noscript.
+- [x] Gates flipped from pending to enforcing: python phase-6 test (prefix, unique,
+      sections, >=4 steps, >=25 rows, >=10 subjects) + 8 new browser assertions.
+      Runner green: 36 python (3 skips = phases 7/8), 69/69 PS parse, 54 browser.
+- [x] Post-phase sweep: the "filter-only searches are never truncated" selftest
+      broke by design when runbooks joined the index (expected-count formula did
+      not include them); fixed to sum commands + kql + ps + runbooks. v=12 lockstep
+      across index/404/sw. Docs updated: roadmap phase 6 DONE, README/PLAN status,
+      doc 12 §3.4, docs/17 gate A5 added (two runbooks used unaided in a shift).
+- [>] Human gate open: one real service desk shift uses two runbooks unaided
+      (docs/17 A5); runbook step wording gets revised from where testers stall.
+
 ## Post-interruption doublecheck (2026-08-26)
 
 Swept everything touched around the interrupted turn; git history confirmed nothing

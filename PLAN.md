@@ -1,6 +1,6 @@
 # ms.labidi.eu : Master Plan
 
-Status: phases 0-5 complete; phase 6 (runbooks) pipeline prepared with 3 seeds.
+Status: phases 0-6 complete; 26 runbooks live with view, cards and search integration.
 Tenant-dependent verification is collected in
 [docs/17-tenant-verification.md](docs/17-tenant-verification.md).
 Last updated: 2026-08-26.

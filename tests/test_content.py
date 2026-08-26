@@ -228,12 +228,24 @@ class TestPhase6Runbooks(unittest.TestCase):
         if not path.exists():
             self.skipTest("PENDING phase 6: data-runbooks.js not built")
         rows = extract_json(path)
+        seen = set()
         for row in rows:
+            rid = row.get("id", "")
+            self.assertTrue(rid.startswith("rb-"), f"{rid}: bad prefix")
+            self.assertNotIn(rid, seen, f"{rid}: duplicate")
+            seen.add(rid)
+            self.assertEqual(row.get("kind"), "runbook")
+            self.assertTrue(row.get("title"), f"{rid}: missing title")
             self.assertIn(row.get("level"), ("L1", "L2", "L3"))
             for section in ("steps", "verify", "escalate"):
-                self.assertTrue(row.get(section), f"{row.get('id')} missing {section}")
+                self.assertTrue(row.get(section), f"{rid} missing {section}")
+            self.assertGreaterEqual(len(row.get("steps", [])), 4,
+                                    f"{rid}: fewer than 4 steps")
         if len(rows) < 25:
             self.skipTest(f"PENDING phase 6: runbooks at {len(rows)}/25")
+        subjects = {row["subject"] for row in rows}
+        self.assertGreaterEqual(len(subjects), 10,
+                                "runbooks should span at least 10 subjects")
 
 
 class TestPhase7Licensing(unittest.TestCase):

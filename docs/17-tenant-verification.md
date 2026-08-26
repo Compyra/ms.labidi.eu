@@ -21,6 +21,7 @@ Rules while verifying:
 | A2 | KQL queries return rows (not just parse) | Run 10 across `#/kql` in Log Analytics / advanced hunting | `content/kql.csv` verified stamps |
 | A3 | Deep links land on the right blade | Click through every `path` for the top 50 records | `content/enrich-*.csv` |
 | A4 | Role claims are least-privilege *and sufficient* | Test with a scoped account per role tier | `roles` column everywhere |
+| A5 | Phase 6 gate: two runbooks used unaided in a real shift | Hand `#/runbooks` to a service desk colleague, no coaching; note where they stall | runbook step wording |
 
 ## B. Deep links and portal paths
 

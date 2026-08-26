@@ -199,7 +199,7 @@
   t("filter-only searches are never truncated", function () {
     var expected = HUB.commands.filter(function (r) {
       return r.category === "defender";
-    }).length + HUB.kql.concat(HUB.ps).filter(function (r) {
+    }).length + HUB.kql.concat(HUB.ps).concat(HUB.runbooks).filter(function (r) {
       return r.subject === "defender";
     }).length;
     return ids("cat:defender").length === expected && expected > 100;
@@ -219,6 +219,35 @@
     return hinted.length >= 4 && hinted.every(function (r) {
       return !!HUB.getById(r.ps);
     });
+  });
+
+  h2("[P6] runbooks");
+  t("runbook rows complete (sections + related resolve)", function () {
+    var known = {};
+    HUB.commands.concat(HUB.kql).concat(HUB.ps).forEach(function (r) { known[r.id] = 1; });
+    return HUB.runbooks.length >= 25 && HUB.runbooks.every(function (r) {
+      return /^rb-/.test(r.id) && r.title && r.level && r.subject &&
+        (r.steps || []).length >= 4 && (r.verify || []).length &&
+        (r.escalate || []).length &&
+        (r.related || []).every(function (x) { return known[x] || /^rb-/.test(x); });
+    });
+  });
+  t("runbooks searchable, kind:runbook filter, no go-link", function () {
+    return ids("kind:runbook").length === HUB.runbooks.length &&
+      ids("apns certificate").indexOf("rb-apns-expired") >= 0 &&
+      HUB.getById("rb-mail-not-arriving").kind === "runbook" &&
+      HUB.resolveGo("rb-mail-not-arriving") === null;
+  });
+  t("runbooksFor gives reverse cross-links", function () {
+    var hits = HUB.runbooksFor("exmt").map(function (e) { return e.id; });
+    return hits.indexOf("rb-mail-not-arriving") >= 0;
+  });
+  t("runbook levels are valid and spread", function () {
+    var levels = {};
+    HUB.runbooks.forEach(function (r) { levels[r.level] = 1; });
+    return HUB.runbooks.every(function (r) {
+      return ["L1", "L2", "L3"].indexOf(r.level) >= 0;
+    }) && levels.L1 && levels.L2;
   });
 
   h2("[P2/P3] app e2e (iframe)");
@@ -261,9 +290,9 @@
     }
     var steps = [
       function () {
-        t("home renders 14 subject tiles + 3 library tiles", function () {
+        t("home renders 14 subject tiles + 4 library tiles", function () {
           return w.document.querySelectorAll(".tiles:not(.libtiles) .tile").length === 14 &&
-            w.document.querySelectorAll(".libtiles .tile").length === 3;
+            w.document.querySelectorAll(".libtiles .tile").length === 4;
         });
         t("aria-controls absent on home", function () {
           return w.document.getElementById("q").getAttribute("aria-controls") === null;
@@ -385,6 +414,43 @@
           return rows >= 3 &&
             w.document.querySelector(".cardlib .gname").textContent.indexOf("Queries") === 0;
         });
+        w.location.hash = "#/runbooks";
+        return titled(w, "Runbooks |");
+      },
+      function () {
+        t("runbooks view lists every runbook grouped by subject", function () {
+          return w.document.querySelectorAll("#results .row").length ===
+            w.MSHUB.runbooks.length &&
+            w.document.querySelectorAll("#results .badge.lvl").length ===
+            w.MSHUB.runbooks.length;
+        });
+        w.location.hash = "#/c/rb-mail-not-arriving";
+        return titled(w, "rb-mail-not-arriving");
+      },
+      function () {
+        t("runbook card renders numbered steps + level badge + sections", function () {
+          var heads = Array.prototype.map.call(
+            w.document.querySelectorAll(".card.runbook .gname"),
+            function (x) { return x.textContent; }).join("|");
+          return w.document.querySelectorAll(".card.runbook ol.rbsec li").length >= 4 &&
+            heads.indexOf("Steps") >= 0 && heads.indexOf("Verify") >= 0 &&
+            heads.indexOf("Escalate when") >= 0 &&
+            !!w.document.querySelector(".card-head .badge.lvl") &&
+            w.document.querySelector(".actions .btn").textContent === "Copy steps";
+        });
+        w.location.hash = "#/c/exmt";
+        return until(w, function () {
+          return w.document.title.indexOf("exmt -") === 0 &&
+            !!w.document.querySelector(".cardrbs");
+        });
+      },
+      function () {
+        t("record card cross-links its runbooks", function () {
+          var links = Array.prototype.map.call(
+            w.document.querySelectorAll(".cardrbs .row .rid"),
+            function (x) { return x.textContent; });
+          return links.indexOf("rb-mail-not-arriving") >= 0;
+        });
         w.location.hash = "";
         return until(w, function () {
           return !!w.document.querySelector(".libtiles .tile");
@@ -395,7 +461,7 @@
           var hrefs = Array.prototype.map.call(
             w.document.querySelectorAll(".libtiles .tile"),
             function (a) { return a.getAttribute("href"); });
-          return hrefs.join(",") === "#/kql,#/ps,#/tables";
+          return hrefs.join(",") === "#/kql,#/ps,#/runbooks,#/tables";
         });
         w.location.hash = "#q=100%";
         return until(w, function () {

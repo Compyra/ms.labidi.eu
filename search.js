@@ -46,11 +46,27 @@
         .join(" ").toLowerCase();
       docs.push({ rec: entry, text: text, name: (entry.title || "").toLowerCase() });
     });
+    (HUB.runbooks || []).forEach(function (entry) {
+      entry.name = entry.title;
+      entry.category = entry.subject;
+      byId[entry.id] = entry;
+      var text = [entry.id, entry.title || "", entry.subject || "", "runbook",
+                  entry.level || ""]
+        .concat(entry.tags || []).concat(entry.steps || [])
+        .join(" ").toLowerCase();
+      docs.push({ rec: entry, text: text, name: (entry.title || "").toLowerCase() });
+    });
     (HUB.synonyms || []).forEach(function (s) { synByTerm[s.term] = s; });
   };
 
   HUB.libraryFor = function (recordId) {
     return (HUB.kql || []).concat(HUB.ps || []).filter(function (entry) {
+      return (entry.related || []).indexOf(recordId) >= 0;
+    });
+  };
+
+  HUB.runbooksFor = function (recordId) {
+    return (HUB.runbooks || []).filter(function (entry) {
       return (entry.related || []).indexOf(recordId) >= 0;
     });
   };

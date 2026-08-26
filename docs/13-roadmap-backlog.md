@@ -160,21 +160,34 @@ checks against command ids, subject validation, KQL table names checked against
 - [>] Open, needs a tenant: execute 10 snippets unedited (tracked as gate A1 in
       [17-tenant-verification.md](17-tenant-verification.md)).
 
-## Phase 6 : Runbooks
+## Phase 6 : Runbooks : DONE 2026-08-26
 
-Prep DONE 2026-08-26: `load_runbooks()` reads `content/runbooks/*.md` (YAML-ish
+Prep 2026-08-26: `load_runbooks()` reads `content/runbooks/*.md` (YAML-ish
 frontmatter + `## Preconditions/Steps/Verify/Rollback/Escalate when`), validating id
 prefix `rb-`, uniqueness against commands, level in L1/L2/L3, known subject, mandatory
 steps/verify/escalate sections, resolvable `related` ids (records *and* library
 entries) and absence of VERIFY markers. Emits `data-runbooks.js`
-(`window.MSHUB.runbooks`), wired into index.html + SW at v=10. Three seed runbooks
-prove the pipeline: `rb-mail-not-arriving` (L1), `rb-account-compromise` (L2),
-`rb-bitlocker-key` (L1).
+(`window.MSHUB.runbooks`).
 
-- [ ] 22 more runbooks from the seed lists in docs 01-11, 15, 16 (25 total).
-- [ ] `#/runbooks` view + runbook cards with numbered steps and level badges.
-- [ ] Runbooks in search (`kind:runbook`) and cross-linked from record cards.
-- Gate: one real service desk shift uses two runbooks unaided.
+- [x] 23 more runbooks written from the seed lists (26 total, 13 subjects covered):
+      entra 4 (password reset, MFA re-register, app credential rotation), intune 4
+      (wipe vs retire, compliance chain, APNs recovery, BitLocker), defender 5
+      (phishing triage, quarantine release, device isolation, compromise), sentinel 2
+      (tenant onboarding flagship, cost spike), azure 2 (RBAC grant, Arc
+      disconnected), m365 4 (mail trace, offboarding flagship, shared mailbox, name
+      change), plus purview, power, windows, automation, licensing, msp and toolbox
+      (PRT repair) with one flagship each.
+- [x] `#/runbooks` view (grouped by subject) + runbook cards: numbered steps,
+      level badge (L1 service desk / L2 escalation / L3 expert), preconditions,
+      verify, rollback, escalate-when sections, Copy steps action.
+- [x] Runbooks in search (`kind:runbook`, steps indexed), `HUB.runbooksFor()`
+      cross-links on record cards ("Runbooks" section), home tile, footer + noscript
+      routes; go-links fall back to the card (runbooks have no portal URL).
+- [x] Gates enforcing in both layers: python (prefix, uniqueness, kind, title,
+      levels, sections, >=4 steps, >=25 rows, >=10 subjects) and browser selftest
+      (54 assertions incl. view, card, cross-links, search filter).
+- [>] Human gate stays open: one real service desk shift uses two runbooks unaided
+      (tracked as gate A5 in [17-tenant-verification.md](17-tenant-verification.md)).
 
 ## Phase 7 : Licensing matrix + error codes
 

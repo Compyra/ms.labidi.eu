@@ -118,6 +118,7 @@
     host.appendChild(grid);
     var libs = [["#/kql", "KQL library", (HUB.kql || []).length],
                 ["#/ps", "PowerShell library", (HUB.ps || []).length],
+                ["#/runbooks", "Runbooks", (HUB.runbooks || []).length],
                 ["#/tables", "KQL tables",
                  ((HUB.registry && HUB.registry.tables) || []).length]];
     var libGrid = document.createElement("div");
@@ -158,6 +159,7 @@
       out += "<span class=\"badge kind\">" + esc(rec.kind) + "</span>";
     }
     if (rec.deprecated) { out += "<span class=\"badge dep\">deprecated</span>"; }
+    if (rec.level) { out += "<span class=\"badge lvl\">" + esc(rec.level) + "</span>"; }
     if (rec.blastRadius === "high") {
       out += "<span class=\"badge blast-high\" title=\"High blast radius: not on a Friday\">high blast</span>";
     }
@@ -276,6 +278,7 @@
   function renderCard(id) {
     var rec = HUB.getById((id || "").toLowerCase());
     if (!rec) { input.value = id; onInput(); return; }
+    if (rec.kind === "runbook") { renderRunbookCard(rec); return; }
     if (rec.code) { renderLibraryCard(rec); return; }
     results = [];
     listbox = null;
@@ -387,6 +390,17 @@
       lib.appendChild(ul);
       card.appendChild(lib);
     }
+    var books = HUB.runbooksFor ? HUB.runbooksFor(rec.id) : [];
+    if (books.length) {
+      var rbl = document.createElement("div");
+      rbl.className = "cardlib cardrbs";
+      rbl.innerHTML = "<h2 class=\"gname\">Runbooks</h2>";
+      var rul = document.createElement("ul");
+      rul.className = "rlist";
+      books.forEach(function (entry) { rul.appendChild(makeRow(entry)); });
+      rbl.appendChild(rul);
+      card.appendChild(rbl);
+    }
     host.appendChild(card);
   }
 
@@ -444,6 +458,102 @@
       card.appendChild(rel);
     }
     host.appendChild(card);
+  }
+
+  var LEVEL_LABEL = { L1: "L1 (service desk)", L2: "L2 (escalation)", L3: "L3 (expert)" };
+
+  function rbSection(label, items, ordered) {
+    if (!items || !items.length) { return ""; }
+    var tag = ordered ? "ol" : "ul";
+    return "<h2 class=\"gname\">" + esc(label) + "</h2><" + tag + " class=\"rbsec\">" +
+      items.map(function (s) { return "<li>" + esc(s) + "</li>"; }).join("") +
+      "</" + tag + ">";
+  }
+
+  function renderRunbookCard(rec) {
+    results = [];
+    listbox = null;
+    clearAria();
+    host.innerHTML = "";
+    addRecent(rec.id);
+    document.title = rec.id + " - " + rec.name + " | ms.labidi.eu";
+    statusEl.textContent = "";
+    var card = document.createElement("article");
+    card.className = "card runbook";
+    var h = "<header class=\"card-head\"><span class=\"rid\">" + esc(rec.id) +
+      "</span><h1>" + esc(rec.name) + "</h1>" +
+      "<span class=\"badge lvl\">" + esc(rec.level) + "</span>" +
+      "<span class=\"badge kind\">runbook</span></header>";
+    h += "<dl class=\"meta\">";
+    h += "<dt>Subject</dt><dd><a href=\"#/s/" + esc(rec.category) + "\">" +
+      esc(SUBJ_NAME[rec.category] || rec.category) + "</a></dd>";
+    h += "<dt>Level</dt><dd>" + esc(LEVEL_LABEL[rec.level] || rec.level) + "</dd>";
+    if (rec.tags) { h += "<dt>Tags</dt><dd>" + rec.tags.map(esc).join(", ") + "</dd>"; }
+    if (rec.verified) { h += "<dt>Verified</dt><dd>" + esc(rec.verified) + "</dd>"; }
+    h += "</dl>";
+    h += rbSection("Preconditions", rec.pre, false);
+    h += rbSection("Steps", rec.steps, true);
+    h += rbSection("Verify", rec.verify, false);
+    h += rbSection("Rollback", rec.rollback, false);
+    h += rbSection("Escalate when", rec.escalate, false);
+    card.innerHTML = h;
+    var actions = document.createElement("div");
+    actions.className = "actions";
+    var copyBtn = document.createElement("button");
+    copyBtn.className = "btn";
+    copyBtn.textContent = "Copy steps";
+    copyBtn.addEventListener("click", function () {
+      var text = rec.name + "\n" + (rec.steps || []).map(function (s, i) {
+        return (i + 1) + ". " + s;
+      }).join("\n");
+      copyText(text, copyBtn);
+    });
+    actions.appendChild(copyBtn);
+    var linkBtn = document.createElement("button");
+    linkBtn.className = "btn ghost";
+    linkBtn.textContent = "Copy go-link";
+    linkBtn.addEventListener("click", function () {
+      copyText("https://ms.labidi.eu/#/c/" + rec.id, linkBtn);
+    });
+    actions.appendChild(linkBtn);
+    card.appendChild(actions);
+    if (rec.related && rec.related.length) {
+      var rel = document.createElement("p");
+      rel.className = "related";
+      rel.innerHTML = "Works with: " + rec.related.map(function (r) {
+        return "<a href=\"#/c/" + esc(r) + "\">" + esc(r) + "</a>";
+      }).join(", ");
+      card.appendChild(rel);
+    }
+    host.appendChild(card);
+  }
+
+  function renderRunbooks() {
+    var rows = HUB.runbooks || [];
+    results = [];
+    listbox = null;
+    input.value = "";
+    clearAria();
+    host.innerHTML = "";
+    document.title = "Runbooks | ms.labidi.eu";
+    statusEl.textContent = "Runbooks: " + rows.length + " step-by-step procedures. " +
+      "L1 service desk, L2 escalation, L3 expert.";
+    var groups = {};
+    rows.forEach(function (entry) {
+      var g = SUBJ_NAME[entry.subject] || entry.subject || "Other";
+      (groups[g] = groups[g] || []).push(entry);
+    });
+    Object.keys(groups).sort().forEach(function (g) {
+      var h2 = document.createElement("h2");
+      h2.className = "gname";
+      h2.textContent = g;
+      host.appendChild(h2);
+      var ul = document.createElement("ul");
+      ul.className = "rlist";
+      groups[g].sort(function (a, b) { return a.name.localeCompare(b.name); })
+        .forEach(function (entry) { ul.appendChild(makeRow(entry)); });
+      host.appendChild(ul);
+    });
   }
 
   function renderLibrary(kind) {
@@ -540,7 +650,9 @@
       "<p><a href=\"#/kql\">KQL library</a> and <a href=\"#/ps\">PowerShell library</a> " +
       "are searchable alongside portals (<code>kind:kql</code>, <code>kind:ps</code>); " +
       "every entry carries its table or module plus the role it needs. The " +
-      "<a href=\"#/tables\">table registry</a> lists what each KQL table holds.</p>" +
+      "<a href=\"#/tables\">table registry</a> lists what each KQL table holds. " +
+      "<a href=\"#/runbooks\">Runbooks</a> (<code>kind:runbook</code>) are step-by-step " +
+      "procedures with verify, rollback and escalation guidance built in.</p>" +
       "<h2>Cloud environments</h2>" +
       "<p>The cloud selector rewrites Open links to your environment (GCC, GCC High, " +
       "DoD) where a variant exists; commercial stays the fallback.</p>" +
@@ -667,6 +779,7 @@
     if (hash.indexOf("#/c/") === 0) { renderCard(hash.slice(4)); return; }
     if (hash === "#/kql") { renderLibrary("kql"); return; }
     if (hash === "#/ps") { renderLibrary("ps"); return; }
+    if (hash === "#/runbooks") { renderRunbooks(); return; }
     if (hash === "#/tables") { renderTables(); return; }
     if (hash === "#/about") { renderAbout(); return; }
     input.value = "";
