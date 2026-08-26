@@ -1,34 +1,34 @@
 /* Network-first shell, cache-fallback offline. Version pairs with ?v= in index.html. */
 "use strict";
-var CACHE = "mshub-v10";
+var CACHE = "mshub-v11";
 var ASSETS = [
   "./",
   "404.html",
-  "style.css?v=10",
-  "search.js?v=10",
-  "app.js?v=10",
+  "style.css?v=11",
+  "search.js?v=11",
+  "app.js?v=11",
   "manifest.webmanifest",
   "icons/icon.svg",
-  "data/data-commands-entra.js?v=10",
-  "data/data-commands-intune.js?v=10",
-  "data/data-commands-defender.js?v=10",
-  "data/data-commands-sentinel.js?v=10",
-  "data/data-commands-azure.js?v=10",
-  "data/data-commands-m365.js?v=10",
-  "data/data-commands-purview.js?v=10",
-  "data/data-commands-power.js?v=10",
-  "data/data-commands-windows.js?v=10",
-  "data/data-commands-automation.js?v=10",
-  "data/data-commands-licensing.js?v=10",
-  "data/data-commands-msp.js?v=10",
-  "data/data-commands-toolbox.js?v=10",
-  "data/data-commands-mypages.js?v=10",
-  "data/data-synonyms.js?v=10",
-  "data/data-registry.js?v=10",
-  "data/data-kql.js?v=10",
-  "data/data-ps.js?v=10",
-  "data/data-runbooks.js?v=10",
-  "data/data-meta.js?v=10"
+  "data/data-commands-entra.js?v=11",
+  "data/data-commands-intune.js?v=11",
+  "data/data-commands-defender.js?v=11",
+  "data/data-commands-sentinel.js?v=11",
+  "data/data-commands-azure.js?v=11",
+  "data/data-commands-m365.js?v=11",
+  "data/data-commands-purview.js?v=11",
+  "data/data-commands-power.js?v=11",
+  "data/data-commands-windows.js?v=11",
+  "data/data-commands-automation.js?v=11",
+  "data/data-commands-licensing.js?v=11",
+  "data/data-commands-msp.js?v=11",
+  "data/data-commands-toolbox.js?v=11",
+  "data/data-commands-mypages.js?v=11",
+  "data/data-synonyms.js?v=11",
+  "data/data-registry.js?v=11",
+  "data/data-kql.js?v=11",
+  "data/data-ps.js?v=11",
+  "data/data-runbooks.js?v=11",
+  "data/data-meta.js?v=11"
 ];
 
 self.addEventListener("install", function (ev) {

@@ -616,7 +616,8 @@
       if (ev.shiftKey) {
         var chip = listbox && listbox.children[idx] &&
           listbox.children[idx].querySelector(".copy");
-        copyText(urlFor(pick.rec) || pick.rec.id, chip || listbox.children[idx]);
+        copyText(pick.rec.code || urlFor(pick.rec) || pick.rec.id,
+          chip || listbox.children[idx]);
       } else if (ev.ctrlKey || ev.metaKey) {
         if (pick.rec.url) { openUrl(urlFor(pick.rec)); }
       } else {

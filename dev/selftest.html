@@ -196,6 +196,14 @@
     return sentinel.indexOf("senplaybookperms") >= 0 &&
       sentinel.indexOf("kql-usage-cost") >= 0;
   });
+  t("filter-only searches are never truncated", function () {
+    var expected = HUB.commands.filter(function (r) {
+      return r.category === "defender";
+    }).length + HUB.kql.concat(HUB.ps).filter(function (r) {
+      return r.subject === "defender";
+    }).length;
+    return ids("cat:defender").length === expected && expected > 100;
+  });
   t("every KQL table exists in the registry", function () {
     var known = {};
     (HUB.registry.tables || []).forEach(function (tb) { known[tb.name] = 1; });
@@ -308,6 +316,23 @@
           w.localStorage.removeItem("mshub-lic");
           w.MSHUB.setLicenseProfile([]);
           return badges >= 2;
+        });
+        t("shift+enter copies code for library results", function () {
+          var captured = null;
+          var orig = w.navigator.clipboard.writeText.bind(w.navigator.clipboard);
+          try {
+            w.navigator.clipboard.writeText = function (text) {
+              captured = text;
+              return Promise.resolve();
+            };
+            type("kql-usage-cost");
+            var input = w.document.getElementById("q");
+            input.dispatchEvent(new w.KeyboardEvent("keydown",
+              { key: "Enter", shiftKey: true, bubbles: true }));
+          } finally {
+            w.navigator.clipboard.writeText = orig;
+          }
+          return captured !== null && captured.indexOf("Usage") === 0;
         });
         w.location.hash = "#/kql";
         return titled(w, "KQL library");

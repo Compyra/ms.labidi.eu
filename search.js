@@ -155,6 +155,6 @@
       }
       return a.rec.id < b.rec.id ? -1 : 1;
     });
-    return out.slice(0, 100);
+    return out.slice(0, tokens.length ? 100 : 1000);
   };
 })();

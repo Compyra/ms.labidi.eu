@@ -3,6 +3,24 @@
 Working file per the "check previous phases before starting the next" rule.
 Statuses: [x] fixed, [>] deferred to a named phase, [ ] open.
 
+## Post-interruption doublecheck (2026-08-26)
+
+Swept everything touched around the interrupted turn; git history confirmed nothing
+was lost (the in-progress work landed as `373283b`, the continuation as `8f175a5`).
+Two real bugs found in the interrupted code and fixed at v=11:
+
+- [x] Filter-only truncation returned: `cat:defender` matches ~114 items (records +
+      library entries) but the cap sliced at 100 and silently hid the rest. Browsing
+      filters (no search tokens) are now uncapped; token searches keep the 100 cap.
+      Guarded by a selftest assertion that computes the expected full count.
+- [x] Shift+Enter on a library search result copied the entry id instead of its code
+      (the row copy button was correct; the keyboard path was missed). Fixed and
+      covered by a clipboard-stub e2e assertion.
+- [x] Verified non-issues while sweeping: runbook ids are intentionally not routable
+      yet (phase 6), `?go=` on them falls back to search, home tiles exclude the
+      runbook library on purpose, the watchlist KQL passes the lint's pipe-splitting
+      by construction, and `check_snippets.ps1` JSON extraction is banner-safe.
+
 ## Phase 5 completion sweep + phase 6 prep (2026-08-26)
 
 Checked phase 5 for anything specified but not enabled; three gaps found and closed:
