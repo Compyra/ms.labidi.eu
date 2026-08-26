@@ -40,3 +40,12 @@ Project map:
 - [docs/12-data-model-import.md](docs/12-data-model-import.md): schemas + import pipeline
 - [docs/13-roadmap-backlog.md](docs/13-roadmap-backlog.md): executable phase checklists
 - [docs/14-ui-design.md](docs/14-ui-design.md): UI/interaction spec
+
+License & attribution: own code and content are MIT (see [LICENSE](LICENSE)).
+Shortcut data includes [cmd.ms](https://cmd.ms/) by Merill Fernando & contributors
+(MIT), pinned in [vendor/](vendor/) with commit provenance in
+[vendor/cmdms-commands.meta.json](vendor/cmdms-commands.meta.json). This site is not
+affiliated with Microsoft; product names belong to their owners. Facts carry
+`verified` stamps and docs links; anything tenant-dependent is tracked in
+[docs/17-tenant-verification.md](docs/17-tenant-verification.md) rather than claimed.
+Found something wrong? Open an issue with the record id.

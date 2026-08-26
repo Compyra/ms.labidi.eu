@@ -315,6 +315,7 @@ pre.code code {
   gap: 4px 16px;
 }
 .licbox { display: flex; gap: 8px; align-items: baseline; font-size: 14px; }
+.kbdtab th { text-align: left; padding: 3px 14px 3px 0; color: var(--text-dim); font-weight: 600; }
 .kbdtab td { padding: 3px 14px 3px 0; vertical-align: top; }
 kbd {
   font: 12px ui-monospace, Consolas, monospace;

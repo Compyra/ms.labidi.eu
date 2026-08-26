@@ -727,7 +727,8 @@
       "<article class=\"card about\">" +
       "<h1>Help</h1>" +
       "<h2>Keyboard</h2>" +
-      "<table class=\"kbdtab\"><tbody>" +
+      "<table class=\"kbdtab\"><thead><tr><th scope=\"col\">Keys</th>" +
+      "<th scope=\"col\">Action</th></tr></thead><tbody>" +
       "<tr><td><kbd>/</kbd> or <kbd>Ctrl</kbd>+<kbd>K</kbd></td><td>focus search</td></tr>" +
       "<tr><td><kbd>&uarr;</kbd> <kbd>&darr;</kbd></td><td>move through results</td></tr>" +
       "<tr><td><kbd>Enter</kbd></td><td>open the record card</td></tr>" +
