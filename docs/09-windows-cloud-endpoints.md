@@ -3,6 +3,12 @@
 Cloud-delivered Windows: Windows 365, Azure Virtual Desktop, Dev Box, plus endpoint-adjacent
 services (Universal Print, Windows servicing surfaces) that did not fit doc 02.
 
+Shipped 2026-08-26: `settings-windows.csv` (17 records: W365 provisioning/ANC/user
+settings/actions/Boot-Switch-Frontline, AVD host pools through required endpoints,
+Universal Print connectors, safeguard holds) + `enrich-windows.csv` (groups/roles/
+licenses on the 4 upstream records; own portals `devbox`, `winrelhealth`).
+Breadcrumb walk pending: docs/17 B7. Unshipped depth below stays backlog.
+
 ---
 
 ## 1. Windows 365 (Cloud PC)

@@ -40,6 +40,9 @@ Rules while verifying:
   walk each one, especially Roles and scopes, Data classification, and whether
   Information barriers / DSPM for AI appear with those exact names in this tenant's
   solution list.
+- B7. Windows cloud breadcrumbs: the Intune > Devices > Windows 365 paths in
+  `settings-windows.csv`, the AVD blade names, and whether `devportal.microsoft.com`
+  and the Universal Print portal render as described for this tenant's licenses.
 
 ## C. Licensing claims (highest risk of shipping something wrong)
 

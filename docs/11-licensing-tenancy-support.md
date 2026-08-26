@@ -3,6 +3,11 @@
 The subject nobody enjoys and everybody needs: which SKU unlocks what, how tenants and
 sovereign clouds work, where to get help, and the MSP/multi-tenant toolchain.
 
+Shipped 2026-08-26 (§1 records): assignment mechanics (`licassign`), lifecycle stages
+(`liclifecycle`), the removal-impact flagship (`licremoval`), channels/NCE
+(`licchannels`), self-service purchase toggles (`set-lic-selfservice`); subject now 10
+grouped records plus the 80-row matrix of §2.
+
 ---
 
 ## 1. License architecture (concept cards)

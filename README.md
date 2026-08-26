@@ -5,15 +5,15 @@ helpdesk, cloud and security engineers in Microsoft environments. Every portal s
 from [cmd.ms](https://cmd.ms/) (MIT, by Merill Fernando & contributors), plus deep
 settings paths, roles, licenses, KQL, PowerShell and runbooks on top.
 
-**Status: phases 0-7 complete.** 503 records (30 Sentinel settings, the 15-toggle
-Defender wall, a 20-record Purview settings pass, a 41-code error encyclopedia,
+**Status: phases 0-7 complete.** 535 records (settings encyclopedias for Sentinel,
+Defender, Intune, Purview and Windows cloud, a 41-code error encyclopedia,
 blast-radius ratings) plus a 60-query KQL library, 69 PowerShell snippets, a 49-table
 registry, 26 runbooks and an 80-row license matrix (feature to minimum license,
 highlighted against your license profile), all searchable together with copy-ready
 cards. Tenant-dependent facts are collected in
 [docs/17-tenant-verification.md](docs/17-tenant-verification.md).
 
-Quality gates: `tests\run-tests.ps1` runs 38 Python tests, a PowerShell parse gate over
+Quality gates: `tests\run-tests.ps1` runs 39 Python tests, a PowerShell parse gate over
 every shipped snippet, and a 65-assertion browser selftest.
 
 Local dev: `python tools/build_data.py` then `python -m http.server 8905 --bind

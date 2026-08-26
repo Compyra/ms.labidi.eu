@@ -30,6 +30,7 @@ ediscmgr,eDiscovery Manager,purview,own cases only; Administrator sees all
 compliancedata,Compliance Data Administrator,workload,data connectors + protection
 auditreader,Audit Reader,purview,search-only audit access
 recordsmgmt,Records Management,purview,disposition review + retention label admin
+printadmin,Printer Administrator,workload,Universal Print printers + shares + connectors
 in-helpdesk,Help Desk Operator (Intune RBAC),intune,remote tasks + read; scope-taggable
 in-policyprofile,Policy and Profile Manager (Intune RBAC),intune,config + compliance authoring
 in-readonly,Read Only Operator (Intune RBAC),intune,read all Intune

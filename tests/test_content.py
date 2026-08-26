@@ -49,7 +49,7 @@ class TestPhase3Enrichment(unittest.TestCase):
     def test_mypages_all_have_share_text(self):
         records, _ = pipeline()
         pages = [r for r in records.values() if r["category"] == "mypages"]
-        self.assertEqual(len(pages), 9)
+        self.assertGreaterEqual(len(pages), 9)
         for rec in pages:
             self.assertTrue(rec.get("shareText"), f"{rec['id']} missing shareText")
 
@@ -285,6 +285,20 @@ class TestPhase7Licensing(unittest.TestCase):
         groups = {r.get("group") for r in rows}
         self.assertGreaterEqual(len(groups - {None}), 5,
                                 "purview hub should be grouped")
+
+    def test_windows_pass(self):
+        rows = extract_json(ROOT / "data" / "data-commands-windows.js")
+        settings = [r for r in rows
+                    if r["id"].startswith(("set-w365-", "set-avd-", "set-up-",
+                                           "set-win-"))]
+        self.assertGreaterEqual(len(settings), 12, "windows settings encyclopedia")
+        for row in settings:
+            self.assertTrue(row.get("desc"), f"{row['id']}: missing desc")
+            self.assertNotIn("?", row.get("path", ""),
+                             f"{row['id']}: hedge marker in path")
+        groups = {r.get("group") for r in rows}
+        self.assertGreaterEqual(len(groups - {None}), 4,
+                                "windows hub should be grouped")
 
     def test_error_code_records(self):
         codes = []

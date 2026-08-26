@@ -3,6 +3,37 @@
 Working file per the "check previous phases before starting the next" rule.
 Statuses: [x] fixed, [>] deferred to a named phase, [ ] open.
 
+## All-subject coverage audit (2026-08-26, follow-up to the purview question)
+
+Inventoried every subject for its own layer (own records, settings, concepts, hub
+groups). Sentinel/defender/intune/entra/purview/toolbox/msp passed; five did not:
+
+- [x] windows 4 -> 23: settings-windows.csv (W365 provisioning/ANC/user settings/
+      remote actions/Boot-Switch-Frontline; AVD host pools, app groups, scaling,
+      RDP properties, Start VM, Shortpath, Teams optimization, FSLogix, agent
+      servicing, required endpoints; UP connectors; safeguard holds) +
+      enrich-windows.csv (groups on the 4 upstream records; devbox + winrelhealth
+      portals; new Printer Administrator registry role). New python gate mirrors
+      the purview one (>=12 settings, groups, no hedge markers).
+- [x] licensing 5 -> 10: assignment mechanics, lifecycle stages, removal-impact
+      flagship, channels/NCE, self-service purchase toggle; groups on all rows.
+      Record ids deliberately avoid the reserved lic- matrix prefix (licassign,
+      liclifecycle, licremoval, licchannels).
+- [x] power 13 -> 18: gateways portal, environment types + default trap, managed
+      environments, publish-to-web (fabricadmin, public-exposure warning), CoE kit.
+- [x] mypages 9 -> 11: mysignins + mydevices were genuinely missing self-service
+      links (upstream never had them); shipped with shareText per the test contract.
+- [x] automation 10 -> 11: Graph throttling / polite-scripts concept.
+- [x] Caught during the pass: unquoted commas in one desc (win365) misaligned the
+      CSV columns (build caught it); a garbled docs URL in licchannels (dropped
+      rather than shipping a guessed slug); rb-* ids in record related (records
+      validate against records only); the mypages test pinned ==9 (hard-coded
+      count lesson again: now >=9). Total 503 -> 535 records at v=16; 39 py tests
+      + 65 browser green; windows hub verified live (5 groups, search chains
+      portal -> setting -> runbook).
+- [>] azure/m365 walls stay documented backlog (org-settings ~60 toggles, Azure
+      role encyclopedia); breadcrumb walks: docs/17 B6 + new B7.
+
 ## Purview coverage audit (2026-08-26, user question "are all purview portals and settings added?")
 
 Honest answer was NO: all 19 upstream cmd.ms portals were imported (sovereign twins

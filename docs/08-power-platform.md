@@ -3,6 +3,10 @@
 Low-code plus BI. Audience angle: engineers rarely build here, but they administer, secure
 and troubleshoot it (environments, DLP-for-connectors, licensing, tenant isolation).
 
+Shipped 2026-08-26: gateways portal, environment types + default-environment trap,
+managed environments, publish-to-web control, CoE kit concept (enrich-power.csv);
+subject now 18 grouped records. Unshipped depth stays backlog.
+
 ---
 
 ## 1. Portals (the parts)
