@@ -3,6 +3,35 @@
 Working file per the "check previous phases before starting the next" rule.
 Statuses: [x] fixed, [>] deferred to a named phase, [ ] open.
 
+## Phase 6 doublecheck + phase 7 prep (2026-08-26)
+
+Phase 6 audit result: content sweep clean (26 runbooks: no em-dashes, no BOM, no
+VERIFY, no TODO, no stray URLs), all gates green, one real inconsistency found:
+
+- [x] The copy chip on url-less rows (runbooks, concepts) said "Copy URL" but copied
+      the bare id, useless in a ticket. Rows and Shift+Enter now copy the shareable
+      go-link (`https://ms.labidi.eu/?go=<id>`) for url-less records; help text
+      updated; selftest-guarded ("url-less row copy yields a shareable go-link").
+- [x] Verified non-issues: runbook rows navigate correctly from the copy-chip branch,
+      recents accept runbook ids, `?go=rb-*` falls back to the card, runbook data
+      deterministic across double builds (hash test).
+
+Phase 7 prepared:
+
+- [x] `load_licensing()` pipeline: `content/licensing.csv` -> `data-licensing.js`,
+      validating lic- prefix, uniqueness, subject, min/alsoIn against the license
+      registry, related resolution, no VERIFY. 14 verified seed rows spanning 8
+      subjects prove the shape (doc 12 §3.5).
+- [x] Error-code record pattern proven: `enrich-errorcodes.csv` (per-row category)
+      ships AADSTS50076, AADSTS53003, 0x80180018 and NDR 5.7.1 as concept records;
+      verified live: search "mfa required error" and "bounce 5.7.1" hit them.
+- [x] Gates strengthened but count-tolerant: python phase-7 test validates shape
+      (prefix, kind, feature, registry membership, docs link) and skips below 80;
+      selftest adds "licensing seed rows complete" (pends until the file exists).
+      Runner green at v=13: 36 py, 69/69 parse, 56 browser + 2 pending.
+- [ ] Phase 7 execution: grow the matrix to ~80 rows, top-40 AADSTS + enrollment +
+      NDR sets, `#/licensing` view with license-profile highlighting (roadmap).
+
 ## Phase 6 execution (2026-08-26)
 
 Pre-phase audit: the post-interruption doublecheck below served as the full audit of

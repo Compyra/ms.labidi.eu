@@ -118,7 +118,20 @@ mandatory; `related` may point at records **or** library entries. Runbooks surfa
 record cards via `HUB.runbooksFor(recordId)` (reverse lookup over `related`). Levels
 read L1 service desk, L2 escalation, L3 expert.
 
-### 3.5 registries
+### 3.5 licensing matrix row (implemented phase 7 prep)
+`content/licensing.csv` -> `data-licensing.js` (`window.MSHUB.licensing`) by
+`load_licensing()`: `{id (lic-*), kind:"lic", feature, subject, min, alsoIn[], notes,
+docs, verified, related[]}`. Validation: id prefix + charset, uniqueness against
+command ids, subject slug, `min` and every `alsoIn` entry present in `licenses.csv`
+(so the matrix can never name a SKU the registry cannot render), `related` resolving
+to records or library entries, docs link required by the content gate, no VERIFY in
+emitted fields. `min` is the cheapest single license that unlocks the feature;
+`alsoIn` lists bundles that carry it when the `includes[]` map cannot express it.
+Error-code records (AADSTS / enrollment / NDR) are ordinary `concept` records seeded
+from `content/enrich-errorcodes.csv`, which carries a per-row `category` column
+because it spans subjects.
+
+### 3.6 registries
 `roles.csv` (id, name, plane: entra|azure|xdr|workload, notes),
 `licenses.csv` (id, name, family, includes[]),
 `tables.csv` (KQL table registry: name, product, costTier, retentionDefault),

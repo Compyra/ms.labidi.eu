@@ -204,7 +204,8 @@
     li.addEventListener("click", function (ev) {
       var t = ev.target;
       if (t.classList.contains("copy")) {
-        copyText(isLib ? rec.code : (urlFor(rec) || rec.id), t);
+        copyText(isLib ? rec.code :
+          (urlFor(rec) || "https://ms.labidi.eu/?go=" + rec.id), t);
       } else if (t.classList.contains("cloud")) {
         openUrl(rec.clouds[t.getAttribute("data-cloud")]);
       } else if (!t.classList.contains("open")) {
@@ -628,7 +629,7 @@
       "<tr><td><kbd>&uarr;</kbd> <kbd>&darr;</kbd></td><td>move through results</td></tr>" +
       "<tr><td><kbd>Enter</kbd></td><td>open the record card</td></tr>" +
       "<tr><td><kbd>Ctrl</kbd>+<kbd>Enter</kbd></td><td>open the portal directly</td></tr>" +
-      "<tr><td><kbd>Shift</kbd>+<kbd>Enter</kbd></td><td>copy the portal URL</td></tr>" +
+      "<tr><td><kbd>Shift</kbd>+<kbd>Enter</kbd></td><td>copy the URL, snippet code or share link</td></tr>" +
       "<tr><td><kbd>Esc</kbd></td><td>clear, then leave the search box</td></tr>" +
       "<tr><td><kbd>g</kbd> then a letter</td><td>jump to a hub " +
       "(e entra, i intune, d defender, s sentinel, a azure, m m365, p purview, " +
@@ -728,7 +729,8 @@
       if (ev.shiftKey) {
         var chip = listbox && listbox.children[idx] &&
           listbox.children[idx].querySelector(".copy");
-        copyText(pick.rec.code || urlFor(pick.rec) || pick.rec.id,
+        copyText(pick.rec.code || urlFor(pick.rec) ||
+          "https://ms.labidi.eu/?go=" + pick.rec.id,
           chip || listbox.children[idx]);
       } else if (ev.ctrlKey || ev.metaKey) {
         if (pick.rec.url) { openUrl(urlFor(pick.rec)); }

@@ -254,6 +254,22 @@ class TestPhase7Licensing(unittest.TestCase):
         if not path.exists():
             self.skipTest("PENDING phase 7: data-licensing.js not built")
         rows = extract_json(path)
+        registry = extract_json(ROOT / "data" / "data-registry.js")
+        license_ids = set(registry["licenses"])
+        seen = set()
+        for row in rows:
+            rid = row.get("id", "")
+            self.assertTrue(rid.startswith("lic-"), f"{rid}: bad prefix")
+            self.assertNotIn(rid, seen, f"{rid}: duplicate")
+            seen.add(rid)
+            self.assertEqual(row.get("kind"), "lic")
+            self.assertTrue(row.get("feature"), f"{rid}: missing feature")
+            self.assertIn(row.get("min"), license_ids,
+                          f"{rid}: min not a registry license")
+            for x in row.get("alsoIn", []):
+                self.assertIn(x, license_ids, f"{rid}: alsoIn {x} unknown")
+            self.assertTrue(row.get("docs", "").startswith("https://"),
+                            f"{rid}: docs link required")
         if len(rows) < 80:
             self.skipTest(f"PENDING phase 7: matrix at {len(rows)}/80")
 

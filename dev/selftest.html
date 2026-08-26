@@ -41,6 +41,7 @@
     "../data/data-kql.js",
     "../data/data-ps.js",
     "../data/data-runbooks.js",
+    "../data/data-licensing.js",
     "../data/data-meta.js",
     "../search.js"
   ];
@@ -171,6 +172,17 @@
   });
   t("phase 6 runbooks", function () { return libStub(HUB.runbooks, 25); });
   t("phase 7 licensing matrix", function () { return libStub(HUB.licensing, 80); });
+  t("phase 7 licensing seed rows complete", function () {
+    if (!HUB.licensing) { return "pend"; }
+    var known = {};
+    HUB.commands.concat(HUB.kql).concat(HUB.ps).forEach(function (r) { known[r.id] = 1; });
+    var lics = HUB.registry.licenses || {};
+    return HUB.licensing.length >= 10 && HUB.licensing.every(function (r) {
+      return /^lic-/.test(r.id) && r.feature && r.min && lics[r.min] &&
+        (r.alsoIn || []).every(function (x) { return lics[x]; }) &&
+        (r.related || []).every(function (x) { return known[x]; });
+    });
+  });
 
   h2("[P5] library search + registry");
   t("library entries are searchable by title", function () {
@@ -423,6 +435,21 @@
             w.MSHUB.runbooks.length &&
             w.document.querySelectorAll("#results .badge.lvl").length ===
             w.MSHUB.runbooks.length;
+        });
+        t("url-less row copy yields a shareable go-link", function () {
+          var captured = null;
+          var orig = w.navigator.clipboard.writeText.bind(w.navigator.clipboard);
+          try {
+            w.navigator.clipboard.writeText = function (text) {
+              captured = text;
+              return Promise.resolve();
+            };
+            w.document.querySelector("#results .row .chip.copy").click();
+          } finally {
+            w.navigator.clipboard.writeText = orig;
+          }
+          return captured !== null &&
+            captured.indexOf("https://ms.labidi.eu/?go=rb-") === 0;
         });
         w.location.hash = "#/c/rb-mail-not-arriving";
         return titled(w, "rb-mail-not-arriving");

@@ -1,6 +1,6 @@
 # ms.labidi.eu : Master Plan
 
-Status: phases 0-6 complete; 26 runbooks live with view, cards and search integration.
+Status: phases 0-6 complete; phase 7 (licensing matrix + error codes) prepared with seeds.
 Tenant-dependent verification is collected in
 [docs/17-tenant-verification.md](docs/17-tenant-verification.md).
 Last updated: 2026-08-26.

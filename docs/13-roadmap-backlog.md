@@ -191,8 +191,23 @@ entries) and absence of VERIFY markers. Emits `data-runbooks.js`
 
 ## Phase 7 : Licensing matrix + error codes
 
-- [ ] `content/licensing.csv` seed 80 rows (doc 11 §2).
-- [ ] AADSTS starter set (top 40 codes), Intune enrollment codes, NDR families as records.
+Prep DONE 2026-08-26: `load_licensing()` reads `content/licensing.csv` into
+`data-licensing.js` (`window.MSHUB.licensing`), validating `lic-` prefix, uniqueness,
+subject, `min`/`alsoIn` against the license registry, resolvable `related` and no
+VERIFY markers. 14 seed rows prove the shape (CA, risk CA, PIM, access reviews,
+lifecycle workflows, Threat Explorer, EPM, Remote Help, audit premium, auto-labeling,
+Sentinel E5 grant, W365, PP premium, Copilot). Error-code records seeded via
+`content/enrich-errorcodes.csv` (AADSTS50076, AADSTS53003, 0x80180018, NDR 5.7.1)
+as searchable `concept` records with a per-row category. Gates are shape-strict and
+count-tolerant in both layers until 80 rows.
+
+- [ ] Grow `content/licensing.csv` to the ~80 priority rows (doc 11 §2), sourced from
+      the per-subject docs; every row keeps a learn.microsoft.com docs link.
+- [ ] AADSTS starter set (top 40 codes), Intune enrollment codes, NDR families as
+      records in `enrich-errorcodes.csv`.
+- [ ] Surface the matrix: `#/licensing` view (feature | minimum | also-in, grouped by
+      subject, license names from the registry) + `kind:lic` search chips; license
+      profile ticks should light up rows the tenant already owns.
 - Gate: "is this E3 or E5" answered in <10 seconds for the seed rows.
 
 ## Phase 8 : Launch

@@ -244,6 +244,51 @@ def load_runbooks(records, extra_ids=frozenset()):
     return sorted(out, key=lambda r: r["id"])
 
 
+def load_licensing(records, extra_ids, license_ids):
+    """content/licensing.csv -> matrix rows, or None before phase 7 starts."""
+    path = ROOT / "content" / "licensing.csv"
+    if not path.exists():
+        return None
+    out, seen = [], set()
+    for row in read_csv(path):
+        rid = (row.get("id") or "").strip().lower()
+        if not rid.startswith("lic-") or not ID_RE.match(rid):
+            errors.append(f"licensing {rid!r}: id must be lic-* and match {ID_RE.pattern}")
+        if rid in seen or rid in records:
+            errors.append(f"licensing {rid}: duplicate or collides with a command id")
+        seen.add(rid)
+        entry = {"id": rid, "kind": "lic",
+                 "feature": (row.get("feature") or "").strip(),
+                 "subject": (row.get("subject") or "").strip(),
+                 "min": (row.get("min") or "").strip()}
+        if not entry["feature"]:
+            errors.append(f"licensing {rid}: missing feature")
+        if entry["subject"] not in SUBJECTS:
+            errors.append(f"licensing {rid}: bad subject {entry['subject']!r}")
+        if entry["min"] not in license_ids:
+            errors.append(f"licensing {rid}: min {entry['min']!r} not in licenses.csv")
+        also = [x.lower() for x in split_multi(row.get("alsoIn") or "")]
+        bad = [x for x in also if x not in license_ids]
+        if bad:
+            errors.append(f"licensing {rid}: alsoIn {bad} not in licenses.csv")
+        if also:
+            entry["alsoIn"] = also
+        for field in ("notes", "docs", "verified"):
+            val = (row.get(field) or "").strip()
+            if val:
+                entry[field] = val
+        rel = [x.lower() for x in split_multi(row.get("related") or "")]
+        unknown = [r for r in rel if r not in records and r not in extra_ids]
+        if unknown:
+            errors.append(f"licensing {rid}: related {unknown} not a record")
+        if rel:
+            entry["related"] = rel
+        if "VERIFY" in json.dumps(entry):
+            errors.append(f"licensing {rid}: contains a VERIFY marker")
+        out.append(entry)
+    return sorted(out, key=lambda r: r["id"])
+
+
 def load_library(name, extra_fields, records, table_names=None):
     """content/<name>.csv -> list of dicts, or None when the phase has not started.
 
@@ -372,6 +417,7 @@ def main():
         if hint.startswith(("ps-", "kql-")) and hint not in library_ids:
             errors.append(f"{rec['id']}: ps hint {hint!r} is not a library entry")
     runbooks = load_runbooks(records, library_ids)
+    licensing = load_licensing(records, library_ids, set(registries["licenses"]))
 
     for w in warnings:
         print(f"warn: {w}")
@@ -398,7 +444,8 @@ def main():
              "(window.MSHUB=window.MSHUB||{}).registry="
              + json.dumps(registries, ensure_ascii=False, separators=(",", ":")) + ";")
     libraries = {}
-    for lib_name, rows in (("kql", kql), ("ps", ps), ("runbooks", runbooks)):
+    for lib_name, rows in (("kql", kql), ("ps", ps), ("runbooks", runbooks),
+                           ("licensing", licensing)):
         if rows is not None:
             libraries[lib_name] = len(rows)
             write_js(DATA / f"data-{lib_name}.js", banner,
