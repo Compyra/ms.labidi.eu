@@ -252,22 +252,25 @@ is single-sourced: `content/version.txt` drives `?v=` rewriting of index/404 and
       production**.
 - [ ] Optional follow-ups: formal Lighthouse run; first human PWA install.
 
-## Phase 9 : Maintenance loop (recurring)
+## Phase 9 : Maintenance loop (recurring) : OPERATIONAL, first run 2026-08-26
 
 Tooling shipped 2026-08-26: `check_freshness.py` (stale verified stamps + pin age,
 offline), `sync_upstream.py` (fetch + diff the cmd.ms CSV, never auto-merge),
 `check_links.py` (threaded link checker classifying OK / MOVED cross-host /
-BROKEN / BLOCKED / UNREACHABLE, auth-wall aware), `audit_consistency.py`.
-First run results: pin current (355=355), no stale stamps, 12 broken docs links
-fixed, akaSearch.net -> akams.fyi adopted, forms/loop `.cloud.microsoft`
-redirects left to upstream (still functional; tracked by the checker).
+BROKEN / BLOCKED / UNREACHABLE, auth-wall aware, learn.microsoft.com throttled),
+`audit_consistency.py`. Issue template `.github/ISSUE_TEMPLATE/wrong-info.yml`.
 
-- [ ] Quarterly: `check_freshness.py` then `sync_upstream.py` then
-      `check_links.py` then `audit_consistency.py`; VERIFY-tag sweep of volatile
-      facts (portal hosts, retirements, license names); verified stamps refreshed
-      on touched records.
+First full run 2026-08-26: freshness clean (no stale stamps); upstream pin current
+(355=355); links: 12 broken docs fixed then all replacements re-verified, all 325
+learn.microsoft.com links now 200-clean, akaSearch.net -> akams.fyi adopted,
+aka.ms/SaRA found to download an exe and repointed at the support landing page;
+consistency audit clean (7 known-deliberate baseline links, 3 picker SKUs);
+126 VERIFY tags all in docs (shipped data has zero, gate-enforced).
+
+- [ ] Next quarterly run ~2026-11: `check_freshness.py` then `sync_upstream.py`
+      then `check_links.py` then `audit_consistency.py`; VERIFY-tag sweep of
+      volatile facts; refresh verified stamps on touched records.
 - [ ] Per Microsoft wave (Ignite/Build): new-product triage into subject docs.
-- [ ] Issue template for "broken link / wrong role / wrong license" reports.
 
 ## Icebox (explicitly not now)
 

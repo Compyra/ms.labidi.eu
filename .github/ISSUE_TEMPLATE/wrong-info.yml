@@ -1,0 +1,40 @@
+name: Wrong or outdated info
+description: A broken link, wrong role, wrong license claim or outdated fact on ms.labidi.eu
+title: "[record-id]: short description"
+labels: [accuracy]
+body:
+  - type: input
+    id: record
+    attributes:
+      label: Record id
+      description: The id shown on the card or row (e.g. enca, lic-pim, kql-usage-cost, rb-mail-not-arriving)
+      placeholder: enca
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What is wrong
+      options:
+        - Broken or moved link
+        - Wrong role claim (too much or not enough)
+        - Wrong license claim
+        - Outdated portal path or portal renamed
+        - Wrong or unclear description
+        - Missing record that should exist
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: detail
+    attributes:
+      label: What should it say instead
+      description: A learn.microsoft.com link proving the correction helps it land fast.
+    validations:
+      required: true
+  - type: input
+    id: seen
+    attributes:
+      label: Where you verified it
+      description: Tenant type / portal date, so we know how fresh the observation is.
+      placeholder: verified in my tenant on 2026-08-26

@@ -9,6 +9,8 @@ Usage: python tools/check_links.py [--limit N] [--only substring]
 import json
 import re
 import sys
+import threading
+import time
 import urllib.error
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor
@@ -18,6 +20,9 @@ from urllib.parse import urlsplit
 ROOT = Path(__file__).resolve().parent.parent
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) ms.labidi.eu link checker"
 TIMEOUT = 15
+THROTTLED_HOSTS = {"learn.microsoft.com": 0.6}  # min seconds between requests
+_host_locks = {h: threading.Lock() for h in THROTTLED_HOSTS}
+_host_last = {h: 0.0 for h in THROTTLED_HOSTS}
 SAME_FAMILY = {  # redirect targets that do not count as a move
     "login.microsoftonline.com", "login.microsoft.com", "aka.ms",
     "learn.microsoft.com", "go.microsoft.com",
@@ -47,24 +52,38 @@ def collect_urls():
 
 
 def probe(url):
+    host = urlsplit(url).netloc.lower()
+    delay = THROTTLED_HOSTS.get(host)
+    if delay:
+        with _host_locks[host]:
+            wait = _host_last[host] + delay - time.monotonic()
+            if wait > 0:
+                time.sleep(wait)
+            _host_last[host] = time.monotonic()
     req = urllib.request.Request(url, headers={"User-Agent": UA}, method="GET")
-    try:
-        with urllib.request.urlopen(req, timeout=TIMEOUT) as res:
-            final_host = urlsplit(res.url).netloc.lower()
-            orig_host = urlsplit(url).netloc.lower()
-            if is_auth_wall(final_host):
-                return ("OK", "auth wall (portal exists)")
-            if final_host != orig_host and final_host not in SAME_FAMILY:
-                return ("MOVED", f"-> {res.url[:90]}")
-            return ("OK", str(res.status))
-    except urllib.error.HTTPError as e:
-        if e.code in (404, 410):
-            return ("BROKEN", str(e.code))
-        if e.code in (401, 403, 429):
-            return ("BLOCKED", str(e.code))
-        return ("ERROR", str(e.code))
-    except Exception as e:  # noqa: BLE001 - report tool
-        return ("UNREACHABLE", str(e)[:60])
+    for attempt in (1, 2):
+        try:
+            with urllib.request.urlopen(req, timeout=TIMEOUT) as res:
+                final_host = urlsplit(res.url).netloc.lower()
+                orig_host = urlsplit(url).netloc.lower()
+                if is_auth_wall(final_host):
+                    return ("OK", "auth wall (portal exists)")
+                if final_host != orig_host and final_host not in SAME_FAMILY:
+                    return ("MOVED", f"-> {res.url[:90]}")
+                return ("OK", str(res.status))
+        except urllib.error.HTTPError as e:
+            if e.code == 429 and attempt == 1:
+                retry_after = min(int(e.headers.get("Retry-After") or 5), 30)
+                time.sleep(retry_after)
+                continue
+            if e.code in (404, 410):
+                return ("BROKEN", str(e.code))
+            if e.code in (401, 403, 429):
+                return ("BLOCKED", str(e.code))
+            return ("ERROR", str(e.code))
+        except Exception as e:  # noqa: BLE001 - report tool
+            return ("UNREACHABLE", str(e)[:60])
+    return ("BLOCKED", "429 after retry")
 
 
 def main(argv):

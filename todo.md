@@ -3,6 +3,33 @@
 Working file per the "check previous phases before starting the next" rule.
 Statuses: [x] fixed, [>] deferred to a named phase, [ ] open.
 
+## Phase 9 first run: PROJECT COMPLETE (2026-08-26)
+
+Readiness check passed (tools shipped + smoke-tested previous turn). First full
+maintenance cycle executed:
+
+- [x] check_freshness: clean (no stale stamps; pin 0 days old; 3 unstamped own
+      rows are deliberate: cmd.ms-era rows aging with the vendor pin).
+- [x] sync_upstream: pin current (355=355 against live upstream).
+- [x] check_links: learn.microsoft.com now throttled (0.6s/req + Retry-After
+      retry); all 12 replacement slugs from the harvest re-verified 200; full
+      learn sweep 325/325 OK. Found aka.ms/SaRA silently downloads SetupProd.exe:
+      repointed sara.docs at the support landing page (verified 200) and noted
+      the download behavior in the desc.
+- [x] audit_consistency: unchanged-clean (7 deliberate baseline links, 3 picker
+      SKUs, 41 error codes, no dangling refs).
+- [x] VERIFY sweep: 126 tags, all in docs/ (intentional review markers); shipped
+      data has zero, test-enforced.
+- [x] Issue template shipped: .github/ISSUE_TEMPLATE/wrong-info.yml (record id +
+      what-is-wrong dropdown + proof link + freshness field).
+- [x] Both new self-service deep links verified live 200 (security-info +
+      password/change).
+
+Project state: phases 0-8 DONE, phase 9 OPERATIONAL (recurring by design; next
+run ~2026-11). The only open items require things code cannot provide: a test
+tenant (docs/17 A-G), two human gates (A5 runbook shift, PWA install), optional
+formal Lighthouse. The site is live, green, self-testing and maintainable.
+
 ## Self-service completeness + quarterly maintenance tooling (2026-08-26)
 
 Phases 0-8 re-verified complete (clean tree, prod live). User asks: all end-user

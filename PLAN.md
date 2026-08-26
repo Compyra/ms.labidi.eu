@@ -1,6 +1,6 @@
 # ms.labidi.eu : Master Plan
 
-Status: phases 0-8 complete; LIVE at https://ms.labidi.eu (prod selftest 66/66). Remaining: phase 9 maintenance loop + docs/17 tenant verification.
+Status: ALL PHASES COMPLETE (0-8 done, phase 9 maintenance loop operational with first run logged). LIVE at https://ms.labidi.eu. Open by nature: docs/17 tenant verification (needs a tenant), human gates (runbook shift, PWA install), quarterly loop from 2026-11.
 Tenant-dependent verification is collected in
 [docs/17-tenant-verification.md](docs/17-tenant-verification.md).
 Last updated: 2026-08-26.
