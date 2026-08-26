@@ -5,9 +5,9 @@ helpdesk, cloud and security engineers in Microsoft environments. Every portal s
 from [cmd.ms](https://cmd.ms/) (MIT, by Merill Fernando & contributors), plus deep
 settings paths, roles, licenses, KQL, PowerShell and runbooks on top.
 
-**Status: phases 0-7 complete.** 535 records (settings encyclopedias for Sentinel,
-Defender, Intune, Purview and Windows cloud, a 41-code error encyclopedia,
-blast-radius ratings) plus a 60-query KQL library, 69 PowerShell snippets, a 49-table
+**Status: phases 0-8 complete, live at https://ms.labidi.eu.** 535 records (settings
+encyclopedias for Sentinel, Defender, Intune, Purview and Windows cloud, a 41-code
+error encyclopedia, blast-radius ratings) plus a 60-query KQL library, 69 PowerShell snippets, a 49-table
 registry, 26 runbooks and an 81-row license matrix (feature to minimum license,
 highlighted against your license profile), all searchable together with copy-ready
 cards. Tenant-dependent facts are collected in

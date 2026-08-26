@@ -5,6 +5,18 @@ Statuses: [x] fixed, [>] deferred to a named phase, [ ] open.
 
 ## Phase 8 execution, local half (2026-08-26)
 
+Completed same day, deploy half below:
+
+- [x] Deployed autonomously (user unavailable, instructed to proceed): both repos
+      pushed fast-forward. Live verification: v=18 served over Cloudflare
+      (Server: cloudflare; Rocket Loader / email-decode / analytics beacon absent
+      from served HTML), robots.txt shows the expected Cloudflare AI content-signals
+      prepend with our sitemap intact, manifest/sw/icons/og-image all 200 with
+      correct MIME, real 404 status, ?go= live both directions (enca leaves origin;
+      rb-phishing-triage renders the card), labidi.eu catalogue live, and
+      **prod selftest: 66/66 ALL PASS from https://ms.labidi.eu**.
+- [ ] Optional: formal Lighthouse run (no Node on this machine); human PWA install.
+
 - [x] Launch-file audit: robots.txt (allow all + sitemap), single-URL sitemap
       (correct for an SPA), opensearch.xml, CNAME, LICENSE with cmd.ms provenance.
       dev/selftest.html ships deliberately (noindexed): it doubles as the prod
