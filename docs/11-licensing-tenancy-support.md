@@ -29,6 +29,8 @@ sovereign clouds work, where to get help, and the MSP/multi-tenant toolchain.
 
 ## 2. The matrix (phase 7 flagship): feature -> minimum license
 
+Shipped 2026-08-26: 80 rows in `content/licensing.csv` -> `data-licensing.js` with the
+`#/licensing` view; schema in doc 12 §3.5. The list below remains the source frame.
 Build as data (`data-licensing.js`), rows seeded from the per-subject docs, three columns:
 feature, minimum path, notes. Priority rows (~80 at v1): Conditional Access (P1),
 risk-based CA (P2), PIM (P2), access reviews (P2), lifecycle workflows (Governance),

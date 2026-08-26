@@ -3,6 +3,32 @@
 Working file per the "check previous phases before starting the next" rule.
 Statuses: [x] fixed, [>] deferred to a named phase, [ ] open.
 
+## Phase 7 execution (2026-08-26)
+
+Pre-phase audit: the prerequisite audit below (commit 8b0d5cf) certified gates,
+registry integrity and source material before work started.
+
+- [x] Matrix grown 14 -> 80 rows across 9 subjects; 5 new registry SKUs (win-e3,
+      win-e5, exo-p1, exo-p2, teams-phone) and completed includes[] chains
+      (E3/E5 carry EXO P2 and Windows E3/E5; Business plans carry EXO P1).
+- [x] Error-code encyclopedia 4 -> 41 records (28 AADSTS, 3 enrollment, 10 NDR);
+      only documented meanings shipped, each with the first fix move and docs link.
+      Total records 443 -> 480.
+- [x] #/licensing view + lic cards + kind:lic search (SKU ids AND display names
+      indexed); home tile, footer, noscript, help updated. v=14.
+- [x] Bug found by the browser walkthrough, not by the assertions: coveredByProfile
+      was one-hop only, so an M365 E5 profile failed to highlight MDE P1 / Entra P1 /
+      free rows (E5 -> MDE P2 -> MDE P1 needs two hops). Replaced with a transitive
+      closure built at profile-set time; free tier counts once any SKU is owned.
+      Verified live: owned rows 36 -> 52 with the same profile. Selftest-guarded.
+- [x] Search-text gap: the word "licensing" was not in lic-row index text (only
+      "lic license"), so "licensing pim" missed; fixed and asserted.
+- [x] Gates flipped to enforcing: python 37 tests (80-row shape gate + error-code
+      family gate; only phase-8 skips remain), 69/69 PS parse, 65 browser assertions
+      ALL PASS. Content sweep on new CSVs clean (no dashes, BOM, VERIFY, TODO).
+- [>] Tenant verification of license claims: docs/17 section C, new C9 spot-check.
+- [ ] Phase 8 (launch) remains: PNG icons + og:image, final sweeps.
+
 ## Phase 6 doublecheck + phase 7 prep (2026-08-26)
 
 Phase 7 prerequisite audit (run after prep, certifying its foundations):

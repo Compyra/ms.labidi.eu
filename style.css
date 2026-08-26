@@ -175,6 +175,7 @@ main { max-width: 1100px; margin: 0 auto; padding: 16px; }
 .badge.blast-high { color: var(--bad); border-color: var(--bad); }
 .badge.src { color: var(--accent-2); }
 .badge.lvl { color: var(--accent); border-color: var(--accent); }
+.tbl tr.owned td:first-child { box-shadow: inset 3px 0 0 var(--ok); }
 .rbsec { margin: 6px 0 14px; padding-left: 26px; }
 .rbsec li { margin: 6px 0; max-width: 72ch; }
 .card.runbook .gname { margin-top: 16px; }

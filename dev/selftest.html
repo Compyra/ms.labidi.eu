@@ -141,6 +141,13 @@
     var none = !HUB.coveredByProfile("mdo-p2");
     return direct && bundle && none;
   });
+  t("coveredByProfile is transitive (E5 -> MDE P2 -> MDE P1)", function () {
+    HUB.setLicenseProfile(["m365-e5"]);
+    var twoHop = HUB.coveredByProfile("mde-p1") && HUB.coveredByProfile("entra-p1") &&
+      HUB.coveredByProfile("free") && !HUB.coveredByProfile("intune-suite");
+    HUB.setLicenseProfile([]);
+    return twoHop && !HUB.coveredByProfile("free");
+  });
   t("mypages carry shareText", function () {
     return HUB.commands.filter(function (r) { return r.category === "mypages"; })
       .every(function (r) { return r.shareText; });
@@ -211,9 +218,10 @@
   t("filter-only searches are never truncated", function () {
     var expected = HUB.commands.filter(function (r) {
       return r.category === "defender";
-    }).length + HUB.kql.concat(HUB.ps).concat(HUB.runbooks).filter(function (r) {
-      return r.subject === "defender";
-    }).length;
+    }).length + HUB.kql.concat(HUB.ps).concat(HUB.runbooks)
+      .concat(HUB.licensing).filter(function (r) {
+        return r.subject === "defender";
+      }).length;
     return ids("cat:defender").length === expected && expected > 100;
   });
   t("every KQL table exists in the registry", function () {
@@ -262,6 +270,38 @@
     }) && levels.L1 && levels.L2;
   });
 
+  h2("[P7] licensing matrix + error codes");
+  t("licensing searchable, kind:lic filter, cards resolve", function () {
+    return ids("kind:lic").length === HUB.licensing.length &&
+      HUB.licensing.length >= 80 &&
+      HUB.getById("lic-pim").kind === "lic" &&
+      HUB.resolveGo("lic-pim") === null;
+  });
+  t("e3-or-e5 questions hit matrix rows by feature words", function () {
+    return ids("insider risk license").indexOf("lic-insider-risk") >= 0 &&
+      ids("safe documents").indexOf("lic-safe-docs") >= 0 &&
+      ids("licensing pim").indexOf("lic-pim") >= 0;
+  });
+  t("licCovered: direct, bundle, alsoIn, none", function () {
+    var audit = HUB.getById("lic-audit-premium");
+    var pim = HUB.getById("lic-pim");
+    HUB.setLicenseProfile(["m365-e5"]);
+    var viaBundle = HUB.licCovered(pim) && HUB.licCovered(audit);
+    HUB.setLicenseProfile(["entra-p2"]);
+    var direct = HUB.licCovered(pim) && !HUB.licCovered(audit);
+    HUB.setLicenseProfile([]);
+    var none = !HUB.licCovered(pim);
+    return viaBundle && direct && none;
+  });
+  t("error-code records shipped across three families", function () {
+    var codes = HUB.commands.filter(function (r) { return r.group === "Error codes"; });
+    return codes.length >= 40 &&
+      ids("50126").indexOf("aadsts50126") >= 0 &&
+      ids("80180014").indexOf("enroll-0x80180014") >= 0 &&
+      ids("mailbox full").indexOf("ndr-522") >= 0 &&
+      codes.every(function (r) { return r.desc && r.docs && r.verified; });
+  });
+
   h2("[P2/P3] app e2e (iframe)");
   var frame = document.getElementById("app");
 
@@ -302,9 +342,9 @@
     }
     var steps = [
       function () {
-        t("home renders 14 subject tiles + 4 library tiles", function () {
+        t("home renders 14 subject tiles + 5 library tiles", function () {
           return w.document.querySelectorAll(".tiles:not(.libtiles) .tile").length === 14 &&
-            w.document.querySelectorAll(".libtiles .tile").length === 4;
+            w.document.querySelectorAll(".libtiles .tile").length === 5;
         });
         t("aria-controls absent on home", function () {
           return w.document.getElementById("q").getAttribute("aria-controls") === null;
@@ -478,6 +518,39 @@
             function (x) { return x.textContent; });
           return links.indexOf("rb-mail-not-arriving") >= 0;
         });
+        w.location.hash = "#/licensing";
+        return titled(w, "License matrix");
+      },
+      function () {
+        t("licensing view renders every row grouped with tables", function () {
+          return w.document.querySelectorAll("#results .tbl tbody tr").length ===
+            w.MSHUB.licensing.length &&
+            w.document.querySelectorAll("#results .gname").length >= 8;
+        });
+        w.MSHUB.setLicenseProfile(["m365-e5"]);
+        w.location.hash = "";
+        w.location.hash = "#/licensing";
+        return until(w, function () {
+          return w.document.querySelectorAll(".tbl tr.owned").length > 15;
+        }).then(function () {
+          t("license profile highlights owned rows in the matrix", function () {
+            var owned = w.document.querySelectorAll(".tbl tr.owned").length;
+            w.MSHUB.setLicenseProfile([]);
+            return owned > 15 && owned < w.MSHUB.licensing.length;
+          });
+          w.location.hash = "#/c/lic-safe-docs";
+          return titled(w, "lic-safe-docs");
+        });
+      },
+      function () {
+        t("lic card shows minimum and also-in with names", function () {
+          var dds = Array.prototype.map.call(
+            w.document.querySelectorAll(".meta dd"),
+            function (d) { return d.textContent; }).join("|");
+          return dds.indexOf("Microsoft 365 E5 Security") >= 0 &&
+            dds.indexOf("Microsoft 365 E5") >= 0 &&
+            !!w.document.querySelector('.actions a[href="#/licensing"]');
+        });
         w.location.hash = "";
         return until(w, function () {
           return !!w.document.querySelector(".libtiles .tile");
@@ -488,7 +561,7 @@
           var hrefs = Array.prototype.map.call(
             w.document.querySelectorAll(".libtiles .tile"),
             function (a) { return a.getAttribute("href"); });
-          return hrefs.join(",") === "#/kql,#/ps,#/runbooks,#/tables";
+          return hrefs.join(",") === "#/kql,#/ps,#/runbooks,#/licensing,#/tables";
         });
         w.location.hash = "#q=100%";
         return until(w, function () {

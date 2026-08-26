@@ -119,6 +119,7 @@
     var libs = [["#/kql", "KQL library", (HUB.kql || []).length],
                 ["#/ps", "PowerShell library", (HUB.ps || []).length],
                 ["#/runbooks", "Runbooks", (HUB.runbooks || []).length],
+                ["#/licensing", "License matrix", (HUB.licensing || []).length],
                 ["#/tables", "KQL tables",
                  ((HUB.registry && HUB.registry.tables) || []).length]];
     var libGrid = document.createElement("div");
@@ -163,7 +164,8 @@
     if (rec.blastRadius === "high") {
       out += "<span class=\"badge blast-high\" title=\"High blast radius: not on a Friday\">high blast</span>";
     }
-    if (HUB.coveredByProfile && HUB.coveredByProfile(rec.license)) {
+    if (HUB.coveredByProfile && HUB.coveredByProfile(rec.license) ||
+        (rec.kind === "lic" && HUB.licCovered && HUB.licCovered(rec))) {
       out += "<span class=\"badge inc\" title=\"Included in your license profile\">included</span>";
     }
     if (rec.source === "cmdms") { out += "<span class=\"badge src\">cmd.ms</span>"; }
@@ -280,6 +282,7 @@
     var rec = HUB.getById((id || "").toLowerCase());
     if (!rec) { input.value = id; onInput(); return; }
     if (rec.kind === "runbook") { renderRunbookCard(rec); return; }
+    if (rec.kind === "lic") { renderLicCard(rec); return; }
     if (rec.code) { renderLibraryCard(rec); return; }
     results = [];
     listbox = null;
@@ -529,6 +532,106 @@
     host.appendChild(card);
   }
 
+  function renderLicCard(rec) {
+    results = [];
+    listbox = null;
+    clearAria();
+    host.innerHTML = "";
+    addRecent(rec.id);
+    document.title = rec.id + " - " + rec.name + " | ms.labidi.eu";
+    statusEl.textContent = "";
+    var card = document.createElement("article");
+    card.className = "card";
+    var h = "<header class=\"card-head\"><span class=\"rid\">" + esc(rec.id) +
+      "</span><h1>" + esc(rec.name) + "</h1>" + badgeHtml(rec) + "</header>";
+    h += "<dl class=\"meta\">";
+    h += "<dt>Subject</dt><dd><a href=\"#/s/" + esc(rec.category) + "\">" +
+      esc(SUBJ_NAME[rec.category] || rec.category) + "</a></dd>";
+    h += "<dt>Minimum</dt><dd>" + esc(licName(rec.min)) +
+      (HUB.coveredByProfile(rec.min) ? " <span class=\"badge inc\">in your profile</span>" : "") +
+      "</dd>";
+    if (rec.alsoIn && rec.alsoIn.length) {
+      h += "<dt>Also in</dt><dd>" + rec.alsoIn.map(function (x) {
+        return esc(licName(x)) +
+          (HUB.coveredByProfile(x) ? " <span class=\"badge inc\">yours</span>" : "");
+      }).join(", ") + "</dd>";
+    }
+    if (rec.notes) { h += "<dt>Notes</dt><dd>" + esc(rec.notes) + "</dd>"; }
+    if (rec.docs) {
+      h += "<dt>Docs</dt><dd><a href=\"" + esc(rec.docs) +
+        "\" target=\"_blank\" rel=\"noopener noreferrer\">" + esc(rec.docs) + "</a></dd>";
+    }
+    if (rec.verified) { h += "<dt>Verified</dt><dd>" + esc(rec.verified) + "</dd>"; }
+    h += "</dl>";
+    card.innerHTML = h;
+    var actions = document.createElement("div");
+    actions.className = "actions";
+    var matrixA = document.createElement("a");
+    matrixA.className = "btn";
+    matrixA.href = "#/licensing";
+    matrixA.textContent = "Full matrix";
+    actions.appendChild(matrixA);
+    var linkBtn = document.createElement("button");
+    linkBtn.className = "btn ghost";
+    linkBtn.textContent = "Copy go-link";
+    linkBtn.addEventListener("click", function () {
+      copyText("https://ms.labidi.eu/?go=" + rec.id, linkBtn);
+    });
+    actions.appendChild(linkBtn);
+    card.appendChild(actions);
+    if (rec.related && rec.related.length) {
+      var rel = document.createElement("p");
+      rel.className = "related";
+      rel.innerHTML = "Related: " + rec.related.map(function (r) {
+        return "<a href=\"#/c/" + esc(r) + "\">" + esc(r) + "</a>";
+      }).join(", ");
+      card.appendChild(rel);
+    }
+    host.appendChild(card);
+  }
+
+  function renderLicensing() {
+    var rows = HUB.licensing || [];
+    results = [];
+    listbox = null;
+    input.value = "";
+    clearAria();
+    host.innerHTML = "";
+    document.title = "License matrix | ms.labidi.eu";
+    statusEl.textContent = "License matrix: " + rows.length + " features mapped to " +
+      "their minimum license. Tick your SKUs under help (?) to highlight what you own.";
+    var groups = {};
+    rows.forEach(function (entry) {
+      var g = SUBJ_NAME[entry.subject] || entry.subject || "Other";
+      (groups[g] = groups[g] || []).push(entry);
+    });
+    Object.keys(groups).sort().forEach(function (g) {
+      var h2 = document.createElement("h2");
+      h2.className = "gname";
+      h2.textContent = g;
+      host.appendChild(h2);
+      var body = groups[g].sort(function (a, b) {
+        return a.name.localeCompare(b.name);
+      }).map(function (r) {
+        var owned = HUB.licCovered(r);
+        return "<tr" + (owned ? " class=\"owned\"" : "") + ">" +
+          "<td><a href=\"#/c/" + esc(r.id) + "\">" + esc(r.name) + "</a></td>" +
+          "<td>" + esc(licName(r.min)) +
+          (owned ? " <span class=\"badge inc\">yours</span>" : "") + "</td>" +
+          "<td class=\"colnotes\">" + (r.alsoIn || []).map(function (x) {
+            return esc(licName(x));
+          }).join(", ") + "</td>" +
+          "</tr>";
+      }).join("");
+      var wrap = document.createElement("div");
+      wrap.className = "tblwrap";
+      wrap.innerHTML = "<table class=\"tbl\"><thead><tr><th>Feature</th>" +
+        "<th>Minimum</th><th class=\"colnotes\">Also in</th></tr></thead><tbody>" +
+        body + "</tbody></table>";
+      host.appendChild(wrap);
+    });
+  }
+
   function renderRunbooks() {
     var rows = HUB.runbooks || [];
     results = [];
@@ -653,7 +756,9 @@
       "every entry carries its table or module plus the role it needs. The " +
       "<a href=\"#/tables\">table registry</a> lists what each KQL table holds. " +
       "<a href=\"#/runbooks\">Runbooks</a> (<code>kind:runbook</code>) are step-by-step " +
-      "procedures with verify, rollback and escalation guidance built in.</p>" +
+      "procedures with verify, rollback and escalation guidance built in. The " +
+      "<a href=\"#/licensing\">license matrix</a> (<code>kind:lic</code>) maps features " +
+      "to their minimum license and highlights what your profile already covers.</p>" +
       "<h2>Cloud environments</h2>" +
       "<p>The cloud selector rewrites Open links to your environment (GCC, GCC High, " +
       "DoD) where a variant exists; commercial stays the fallback.</p>" +
@@ -782,6 +887,7 @@
     if (hash === "#/kql") { renderLibrary("kql"); return; }
     if (hash === "#/ps") { renderLibrary("ps"); return; }
     if (hash === "#/runbooks") { renderRunbooks(); return; }
+    if (hash === "#/licensing") { renderLicensing(); return; }
     if (hash === "#/tables") { renderTables(); return; }
     if (hash === "#/about") { renderAbout(); return; }
     input.value = "";

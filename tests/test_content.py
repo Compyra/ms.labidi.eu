@@ -273,6 +273,27 @@ class TestPhase7Licensing(unittest.TestCase):
         if len(rows) < 80:
             self.skipTest(f"PENDING phase 7: matrix at {len(rows)}/80")
 
+    def test_error_code_records(self):
+        codes = []
+        for path in sorted((ROOT / "data").glob("data-commands-*.js")):
+            codes += [r for r in extract_json(path) if r.get("group") == "Error codes"]
+        if not codes:
+            self.skipTest("PENDING phase 7: no error-code records yet")
+        families = {"aadsts": 0, "enroll": 0, "ndr": 0}
+        for row in codes:
+            self.assertTrue(row.get("desc"), f"{row['id']}: missing desc")
+            self.assertTrue(row.get("docs", "").startswith("https://"),
+                            f"{row['id']}: docs link required")
+            self.assertTrue(row.get("verified"), f"{row['id']}: missing verified")
+            for fam in families:
+                if row["id"].startswith(fam):
+                    families[fam] += 1
+        if len(codes) < 40:
+            self.skipTest(f"PENDING phase 7: error codes at {len(codes)}/40")
+        self.assertGreaterEqual(families["aadsts"], 20)
+        self.assertGreaterEqual(families["enroll"], 3)
+        self.assertGreaterEqual(families["ndr"], 8)
+
 
 class TestPhase8Launch(unittest.TestCase):
     def test_png_icons_and_og_image(self):

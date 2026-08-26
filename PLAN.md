@@ -1,6 +1,6 @@
 # ms.labidi.eu : Master Plan
 
-Status: phases 0-6 complete; phase 7 (licensing matrix + error codes) prepared with seeds.
+Status: phases 0-7 complete; 80-row license matrix + 41 error codes live with view and search.
 Tenant-dependent verification is collected in
 [docs/17-tenant-verification.md](docs/17-tenant-verification.md).
 Last updated: 2026-08-26.

@@ -118,7 +118,7 @@ mandatory; `related` may point at records **or** library entries. Runbooks surfa
 record cards via `HUB.runbooksFor(recordId)` (reverse lookup over `related`). Levels
 read L1 service desk, L2 escalation, L3 expert.
 
-### 3.5 licensing matrix row (implemented phase 7 prep)
+### 3.5 licensing matrix row (implemented, 80 rows shipped)
 `content/licensing.csv` -> `data-licensing.js` (`window.MSHUB.licensing`) by
 `load_licensing()`: `{id (lic-*), kind:"lic", feature, subject, min, alsoIn[], notes,
 docs, verified, related[]}`. Validation: id prefix + charset, uniqueness against

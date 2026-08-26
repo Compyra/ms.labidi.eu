@@ -189,26 +189,40 @@ entries) and absence of VERIFY markers. Emits `data-runbooks.js`
 - [>] Human gate stays open: one real service desk shift uses two runbooks unaided
       (tracked as gate A5 in [17-tenant-verification.md](17-tenant-verification.md)).
 
-## Phase 7 : Licensing matrix + error codes
+## Phase 7 : Licensing matrix + error codes : DONE 2026-08-26
 
-Prep DONE 2026-08-26: `load_licensing()` reads `content/licensing.csv` into
+Prep 2026-08-26: `load_licensing()` reads `content/licensing.csv` into
 `data-licensing.js` (`window.MSHUB.licensing`), validating `lic-` prefix, uniqueness,
 subject, `min`/`alsoIn` against the license registry, resolvable `related` and no
-VERIFY markers. 14 seed rows prove the shape (CA, risk CA, PIM, access reviews,
-lifecycle workflows, Threat Explorer, EPM, Remote Help, audit premium, auto-labeling,
-Sentinel E5 grant, W365, PP premium, Copilot). Error-code records seeded via
-`content/enrich-errorcodes.csv` (AADSTS50076, AADSTS53003, 0x80180018, NDR 5.7.1)
-as searchable `concept` records with a per-row category. Gates are shape-strict and
-count-tolerant in both layers until 80 rows.
+VERIFY markers.
 
-- [ ] Grow `content/licensing.csv` to the ~80 priority rows (doc 11 §2), sourced from
-      the per-subject docs; every row keeps a learn.microsoft.com docs link.
-- [ ] AADSTS starter set (top 40 codes), Intune enrollment codes, NDR families as
-      records in `enrich-errorcodes.csv`.
-- [ ] Surface the matrix: `#/licensing` view (feature | minimum | also-in, grouped by
-      subject, license names from the registry) + `kind:lic` search chips; license
-      profile ticks should light up rows the tenant already owns.
-- Gate: "is this E3 or E5" answered in <10 seconds for the seed rows.
+- [x] 80 matrix rows across 9 subjects, every one with a learn.microsoft.com docs
+      link and verified stamp: Entra tiers (CA, risk CA, PIM, reviews, governance,
+      GSA, included-for-free rows), Intune Plan 1/Plan 2/Suite splits, the Defender
+      P1/P2/MDO/MDI/MDCA/MDB boundaries incl. gotchas (Safe Documents needs E5
+      Security not MDO P2), premium Purview set vs E3 baseline, EXO Plan 1 vs 2,
+      W365/AVD, bundle-contents rows (E5 Security, E5 Compliance, EMS E3, Business
+      Premium, F3 limits). Registry grew 5 SKUs (win-e3, win-e5, exo-p1, exo-p2,
+      teams-phone) plus completed includes[] chains.
+- [x] Error-code encyclopedia: 41 records in three families: 28 AADSTS (sign-in,
+      consent, device-state, automation credentials), 3 Intune enrollment
+      (0x801c0003, 0x80180018, 0x80180014), 10 NDR (5.1.x, 5.2.x, 5.4.1, 5.7.x,
+      4.4.7), each with cause, first fix move and docs link.
+- [x] `#/licensing` view: per-subject tables (feature | minimum | also in), rows
+      linking to lic cards, license names from the registry, owned rows highlighted
+      from the license profile. Lic cards show minimum/also-in with in-profile
+      badges. `kind:lic` search; SKU ids and names indexed so "insider risk license"
+      or "safe documents" answer directly.
+- [x] Found and fixed while verifying: `coveredByProfile` was not transitive
+      (M365 E5 -> MDE P2 -> MDE P1 failed to highlight P1 rows); replaced with a
+      closure computed at profile-set time, free tier included once any SKU is
+      owned. Selftest-guarded.
+- [x] Gates enforcing: python (80-row shape gate + error-code families gate) and
+      browser selftest at 65 assertions. Runner green at v=14.
+- Gate met in-suite: feature-word searches land on the right matrix row in one
+      query ("is this E3 or E5" in seconds); ongoing validation is real desk use.
+- [>] Tenant verification of the highest-risk license claims stays tracked as
+      docs/17 section C (incl. new C9 matrix spot-check).
 
 ## Phase 8 : Launch
 

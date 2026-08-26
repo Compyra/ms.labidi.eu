@@ -4,16 +4,16 @@
 # VERIFY names quarterly.
 id,name,family,includes,notes
 free,Included / no extra license,base,,
-o365-e1,Office 365 E1,base,,web apps + EXO/SPO/Teams core
-o365-e3,Office 365 E3,base,,
-o365-e5,Office 365 E5,base,mdo-p2|pbi-pro,incl. audit premium
-m365-e3,Microsoft 365 E3,base,entra-p1|intune-p1|mde-p1,O365 E3 + EMS E3 + Windows E3
-m365-e5,Microsoft 365 E5,base,entra-p2|intune-p1|mde-p2|mdo-p2|mdi|mdca|pbi-pro,everything below unless noted
+o365-e1,Office 365 E1,base,exo-p1,web apps + EXO/SPO/Teams core
+o365-e3,Office 365 E3,base,exo-p2,
+o365-e5,Office 365 E5,base,mdo-p2|pbi-pro|exo-p2,incl. audit premium
+m365-e3,Microsoft 365 E3,base,entra-p1|intune-p1|mde-p1|exo-p2|win-e3,O365 E3 + EMS E3 + Windows E3
+m365-e5,Microsoft 365 E5,base,entra-p2|intune-p1|mde-p2|mdo-p2|mdi|mdca|pbi-pro|exo-p2|win-e5,everything below unless noted
 m365-f1,Microsoft 365 F1,base,,frontline minimal
 m365-f3,Microsoft 365 F3,base,entra-p1|intune-p1,frontline
-bus-basic,M365 Business Basic,base,,<=300 seats
-bus-std,M365 Business Standard,base,,<=300 seats
-bus-prem,M365 Business Premium,base,entra-p1|intune-p1|mdb|mdo-p1,<=300 seats
+bus-basic,M365 Business Basic,base,exo-p1,<=300 seats
+bus-std,M365 Business Standard,base,exo-p1,<=300 seats
+bus-prem,M365 Business Premium,base,entra-p1|intune-p1|mdb|mdo-p1|exo-p1,<=300 seats
 ems-e3,Enterprise Mobility + Security E3,addon,entra-p1|intune-p1,+ AIP P1
 ems-e5,Enterprise Mobility + Security E5,addon,entra-p2|intune-p1|mdi|mdca,+ AIP P2
 e5-sec,Microsoft 365 E5 Security,addon,entra-p2|mde-p2|mdo-p2|mdi|mdca,
@@ -43,3 +43,8 @@ pbi-ppu,Power BI Premium Per User,power,pbi-pro,
 pp-premium,Power Platform premium (per user/app),power,,premium connectors + Dataverse
 w365,Windows 365 (per Cloud PC size),windows,,Business/Enterprise/Frontline editions
 avd-ext,AVD entitlement,windows,,via W10/11 E3+/M365; compute billed in Azure
+win-e3,Windows 10/11 Enterprise E3,windows,,per-user Windows upgrade + AVD rights
+win-e5,Windows 10/11 Enterprise E5,windows,win-e3|mde-p2,Windows E3 + Defender for Endpoint P2
+exo-p1,Exchange Online Plan 1,base,,50 GB mailbox; in E1/Business plans
+exo-p2,Exchange Online Plan 2,base,exo-p1,100 GB + archiving + hold; in E3/E5
+teams-phone,Teams Phone Standard,addon,,PBX features; PSTN needs a calling plan or operator

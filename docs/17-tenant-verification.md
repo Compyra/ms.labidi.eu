@@ -50,6 +50,9 @@ Rules while verifying:
   types qualify, then update `sencost`.
 - C8. `licenses.csv` `includes[]` bundle map: verify each bundle really contains what we
   claim, because it drives the "included in your licensing" badge.
+- C9. License matrix spot-check: pick 15 random `lic-*` rows and confirm the feature
+  actually lights up (or refuses) on a user holding exactly the claimed minimum SKU;
+  pay attention to the "included for free" rows and the alsoIn lists.
 
 ## D. Product naming and lifecycle (the `VERIFY` tags in docs/)
 

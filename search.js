@@ -7,18 +7,25 @@
   var synByTerm = Object.create(null);
   var docs = [];
   var licProfile = [];
+  var licClosure = Object.create(null);
 
-  HUB.setLicenseProfile = function (arr) { licProfile = arr || []; };
+  HUB.setLicenseProfile = function (arr) {
+    licProfile = arr || [];
+    licClosure = Object.create(null);
+    if (!licProfile.length) { return; }
+    var reg = (HUB.registry && HUB.registry.licenses) || {};
+    var stack = licProfile.concat(["free"]);
+    while (stack.length) {
+      var id = stack.pop();
+      if (licClosure[id]) { continue; }
+      licClosure[id] = true;
+      var e = reg[id];
+      if (e && e.inc) { stack.push.apply(stack, e.inc); }
+    }
+  };
 
   HUB.coveredByProfile = function (lic) {
-    if (!lic || !licProfile.length) { return false; }
-    if (licProfile.indexOf(lic) >= 0) { return true; }
-    var reg = (HUB.registry && HUB.registry.licenses) || {};
-    for (var i = 0; i < licProfile.length; i++) {
-      var e = reg[licProfile[i]];
-      if (e && e.inc && e.inc.indexOf(lic) >= 0) { return true; }
-    }
-    return false;
+    return !!(lic && licProfile.length && licClosure[lic]);
   };
 
   HUB.buildIndex = function () {
@@ -56,6 +63,19 @@
         .join(" ").toLowerCase();
       docs.push({ rec: entry, text: text, name: (entry.title || "").toLowerCase() });
     });
+    var licReg = (HUB.registry && HUB.registry.licenses) || {};
+    (HUB.licensing || []).forEach(function (entry) {
+      entry.name = entry.feature;
+      entry.category = entry.subject;
+      byId[entry.id] = entry;
+      var skus = [entry.min].concat(entry.alsoIn || []);
+      var names = skus.map(function (s) { return (licReg[s] && licReg[s].n) || s; });
+      var text = [entry.id, entry.feature || "", entry.subject || "",
+                  "lic license licensing", entry.notes || ""]
+        .concat(skus).concat(names)
+        .join(" ").toLowerCase();
+      docs.push({ rec: entry, text: text, name: (entry.feature || "").toLowerCase() });
+    });
     (HUB.synonyms || []).forEach(function (s) { synByTerm[s.term] = s; });
   };
 
@@ -69,6 +89,11 @@
     return (HUB.runbooks || []).filter(function (entry) {
       return (entry.related || []).indexOf(recordId) >= 0;
     });
+  };
+
+  HUB.licCovered = function (row) {
+    if (HUB.coveredByProfile(row.min)) { return true; }
+    return (row.alsoIn || []).some(HUB.coveredByProfile);
   };
 
   HUB.resolveGo = function (token) {
