@@ -17,6 +17,7 @@ the schemas below.
   data-licensing.js               (phase 7)
   data-meta.js                    (counts, buildstamp, sources)
 /content/                  hand-authored source (CSV/JSON, reviewed in PRs)
+  version.txt                     single source of the ?v= asset version
   enrich-<subject>.csv            our additions + enrichment of cmd.ms rows
   settings-<subject>.csv
   kql.csv  ps.csv  runbooks/*.md  licensing.csv
@@ -24,7 +25,12 @@ the schemas below.
   cmdms-commands.csv              pinned copy of upstream, byte-exact (keeps diffs clean)
   cmdms-commands.meta.json        commit hash + date + license of the pinned copy
 /tools/
-  build_data.py                   the only build step (Python 3, stdlib only)
+  build_data.py                   the only build step (Python 3, stdlib only);
+                                  also rewrites ?v= tokens in index/404 and emits
+                                  sw.js from sw_template.js (precache enumerated
+                                  from data/*.js so it can never drift)
+  make_icons.py                   brand PNGs + OG image (Pillow; run on icon change)
+  sw_template.js                  service worker logic with __CACHE__/__ASSETS__ slots
   analyze_upstream.py             invariant checks + fold-candidate report (exists)
   check_links.py                  quarterly link checker
   sync_upstream.py                fetch + diff upstream CSV, never auto-merge

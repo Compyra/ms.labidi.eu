@@ -3,6 +3,28 @@
 Working file per the "check previous phases before starting the next" rule.
 Statuses: [x] fixed, [>] deferred to a named phase, [ ] open.
 
+## Phase 7 close-out check + phase 8 prep (2026-08-26)
+
+Phase 7 verified finished: roadmap DONE, both python gates enforcing and green,
+"is this E3 or E5" answerable in one search; only tenant items remain (docs/17 C).
+
+Phase 8 prepared (and its two pending gates flipped to enforcing):
+
+- [x] Brand PNGs via tools/make_icons.py (Pillow, supersampled): 192/512 any,
+      512 maskable (safe-zone glyph), apple-touch 180, favicon-32, 1200x630 OG
+      image (eyeballed before shipping). Manifest + head wired: og:image absolute
+      URL with dimensions, twitter card, apple-touch and PNG favicon links.
+- [x] Versioning single-sourced: content/version.txt -> build rewrites every ?v=
+      token in index.html/404.html and generates sw.js from tools/sw_template.js;
+      the precache enumerates data/*.js from disk so a new data file can never be
+      forgotten again. Manual three-file version sweeps are gone. v=17.
+- [x] Suite now runs with ZERO skips and ZERO pendings: 39 python + 69/69 parse +
+      66 browser. Manifest JSON and all PNG headers/dimensions verified offline
+      (the in-page fetch check wedged on our own connect-src 'none' CSP: expected).
+- [ ] Phase 8 execution remaining (needs prod/user): Lighthouse pass, GitHub Pages
+      deploy + DNS/Cloudflare, family registry updates (labidi.eu repo), README
+      attribution polish, live gate (?go=enca from prod, PWA install).
+
 ## All-subject coverage audit (2026-08-26, follow-up to the purview question)
 
 Inventoried every subject for its own layer (own records, settings, concepts, hub

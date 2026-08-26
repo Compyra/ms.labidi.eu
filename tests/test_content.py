@@ -327,8 +327,17 @@ class TestPhase8Launch(unittest.TestCase):
         icons = list((ROOT / "icons").glob("*.png"))
         if not icons:
             self.skipTest("PENDING phase 8: PNG icons not generated")
+        names = {p.name for p in icons}
+        for required in ("icon-192.png", "icon-512.png", "icon-maskable-512.png",
+                         "apple-touch-icon.png", "favicon-32.png", "og-image.png"):
+            self.assertIn(required, names)
         index = (ROOT / "index.html").read_text(encoding="utf-8")
-        self.assertIn("og:image", index)
+        self.assertIn('property="og:image"', index)
+        self.assertIn("apple-touch-icon", index)
+        manifest = json.loads((ROOT / "manifest.webmanifest").read_text(encoding="utf-8"))
+        purposes = {i["purpose"] for i in manifest["icons"]
+                    if i["src"].endswith(".png")}
+        self.assertEqual(purposes, {"any", "maskable"})
 
     def test_sw_precache_generated_not_handwritten(self):
         sw = (ROOT / "sw.js").read_text(encoding="utf-8")

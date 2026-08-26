@@ -14,10 +14,15 @@ cards. Tenant-dependent facts are collected in
 [docs/17-tenant-verification.md](docs/17-tenant-verification.md).
 
 Quality gates: `tests\run-tests.ps1` runs 39 Python tests, a PowerShell parse gate over
-every shipped snippet, and a 65-assertion browser selftest.
+every shipped snippet, and a 66-assertion browser selftest.
 
 Local dev: `python tools/build_data.py` then `python -m http.server 8905 --bind
 127.0.0.1` and open http://127.0.0.1:8905/.
+
+Version bumps: edit [content/version.txt](content/version.txt) and run the build; it
+rewrites every `?v=` token in index.html and 404.html and regenerates sw.js (cache
+name + precache list) from [tools/sw_template.js](tools/sw_template.js). Brand PNGs
+regenerate with `python tools/make_icons.py` (Pillow).
 
 Tests: `powershell -NoProfile -ExecutionPolicy Bypass -File tests\run-tests.ps1`
 (Python pipeline/content gates + headless-Edge browser selftest), or separately
