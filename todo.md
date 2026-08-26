@@ -3,6 +3,34 @@
 Working file per the "check previous phases before starting the next" rule.
 Statuses: [x] fixed, [>] deferred to a named phase, [ ] open.
 
+## Phase 7 integration doublecheck (2026-08-26)
+
+Built tools/audit_consistency.py (now permanent, wired into the phase 9 loop): it
+cross-checks matrix min/alsoIn against related records' license fields through the
+bundle closure, hunts deprecated targets, dangling lic- references, thin error-code
+descs and orphaned registry SKUs. Findings:
+
+- [x] Real bug: the avd-ext pseudo-SKU was not reachable in any includes[] chain, so
+      an M365 E3/E5/F3/Business Premium profile never badged the AVD records or the
+      lic-avd row as included. Wired avd-ext into those bundles and win-e3; verified
+      live (E3 profile now covers azavd and lic-avd).
+- [x] Wrong cross-link: lic-mde-air (device AIR) pointed at deinvestigations, which
+      is the MDO email-AIR record: exactly the P2-vs-P2 confusion the air card
+      exists to prevent. Now points at the air disambiguation card.
+- [x] Coverage hole: sam-spo sat in the registry with no matrix row; added
+      lic-sam-spo (min sam-spo, alsoIn copilot-m365 per current bundling terms,
+      tenant-check under docs/17 C). Matrix now 81 rows.
+- [x] Triaged as correct (not bugs): 7 remaining audit-A hits are premium rows
+      deliberately linking baseline surfaces (endpoint DLP row -> pudlp portal at
+      E3, etc.); 3 registry "orphans" (bus-basic, bus-std, m365-f1) are base SKUs
+      kept for the profile picker.
+- [x] Cross-phase fit re-verified: ?go=lic-* falls back to cards, error-code records
+      carry no urls, no lic- ids leak into library/runbook related fields, suite
+      green with zero skips/pendings (39 py, 69/69, 66 browser) at v=17.
+
+Phase 8 prep: already complete (previous entry); execution items remain
+prod-dependent (Lighthouse, deploy, DNS/Cloudflare, family registry, live gate).
+
 ## Phase 7 close-out check + phase 8 prep (2026-08-26)
 
 Phase 7 verified finished: roadmap DONE, both python gates enforcing and green,

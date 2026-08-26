@@ -31,6 +31,8 @@ the schemas below.
                                   from data/*.js so it can never drift)
   make_icons.py                   brand PNGs + OG image (Pillow; run on icon change)
   sw_template.js                  service worker logic with __CACHE__/__ASSETS__ slots
+  audit_consistency.py            cross-layer audit (matrix vs records vs registry
+                                  vs libraries); run before releases and quarterly
   analyze_upstream.py             invariant checks + fold-candidate report (exists)
   check_links.py                  quarterly link checker
   sync_upstream.py                fetch + diff upstream CSV, never auto-merge

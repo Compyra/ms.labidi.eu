@@ -245,7 +245,8 @@ pendings (39 python, 66 browser).
 
 ## Phase 9 : Maintenance loop (recurring)
 
-- [ ] Quarterly: `sync_upstream.py` diff review; `check_links.py` run; VERIFY-tag sweep
+- [ ] Quarterly: `sync_upstream.py` diff review; `check_links.py` run;
+      `audit_consistency.py` run (matrix vs records vs registry); VERIFY-tag sweep
       of volatile facts (portal hosts, retirements, license names); verified stamps
       refreshed on touched records.
 - [ ] Per Microsoft wave (Ignite/Build): new-product triage into subject docs.

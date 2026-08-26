@@ -8,7 +8,7 @@ settings paths, roles, licenses, KQL, PowerShell and runbooks on top.
 **Status: phases 0-7 complete.** 535 records (settings encyclopedias for Sentinel,
 Defender, Intune, Purview and Windows cloud, a 41-code error encyclopedia,
 blast-radius ratings) plus a 60-query KQL library, 69 PowerShell snippets, a 49-table
-registry, 26 runbooks and an 80-row license matrix (feature to minimum license,
+registry, 26 runbooks and an 81-row license matrix (feature to minimum license,
 highlighted against your license profile), all searchable together with copy-ready
 cards. Tenant-dependent facts are collected in
 [docs/17-tenant-verification.md](docs/17-tenant-verification.md).
