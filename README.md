@@ -10,7 +10,14 @@ licenses, docs); license profile with included-badges; 128 acronym synonyms; off
 PWA. Next: phase 4 settings encyclopedias (Sentinel + Defender deep).
 
 Local dev: `python tools/build_data.py` then `python -m http.server 8905 --bind
-127.0.0.1` and open http://127.0.0.1:8905/. Project map:
+127.0.0.1` and open http://127.0.0.1:8905/.
+
+Tests: `powershell -NoProfile -ExecutionPolicy Bypass -File tests\run-tests.ps1`
+(Python pipeline/content gates + headless-Edge browser selftest), or separately
+`python -m unittest discover -s tests` and `dev/selftest.html` in a browser.
+Future-phase gates report PENDING and enforce automatically once their phase lands.
+
+Project map:
 
 - [PLAN.md](PLAN.md): mission, architecture, phases, risks
 - [docs/00-ecosystem-map.md](docs/00-ecosystem-map.md): the whole ecosystem + portal atlas

@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>selftest - ms.labidi.eu</title>
+<style>
+  body { font: 14px/1.5 Consolas, monospace; background: #0b0e14; color: #dbe2f0; padding: 16px; }
+  .pass { color: #3fd68f; } .fail { color: #ff6b7a; } .pend { color: #ffc24b; }
+  h2 { font-size: 15px; color: #4cc2ff; margin: 18px 0 4px; }
+  #summary { font-weight: 700; font-size: 16px; margin-bottom: 12px; }
+  iframe { width: 1px; height: 1px; opacity: 0; position: absolute; }
+</style>
+</head>
+<body>
+<div id="summary">running...</div>
+<div id="out"></div>
+<iframe id="app" src="../index.html"></iframe>
+<script src="../data/data-commands-entra.js"></script>
+<script src="../data/data-commands-intune.js"></script>
+<script src="../data/data-commands-defender.js"></script>
+<script src="../data/data-commands-sentinel.js"></script>
+<script src="../data/data-commands-azure.js"></script>
+<script src="../data/data-commands-m365.js"></script>
+<script src="../data/data-commands-purview.js"></script>
+<script src="../data/data-commands-power.js"></script>
+<script src="../data/data-commands-windows.js"></script>
+<script src="../data/data-commands-automation.js"></script>
+<script src="../data/data-commands-licensing.js"></script>
+<script src="../data/data-commands-msp.js"></script>
+<script src="../data/data-commands-toolbox.js"></script>
+<script src="../data/data-commands-mypages.js"></script>
+<script src="../data/data-synonyms.js"></script>
+<script src="../data/data-registry.js"></script>
+<script src="../data/data-meta.js"></script>
+<script src="../search.js"></script>
+<script>
+(function () {
+  "use strict";
+  var out = document.getElementById("out");
+  var results = [];
+  var section = "";
+
+  function h2(name) {
+    section = name;
+    var el = document.createElement("h2");
+    el.textContent = name;
+    out.appendChild(el);
+  }
+  function report(status, name, detail) {
+    results.push(status);
+    var el = document.createElement("div");
+    el.className = status;
+    el.textContent = status.toUpperCase() + "  " + name + (detail ? "  :: " + detail : "");
+    out.appendChild(el);
+  }
+  function t(name, fn) {
+    try {
+      var r = fn();
+      if (r === "pend") { report("pend", name); }
+      else if (r === false) { report("fail", name); }
+      else { report("pass", name); }
+    } catch (e) { report("fail", name, String(e).slice(0, 120)); }
+  }
+  function eq(a, b) { return JSON.stringify(a) === JSON.stringify(b); }
+
+  var HUB = window.MSHUB;
+  HUB.buildIndex();
+  HUB.setLicenseProfile([]);
+  var ids = function (q) { return HUB.search(q).map(function (x) { return x.rec.id; }); };
+
+  h2("[P1] data + resolver");
+  t("record count matches meta", function () {
+    return HUB.commands.length === HUB.meta.records && HUB.commands.length >= 380;
+  });
+  t("every command with url resolves via go", function () {
+    return HUB.commands.filter(function (r) { return r.url; })
+      .every(function (r) { return HUB.resolveGo(r.id) !== null; });
+  });
+  t("folded twin id resolves to sovereign url", function () {
+    return HUB.resolveGo("defenderg").url === "https://security.microsoft.us";
+  });
+  t("alias resolves (adca -> enca)", function () {
+    return HUB.resolveGo("adca").rec.id === "enca";
+  });
+  t("url-less concept returns null from resolveGo", function () {
+    return HUB.resolveGo("air") === null;
+  });
+
+  h2("[P1] ranking");
+  t("exact id first", function () { return ids("enca")[0] === "enca"; });
+  t("synonym boost: air -> air concept + AIR records", function () {
+    var r = ids("air").slice(0, 3);
+    return r[0] === "air" && r.indexOf("deinvestigations") > 0;
+  });
+  t("boost requires all tokens (air xyzzy -> none)", function () {
+    return ids("air xyzzy").length === 0;
+  });
+  t("subsequence fallback (watchlst)", function () {
+    return ids("watchlst")[0] === "xdrwatchlist";
+  });
+  t("deprecated ranks under successor (microsoft entra)", function () {
+    var r = ids("microsoft entra");
+    return r.indexOf("en") < r.indexOf("azad");
+  });
+  t("filters: cat + kind + role", function () {
+    return ids("cat:sentinel").length >= 18 &&
+      ids("kind:setting").length >= 30 &&
+      ids("role:caadmin").indexOf("enca") >= 0 &&
+      ids("role:xdr-authset tamper")[0] === "tog-tamper";
+  });
+
+  h2("[P3] enrichment + license profile");
+  t("registry shipped with names + bundles", function () {
+    return HUB.registry.roles.caadmin === "Conditional Access Administrator" &&
+      HUB.registry.licenses["m365-e5"].inc.indexOf("mdo-p2") >= 0;
+  });
+  t("coveredByProfile: direct + bundle + none", function () {
+    HUB.setLicenseProfile(["mdo-p2"]);
+    var direct = HUB.coveredByProfile("mdo-p2") && HUB.coveredByProfile("mdo-p1");
+    HUB.setLicenseProfile(["m365-e5"]);
+    var bundle = HUB.coveredByProfile("mdo-p2");
+    HUB.setLicenseProfile([]);
+    var none = !HUB.coveredByProfile("mdo-p2");
+    return direct && bundle && none;
+  });
+  t("mypages carry shareText", function () {
+    return HUB.commands.filter(function (r) { return r.category === "mypages"; })
+      .every(function (r) { return r.shareText; });
+  });
+  t("settings seeds carry blastRadius", function () {
+    var rec = HUB.commands.find(function (r) { return r.id === "set-sen-dailycap"; });
+    return rec && rec.blastRadius === "high" && rec.kind === "setting";
+  });
+
+  h2("[P5-P7] future data (auto-activate)");
+  t("phase 5 kql library", function () { return HUB.kql ? HUB.kql.length >= 60 : "pend"; });
+  t("phase 5 ps library", function () { return HUB.ps ? HUB.ps.length >= 60 : "pend"; });
+  t("phase 6 runbooks", function () { return HUB.runbooks ? HUB.runbooks.length >= 25 : "pend"; });
+  t("phase 7 licensing matrix", function () { return HUB.licensing ? HUB.licensing.length >= 80 : "pend"; });
+
+  h2("[P2/P3] app e2e (iframe)");
+  var frame = document.getElementById("app");
+
+  function frameReady() {
+    return new Promise(function (res) {
+      (function poll() {
+        var w = frame.contentWindow;
+        if (w && w.MSHUB && w.MSHUB.getById &&
+            w.document.querySelector(".tiles, #listbox, .card")) { res(w); }
+        else { setTimeout(poll, 150); }
+      })();
+    });
+  }
+  function settle(w, selector) {
+    return new Promise(function (res) {
+      (function poll(n) {
+        if (w.document.querySelector(selector) || n > 40) { res(); }
+        else { setTimeout(function () { poll(n + 1); }, 100); }
+      })(0);
+    });
+  }
+
+  frameReady().then(function (w) {
+    function type(q) {
+      var input = w.document.getElementById("q");
+      input.value = q;
+      input.dispatchEvent(new w.Event("input", { bubbles: true }));
+    }
+    var steps = [
+      function () {
+        t("home renders 14 tiles", function () {
+          return w.document.querySelectorAll(".tile").length === 14;
+        });
+        t("aria-controls absent on home", function () {
+          return w.document.getElementById("q").getAttribute("aria-controls") === null;
+        });
+        type("pim");
+        t("results in listbox with option roles", function () {
+          var rows = w.document.querySelectorAll("#listbox .row");
+          return rows.length > 3 && rows[0].getAttribute("role") === "option" &&
+            w.document.getElementById("q").getAttribute("aria-controls") === "listbox";
+        });
+        t("high blast badge in rows", function () {
+          type("daily cap");
+          return !!w.document.querySelector("#listbox .badge.blast-high");
+        });
+        w.location.hash = "#/c/enca";
+        return settle(w, ".card");
+      },
+      function () {
+        t("card renders role + license names", function () {
+          var dds = Array.prototype.map.call(
+            w.document.querySelectorAll(".meta dd"),
+            function (d) { return d.textContent; }).join("|");
+          return dds.indexOf("Conditional Access Administrator") >= 0 &&
+            dds.indexOf("Microsoft Entra ID P1") >= 0;
+        });
+        t("card title pattern", function () {
+          return w.document.title.indexOf("enca - Conditional Access") === 0;
+        });
+        w.location.hash = "#/s/sentinel";
+        return settle(w, ".gname");
+      },
+      function () {
+        t("hub grouped without option roles", function () {
+          return w.document.querySelectorAll("#results .row").length >= 18 &&
+            !w.document.querySelector("[role=option]");
+        });
+        t("license profile badge end-to-end", function () {
+          w.localStorage.setItem("mshub-lic", JSON.stringify(["mdo-p2"]));
+          w.MSHUB.setLicenseProfile(["mdo-p2"]);
+          type("air");
+          var badges = w.document.querySelectorAll("#listbox .badge.inc").length;
+          w.localStorage.removeItem("mshub-lic");
+          w.MSHUB.setLicenseProfile([]);
+          return badges >= 2;
+        });
+        w.location.hash = "#q=100%";
+        return new Promise(function (res) {
+          (function poll(n) {
+            if (w.document.getElementById("q").value === "100%" || n > 40) { res(); }
+            else { setTimeout(function () { poll(n + 1); }, 100); }
+          })(0);
+        });
+      },
+      function () {
+        t("malformed hash does not crash router", function () {
+          return w.document.getElementById("q").value === "100%";
+        });
+        t("phase 8 pending: og:image", function () {
+          return w.document.querySelector('meta[property="og:image"]') ? true : "pend";
+        });
+      }
+    ];
+    return steps.reduce(function (p, step) {
+      return p.then(step);
+    }, Promise.resolve());
+  }).then(finish).catch(function (e) {
+    report("fail", "e2e harness", String(e).slice(0, 160));
+    finish();
+  });
+
+  function finish() {
+    var fails = results.filter(function (r) { return r === "fail"; }).length;
+    var pends = results.filter(function (r) { return r === "pend"; }).length;
+    var passes = results.filter(function (r) { return r === "pass"; }).length;
+    var el = document.getElementById("summary");
+    el.className = fails ? "fail" : "pass";
+    el.textContent = fails
+      ? "SELFTEST: " + fails + " FAILURES (" + passes + " pass, " + pends + " pending)"
+      : "SELFTEST: ALL PASS (" + passes + " pass, " + pends + " pending)";
+  }
+})();
+</script>
+</body>
+</html>

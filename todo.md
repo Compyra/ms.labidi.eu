@@ -3,6 +3,27 @@
 Working file per the "check previous phases before starting the next" rule.
 Statuses: [x] fixed, [>] deferred to a named phase, [ ] open.
 
+## Test suite (2026-08-26)
+
+- [x] `tests/test_build.py`: phase 0-2 invariants (vendor/meta match, registries,
+      folds, 355-command resolvability, alias uniqueness, deterministic build,
+      LF/no-BOM/JSON-parseable output, asset-version lockstep incl. SW precache).
+- [x] `tests/test_content.py`: phase 3 gates (enrichment volume, priority areas,
+      AIR acceptance, shareText, related integrity, registry) + pending gates for
+      phases 4-8 that self-skip with a PENDING message and enforce automatically
+      once their data/files exist (settings coverage 25/15 thresholds, VERIFY
+      sweep, kql/ps/runbooks/licensing libraries, PNG icons, generated precache).
+- [x] `dev/selftest.html`: in-browser harness (family pattern): 24 assertions:
+      engine (resolver, ranking tiers, boost constraints, filters), enrichment
+      (registry names, coveredByProfile, shareText, blastRadius) and iframe e2e
+      (tiles, ARIA lifecycle, cards, hubs, license badge, malformed-hash safety)
+      + auto-activating future-data stubs. One harness race fixed during rollout
+      (settle predicate matched a stale listbox).
+- [x] `tests/run-tests.ps1`: one-shot runner (unittest + headless Edge on its own
+      port 8907/throwaway profile). Verified exit 0 green, exit 1 on failure.
+- Note: unittest verbose output lands on stderr; the runner treats stderr as text
+      (PS NativeCommandError artifact otherwise).
+
 ## Phase 3 code review (2026-08-26, post-phase pass)
 
 - [x] BUG: `decodeURIComponent(location.hash)` throws on malformed hashes

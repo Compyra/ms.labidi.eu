@@ -3,6 +3,11 @@
 Executable checklists per phase. A phase is done when every box is ticked and the gate
 passes. Phases 1-2 make the site; 3-7 make it valuable; 8 launches; 9 keeps it alive.
 
+Test discipline (added after phase 3): run `tests/run-tests.ps1` before starting and
+after finishing every phase. Future-phase gates in `tests/test_content.py` and
+`dev/selftest.html` report PENDING today and enforce automatically once the phase's
+data exists; a phase is not "done" while its gate still skips.
+
 ---
 
 ## Phase 1 : Scaffold + import + search MVP (DONE 2026-08-26)
