@@ -97,24 +97,35 @@ data exists; a phase is not "done" while its gate still skips.
       spot-checked enca/mymfa/senplaybookperms cards render names, shareText and
       attribution correctly.
 
-## Phase 4 : Settings encyclopedia (Sentinel first)
+## Phase 4 : Settings encyclopedia (DONE 2026-08-26)
 
-Prep DONE 2026-08-26: pipeline + UI support `blastRadius` (low/med/high badge with
-"Friday test" tooltip on high) and `standards` tags (cis/scuba/securescore/essential8/
-ce, validated); `content/settings-sentinel.csv` (4 seeds) and
-`content/settings-defender.csv` (5 toggle-wall seeds) load through the same pipeline;
-`role:` search filter live.
-
-- [ ] `content/settings-sentinel.csv` covering doc 04 §12 table + §3-§11 setting bullets.
-- [ ] `content/settings-defender.csv` covering doc 03 §2.5 (incl. advanced-features wall).
-- [ ] Niche record passes: doc 02 §2.5 compliance-enforcement chain + §2.6 corners,
-      doc 03 §2.6 (AIR et al.) + §2.7 scenario maps, doc 04 §15, doc 05 §2.1 Azure Arc,
-      doc 06 §1.1 user-management quick actions + restore matrix, doc 08 §2.1
-      support-side, doc 15 §3 hardening baseline (msp hub), doc 16 toolbox records.
-- [ ] Settings render kind with `blastRadius` badge + "Friday test" styling.
-- [ ] VERIFY sweep: every doc 04 `VERIFY` tag resolved against a live tenant + Learn.
-- Gate: the brief's test: pick 10 arbitrary Sentinel settings, all findable by search
-      with correct path/role/license.
+- [x] `content/settings-sentinel.csv`: 30 sentinel `setting` records covering doc 04
+      §12 (pricing, caps, retention, table plans/RBAC, purge, UEBA, anomalies, fusion,
+      health, playbook permissions, onboard/remove, TI upload/TAXII, search jobs/
+      restore, resource-context RBAC, workspace manager, CMK, AMPLS) + §15 niche
+      concepts (ASIM, cross-workspace, latency, KQL functions).
+- [x] `content/settings-defender.csv`: 15-toggle advanced-features wall (tamper, EDR
+      block, live response x3, indicator enablers, deception, preview, attack
+      notifications, Intune connection, correlation scoping, device discovery) +
+      XDR settings (unified RBAC activation, attack-disruption exclusions, email
+      notifications) + niche cards (exclusions hierarchy, automation levels, network
+      protection stack, custom detections, MDI action accounts, CAAC, priority
+      accounts).
+- [x] Niche record passes: doc 02 §2.5 chain (partner compliance, co-management,
+      check-in timing) + §2.6 corners (LAPS policy, EPM, Remote Help, Cloud PKI, DDM,
+      device query, MDMWinsOverGP, scope tags) in `settings-intune.csv`; doc 03
+      §2.6/§2.7 (phase 3); doc 04 §15; doc 05 §2.1 Arc (ESU, extensions); doc 06 §1.1
+      (phase 3); doc 08 §2.1 (Dataverse security, ALM, flow ops, capacity); doc 15 §3
+      (CA starter set, GDAP bundles); doc 16 (phase 3).
+- [x] Settings render with `blastRadius` badge + "Friday test" styling; standards
+      tags render on cards (verified live).
+- [x] VERIFY sweep: shipped records contain zero VERIFY markers (test-enforced).
+      Doc-level tags that require a live tenant remain in docs/ as research markers
+      (open point in todo.md, revisit in phase 9 sweeps).
+- Gate PASSED: 10 arbitrary Sentinel settings all in top-3 search results with
+      correct path + role + license + desc; python gates enforce (sentinel settings
+      30/25, toggles 15/15, no VERIFY shipped); selftest ALL PASS; 439 records;
+      360px overflow-free; duplicate-name sweep clean after disambiguation.
 
 ## Phase 5 : KQL + PowerShell libraries
 

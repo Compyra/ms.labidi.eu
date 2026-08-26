@@ -13,8 +13,8 @@ pim,privileged identity management,enpim;enpimr;enpimg;enpimz;azpim,extends upst
 sspr,self-service password reset,ensspr;mypw,
 mfa,multi-factor authentication,enauth;mymfa;enmfaunblock;enpumfa,
 whfb,windows hello for business,,planned (doc 02 account protection)
-laps,local administrator password solution,enlaps,
-ueba,user and entity behavior analytics,,planned (doc 04 §10 settings)
+laps,local administrator password solution,enlaps;in-lapspolicy,view + policy
+ueba,user and entity behavior analytics,senueba,sentinel analytics settings
 gdap,granular delegated admin privileges,partner,doc 15
 nce,new commerce experience,,licensing concept (doc 11)
 sam,secure application model sharepoint advanced management,,two meanings: CSP automation (doc 15) + SPO governance (doc 06)
@@ -24,19 +24,19 @@ ade,automated device enrollment,inenroll,Apple
 abm,apple business manager,inenroll,
 vpp,volume purchase program,inapps,Apple app licensing
 apns,apple push notification service,intenant,cert renewal runbook
-epm,endpoint privilege management,,Intune Suite (doc 02)
+epm,endpoint privilege management,in-epm,Intune Suite elevation rules
 mam,mobile application management,inappconfig,
 mdm,mobile device management,in,
 tabl,tenant allow block list,detallow,
 soar,security orchestration automation and response,,sentinel automation (doc 04 §8)
 siem,security information and event management,azsentinel,
 dcr,data collection rule,azdcr,
-dce,data collection endpoint,,planned (doc 04 §3.2)
+dce,data collection endpoint,sendcr,DCR/DCE plumbing
 ama,azure monitor agent,,planned (doc 04 §3.2)
 mma,microsoft monitoring agent,,retired agent tombstone card
-asim,advanced security information model,,planned (doc 04 §15)
-cmk,customer managed keys,,planned (doc 04 §15)
-ampls,azure monitor private link scope,,planned (doc 04 §15)
+asim,advanced security information model,sen-asim,normalized parsers
+cmk,customer managed keys,set-sen-cmk,dedicated cluster requirement
+ampls,azure monitor private link scope,set-sen-ampls,network isolation
 mto,multi-tenant organization,,doc 11
 xdr,extended detection and response,defender,
 mdo,defender for office 365,detp,
@@ -89,7 +89,7 @@ cipp,cyberdrain improved partner portal,,3rd-party MSP tool (doc 15)
 orca,office 365 recommended configuration analyzer,,community module (doc 15)
 scubagear,cisa secure cloud business applications assessment,,gov baseline tool (doc 15)
 cis,center for internet security benchmark,,doc 15 standards
-caac,conditional access app control,deca,MDCA session control
+caac,conditional access app control,deca;de-caac,MDCA session control
 irm,insider risk management,puirm,
 mip,microsoft information protection,puinfoprot,legacy name
 aip,azure information protection,puinfoprot,legacy name

@@ -3,6 +3,21 @@
 Working file per the "check previous phases before starting the next" rule.
 Statuses: [x] fixed, [>] deferred to a named phase, [ ] open.
 
+## Phase 4 close (2026-08-26)
+
+- [x] Phase 4 complete and gate-passed (see roadmap): 439 records, 30 sentinel
+      settings, 15-toggle wall, niche passes across docs 02/03/04/05/08/15.
+- [x] Content sweep: shipped data has zero VERIFY markers and zero em-dashes
+      (case-sensitive scan; the case-insensitive grep hit only prose "verify").
+- [x] View sweep: sentinel hub 12 groups/40 rows renders clean, standards + blast
+      rows on cards, 360px overflow-free, selftest ALL PASS (24+5 pending).
+- [x] Duplicate-name wart fixed: adlicense/enlicense both rendered as "Licenses"
+      in the licensing hub; now "Licenses (M365 admin)" / "Licenses (Entra)".
+- [ ] OPEN (needs a live tenant): doc-level VERIFY tags in docs/ (portal URL
+      migrations, feature GA states) cannot be resolved from here; shipped records
+      deliberately avoid those claims. Revisit when tenant access exists or during
+      phase 9 quarterly sweeps.
+
 ## Test suite (2026-08-26)
 
 - [x] `tests/test_build.py`: phase 0-2 invariants (vendor/meta match, registries,

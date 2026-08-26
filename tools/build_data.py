@@ -76,16 +76,17 @@ def load_enrich(records):
             })
             for field in ("kind", "name", "url", "path", "desc", "license",
                           "docs", "ps", "verified", "shareText", "blastRadius"):
-                if row.get(field, "").strip():
-                    rec[field] = row[field].strip()
-            if row.get("group", "").strip():
+                val = (row.get(field) or "").strip()
+                if val:
+                    rec[field] = val
+            if (row.get("group") or "").strip():
                 rec["group"] = row["group"].strip()
             if new:
-                rec["category"] = row.get("category", "").strip() or infer_category(path)
+                rec["category"] = (row.get("category") or "").strip() or infer_category(path)
             for field, sep in (("aliases", "|"), ("keywords", "|"),
                                ("roles", "|"), ("related", "|"),
                                ("standards", "|")):
-                vals = split_multi(row.get(field, ""))
+                vals = split_multi(row.get(field) or "")
                 if vals:
                     rec[field] = sorted(set(rec.get(field, []) + [v.lower() for v in vals]))
 
