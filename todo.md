@@ -3,6 +3,33 @@
 Working file per the "check previous phases before starting the next" rule.
 Statuses: [x] fixed, [>] deferred to a named phase, [ ] open.
 
+## License landscape + prices + scenario view (2026-09-03, customer-driven)
+
+- [x] Registry audit: 47 SKUs after adding defender-suite-bp (Microsoft Defender
+      Suite for Business Premium: MDE P2 + MDO P2 + MDI + MDCA + Entra P2, per
+      the September 2026 partner slide) and mdb-servers. Commercial-MSP scope
+      deliberately excludes EDU/GOV/D365/F5-add-on families (future.md).
+- [x] E7 checked: NOT in the registry and no verifiable source documents an E7
+      SKU as of 2026-09; per the no-false-info rule it stays out until a source
+      exists (tracked in future.md).
+- [x] Prices: content/prices.csv (hardcoded CSP list, USD pupm) validated by the
+      build (SKU must exist, asOf must be uniform) and shipped into the registry
+      as licenses[id].p + pricesAsOf. Only slide-evidenced prices shipped: the
+      five components ($28.20 summed) and the suite ($10.00). UI note: "CSP list
+      prices, September 2026; per user per month; varies by term, currency and
+      region."
+- [x] #/licensing grew three layers: "Show prices" checkbox (persisted,
+      mshub-prices), "Common customer asks" scenario cards (the protect-devices-
+      and-keep-logs combo = Business Premium + Defender Suite + Sentinel
+      consumption, with the parts-vs-suite saving computed live: $28.20 vs
+      $10.00, about 65% less), and the "What is included in what" bundle map
+      rendered from the registry includes[] chains with owned-SKU highlighting.
+- [x] Searchable entries: licprotectlogs concept (protect devices keep logs) and
+      the lic-defender-suite-bp matrix row. Gates: python price-consistency test
+      (asOf, six SKUs, 28.20/10.00 math) + 3 selftest assertions (toggle + note,
+      saving math, bundle map). 42 py + 69 browser green at v=20; view verified
+      by screenshot.
+
 ## Final full doublecheck + future.md (2026-08-26)
 
 Swept ALL steps and ALL content in one pass:

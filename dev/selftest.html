@@ -518,6 +518,7 @@
             function (x) { return x.textContent; });
           return links.indexOf("rb-mail-not-arriving") >= 0;
         });
+        w.localStorage.setItem("mshub-prices", "1");
         w.location.hash = "#/licensing";
         return titled(w, "License matrix");
       },
@@ -527,6 +528,23 @@
             w.MSHUB.licensing.length &&
             w.document.querySelectorAll("#results .gname").length >= 8;
         });
+        t("price toggle shows prices with the September 2026 note", function () {
+          var note = w.document.querySelector(".pricenote");
+          return w.document.querySelectorAll(".price").length >= 6 &&
+            !!note && note.textContent.indexOf("September 2026") >= 0 &&
+            !!w.document.querySelector("#price-toggle:checked");
+        });
+        t("defender suite scenario computes the parts-vs-suite saving", function () {
+          var s = w.document.querySelector(".scenario .saving");
+          return !!s && s.textContent.indexOf("$28.20") >= 0 &&
+            s.textContent.indexOf("$10.00") >= 0 &&
+            s.textContent.indexOf("65%") >= 0;
+        });
+        t("bundle map renders inclusion chips", function () {
+          return w.document.querySelectorAll(".bundlemap .bundle").length >= 10 &&
+            w.document.querySelectorAll(".bundle .chip.sku").length > 25;
+        });
+        w.localStorage.removeItem("mshub-prices");
         w.MSHUB.setLicenseProfile(["m365-e5"]);
         w.location.hash = "";
         w.location.hash = "#/licensing";

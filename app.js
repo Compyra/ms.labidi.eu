@@ -590,8 +590,40 @@
     host.appendChild(card);
   }
 
+  var SCENARIOS = [
+    { title: "Protect devices and keep the logs (under 300 seats)",
+      skus: [["bus-prem", "base"], ["defender-suite-bp", "add-on"],
+             ["sentinel-usage", "logs"]],
+      note: "Business Premium already carries Defender for Business; the Defender " +
+        "Suite add-on upgrades to MDE P2 + MDO P2 + MDI + MDCA + Entra P2 in one " +
+        "SKU. Log retention is Sentinel consumption, not a seat license.",
+      compare: "defender-suite-bp", card: "licprotectlogs" },
+    { title: "Enterprise: the full security stack",
+      skus: [["m365-e3", "base"], ["e5-sec", "add-on"]],
+      note: "E3 plus the E5 Security add-on lands the same five products; straight " +
+        "M365 E5 adds the premium Purview set and the Sentinel data grant on top.",
+      compare: "", card: "lic-e5-security" },
+    { title: "Just endpoint protection",
+      skus: [["mde-p1", "in E3"], ["mdb", "in Bus Prem"], ["mde-p2", "EDR tier"]],
+      note: "P1 protects; P2 adds EDR, hunting and response. Defender for Business " +
+        "is P2-class for small tenants; servers take their own add-on.",
+      compare: "", card: "lic-mde-p1" }
+  ];
+
+  function priceOf(id) {
+    var reg = (HUB.registry && HUB.registry.licenses) || {};
+    return (reg[id] && reg[id].p) || 0;
+  }
+
+  function priceTag(id, on) {
+    var p = on && priceOf(id);
+    return p ? " <span class=\"price\">$" + p.toFixed(2) + "</span>" : "";
+  }
+
   function renderLicensing() {
     var rows = HUB.licensing || [];
+    var reg = (HUB.registry && HUB.registry.licenses) || {};
+    var showPrices = pref("mshub-prices") === "1";
     results = [];
     listbox = null;
     input.value = "";
@@ -600,6 +632,72 @@
     document.title = "License matrix | ms.labidi.eu";
     statusEl.textContent = "License matrix: " + rows.length + " features mapped to " +
       "their minimum license. Tick your SKUs under help (?) to highlight what you own.";
+    var bar = document.createElement("div");
+    bar.className = "licbar";
+    bar.innerHTML = "<label class=\"licbox\"><input type=\"checkbox\" id=\"price-toggle\"" +
+      (showPrices ? " checked" : "") + "> Show prices</label>" +
+      (showPrices && HUB.registry.pricesAsOf ? "<span class=\"pricenote\">CSP list " +
+        "prices, " + esc(HUB.registry.pricesAsOf === "2026-09" ? "September 2026"
+          : HUB.registry.pricesAsOf) +
+        "; per user per month; varies by term, currency and region.</span>" : "");
+    host.appendChild(bar);
+    bar.querySelector("#price-toggle").addEventListener("change", function () {
+      pref("mshub-prices", this.checked ? "1" : null);
+      renderLicensing();
+    });
+    var sc = document.createElement("div");
+    sc.className = "scenarios";
+    sc.innerHTML = "<h2 class=\"gname\">Common customer asks</h2>" +
+      SCENARIOS.map(function (s) {
+        var chips = s.skus.map(function (pair) {
+          return "<span class=\"chip sku\">" + esc((reg[pair[0]] || {}).n || pair[0]) +
+            priceTag(pair[0], showPrices) +
+            " <span class=\"skurole\">" + esc(pair[1]) + "</span></span>";
+        }).join(" + ");
+        var saving = "";
+        if (showPrices && s.compare && reg[s.compare] && reg[s.compare].p) {
+          var parts = (reg[s.compare].inc || []).reduce(function (sum, x) {
+            return sum + priceOf(x);
+          }, 0);
+          if (parts > 0) {
+            saving = "<p class=\"saving\">The five products separately: $" +
+              parts.toFixed(2) + "; the suite: $" + reg[s.compare].p.toFixed(2) +
+              " (about " + Math.round((1 - reg[s.compare].p / parts) * 100) +
+              "% less).</p>";
+          }
+        }
+        return "<div class=\"scenario\"><h3>" + esc(s.title) + "</h3>" +
+          "<p class=\"combo\">" + chips + "</p>" +
+          "<p class=\"note\">" + esc(s.note) + " <a href=\"#/c/" + esc(s.card) +
+          "\">More</a></p>" + saving + "</div>";
+      }).join("");
+    host.appendChild(sc);
+    var map = document.createElement("div");
+    map.className = "bundlemap";
+    map.innerHTML = "<h2 class=\"gname\">What is included in what</h2>";
+    var order = ["m365-e5", "m365-e3", "bus-prem", "m365-f3", "o365-e5", "o365-e3",
+                 "o365-e1", "e5-sec", "e5-comp", "ems-e5", "ems-e3",
+                 "defender-suite-bp", "entra-suite", "intune-suite", "win-e5",
+                 "mde-p2", "mdo-p2", "entra-p2", "exo-p2", "pbi-ppu"];
+    order.forEach(function (id) {
+      var e = reg[id];
+      if (!e || !e.inc || !e.inc.length) { return; }
+      var inner = e.inc.map(function (x) {
+        var sub = (reg[x] && reg[x].inc && reg[x].inc.length)
+          ? " <span class=\"subinc\">(+" + reg[x].inc.map(function (y) {
+              return esc((reg[y] || {}).n || y);
+            }).join(", ") + ")</span>" : "";
+        return "<span class=\"chip sku" +
+          (HUB.coveredByProfile(x) ? " owned" : "") + "\">" +
+          esc((reg[x] || {}).n || x) + priceTag(x, showPrices) + sub + "</span>";
+      }).join("");
+      var box = document.createElement("div");
+      box.className = "bundle" + (HUB.coveredByProfile(id) ? " owned" : "");
+      box.innerHTML = "<h3>" + esc(e.n) + priceTag(id, showPrices) + "</h3>" +
+        "<div class=\"contains\">" + inner + "</div>";
+      map.appendChild(box);
+    });
+    host.appendChild(map);
     var groups = {};
     rows.forEach(function (entry) {
       var g = SUBJ_NAME[entry.subject] || entry.subject || "Other";
@@ -616,10 +714,10 @@
         var owned = HUB.licCovered(r);
         return "<tr" + (owned ? " class=\"owned\"" : "") + ">" +
           "<td><a href=\"#/c/" + esc(r.id) + "\">" + esc(r.name) + "</a></td>" +
-          "<td>" + esc(licName(r.min)) +
+          "<td>" + esc(licName(r.min)) + priceTag(r.min, showPrices) +
           (owned ? " <span class=\"badge inc\">yours</span>" : "") + "</td>" +
           "<td class=\"colnotes\">" + (r.alsoIn || []).map(function (x) {
-            return esc(licName(x));
+            return esc(licName(x)) + priceTag(x, showPrices);
           }).join(", ") + "</td>" +
           "</tr>";
       }).join("");

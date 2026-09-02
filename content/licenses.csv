@@ -28,6 +28,8 @@ intune-suite,Intune Suite,intune,intune-p1|intune-p2,Remote Help + EPM + Adv Ana
 mde-p1,Defender for Endpoint P1,defender,,in M365 E3
 mde-p2,Defender for Endpoint P2,defender,mde-p1,in M365 E5 / E5 Security
 mdb,Defender for Business,defender,,in Business Premium; SMB caps
+mdb-servers,Defender for Business servers,defender,,per-server add-on for MDB/Business Premium tenants
+defender-suite-bp,Microsoft Defender Suite for Business Premium,defender,mde-p2|mdo-p2|mdi|mdca|entra-p2,add-on on top of Business Premium; the five products in one SKU
 mdo-p1,Defender for Office 365 P1,defender,,in Business Premium
 mdo-p2,Defender for Office 365 P2,defender,mdo-p1,Threat Explorer + AIR + AST
 mdi,Defender for Identity,defender,,in EMS E5 / E5 Security

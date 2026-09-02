@@ -273,6 +273,20 @@ class TestPhase7Licensing(unittest.TestCase):
         if len(rows) < 80:
             self.skipTest(f"PENDING phase 7: matrix at {len(rows)}/80")
 
+    def test_prices_are_sourced_and_consistent(self):
+        registry = extract_json(ROOT / "data" / "data-registry.js")
+        lics = registry["licenses"]
+        priced = {k: v["p"] for k, v in lics.items() if "p" in v}
+        if not priced:
+            self.skipTest("no prices shipped")
+        self.assertEqual(registry.get("pricesAsOf"), "2026-09")
+        for sku in ("mde-p2", "mdo-p2", "mdi", "mdca", "entra-p2",
+                    "defender-suite-bp"):
+            self.assertIn(sku, priced, f"{sku} missing a price")
+        parts = sum(priced[x] for x in lics["defender-suite-bp"]["inc"])
+        self.assertAlmostEqual(parts, 28.20, places=2)
+        self.assertAlmostEqual(priced["defender-suite-bp"], 10.00, places=2)
+
     def test_purview_settings_pass(self):
         rows = extract_json(ROOT / "data" / "data-commands-purview.js")
         settings = [r for r in rows if r["id"].startswith("set-pu-")]

@@ -176,6 +176,36 @@ main { max-width: 1100px; margin: 0 auto; padding: 16px; }
 .badge.src { color: var(--accent-2); }
 .badge.lvl { color: var(--accent); border-color: var(--accent); }
 .tbl tr.owned td:first-child { box-shadow: inset 3px 0 0 var(--ok); }
+.licbar { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; margin: 10px 0; }
+.pricenote { color: var(--text-dim); font-size: 13px; }
+.price { color: var(--ok); font-weight: 600; white-space: nowrap; }
+.scenarios { margin: 8px 0 4px; }
+.scenario {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin: 10px 0;
+  background: var(--chip-bg);
+}
+.scenario h3 { margin: 0 0 8px; font-size: 15px; }
+.scenario .combo { margin: 0 0 8px; line-height: 2; }
+.scenario .note { color: var(--text-dim); margin: 0; max-width: 78ch; }
+.scenario .saving { color: var(--ok); margin: 8px 0 0; font-weight: 600; }
+.chip.sku { cursor: default; }
+.chip.sku.owned { color: var(--ok); border-color: var(--ok); }
+.skurole { color: var(--text-dim); font-size: 11px; }
+.bundlemap { margin: 12px 0 6px; }
+.bundle {
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin: 8px 0;
+}
+.bundle.owned { border-left-color: var(--ok); }
+.bundle h3 { margin: 0 0 8px; font-size: 14px; }
+.bundle .contains { display: flex; flex-wrap: wrap; gap: 6px; }
+.bundle .subinc { color: var(--text-dim); font-size: 11px; }
 .rbsec { margin: 6px 0 14px; padding-left: 26px; }
 .rbsec li { margin: 6px 0; max-width: 72ch; }
 .card.runbook .gname { margin-top: 16px; }

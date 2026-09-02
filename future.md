@@ -90,6 +90,16 @@ what tools of this family get asked for. Statuses: [ ] open, [~] partially cover
 
 ## 5. Often requested in tools of this family (evaluate before building)
 
+- [ ] **Microsoft 365 E7**: asked for 2026-09; no verifiable public source
+      documents an E7 SKU at that date, so it is not in the registry (the
+      no-false-info rule). Add the SKU + bundle map the moment a service
+      description or partner price list names it.
+- [ ] Registry breadth: EDU (A1/A3/A5), GOV (G1/G3/G5), F5 Security &
+      Compliance add-ons, Dynamics 365, Teams Rooms Basic/Pro (pending docs/17
+      C6), Priva SKUs. Out of the commercial-MSP scope today; add per family
+      when a customer conversation needs them.
+- [ ] More prices in content/prices.csv as sources arrive (only evidenced
+      numbers; the asOf stamp is enforced uniform and shown to the user).
 - [ ] Favorites/pinning (localStorage, like recents) and a `g f` hub for them.
 - [ ] Custom user aliases (my own `?go=` shortcuts, stored locally).
 - [ ] Tenant-aware deep links (`?tenant=` rewriting into portal URLs): privacy

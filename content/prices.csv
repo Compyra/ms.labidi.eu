@@ -1,0 +1,10 @@
+# Hardcoded CSP list prices (USD per user per month) shown by the price toggle.
+# ONLY prices with a verifiable source belong here; asOf is shown to the user.
+# Source 2026-09: Microsoft partner material (Defender Suite for Business Premium slide).
+id,usd,asOf
+mde-p2,5.20,2026-09
+mdo-p2,5.00,2026-09
+mdi,5.50,2026-09
+mdca,3.50,2026-09
+entra-p2,9.00,2026-09
+defender-suite-bp,10.00,2026-09

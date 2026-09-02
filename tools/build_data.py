@@ -155,14 +155,34 @@ def load_full_registries():
         for i in entry["inc"]:
             if i not in lics:
                 errors.append(f"licenses.csv {lid}: unknown include {i}")
+    price_stamps = set()
+    prices_path = ROOT / "content" / "prices.csv"
+    if prices_path.exists():
+        for r in read_csv(prices_path):
+            pid = r["id"].strip().lower()
+            if pid not in lics:
+                errors.append(f"prices.csv: unknown SKU {pid}")
+                continue
+            try:
+                lics[pid]["p"] = round(float(r["usd"]), 2)
+            except ValueError:
+                errors.append(f"prices.csv {pid}: bad usd {r['usd']!r}")
+            if not re.match(r"^\d{4}-\d{2}$", r.get("asOf", "")):
+                errors.append(f"prices.csv {pid}: bad asOf {r.get('asOf')!r}")
+            price_stamps.add(r.get("asOf", ""))
     tables = []
     for r in read_csv(ROOT / "content" / "tables.csv"):
         tables.append({"name": r["name"].strip(), "product": (r.get("product") or "").strip(),
                        "costTier": (r.get("costTier") or "").strip(),
                        "retention": (r.get("retention") or "").strip(),
                        "notes": (r.get("notes") or "").strip()})
-    return {"roles": roles, "licenses": lics,
-            "tables": sorted(tables, key=lambda t: t["name"].lower())}
+    out = {"roles": roles, "licenses": lics,
+           "tables": sorted(tables, key=lambda t: t["name"].lower())}
+    if price_stamps:
+        if len(price_stamps) > 1:
+            errors.append(f"prices.csv: mixed asOf stamps {sorted(price_stamps)}")
+        out["pricesAsOf"] = sorted(price_stamps)[-1]
+    return out
 
 
 def load_synonyms(known_ids):
